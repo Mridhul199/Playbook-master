@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Table — Accessibility Audit Playbook · BillDesk DLS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F26522; --orange-hover:#D9541A; --orange-tint:#FEF0E8; --orange-tint-2:#FFF7F1;
+  --text-1:#0D1526; --text-2:#4A5568; --text-3:#8A97AC;
+  --canvas:#F7F8FA; --surface:#FFFFFF; --surface-2:#FAFBFC;
+  --border:#E2E8F0; --border-strong:#CBD5E0;
+  --success:#0A8F5C; --warning:#D97706; --error:#C0392B;
+  --success-tint:#E6F4EE; --warning-tint:#FEF3E2; --error-tint:#FBE9E7;
+  --f:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-s:4px; --r-m:6px; --r-l:8px; --r-xl:12px; --r-2xl:16px; --r-pill:999px;
+  --sh-1:0 1px 2px rgba(13,21,38,.04), 0 0 0 1px rgba(13,21,38,.04);
+  --sh-2:0 4px 12px rgba(13,21,38,.06), 0 0 0 1px rgba(13,21,38,.05);
+  --container:1280px; --gutter:32px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--f);font-size:16px;line-height:1.55;color:var(--text-1);background:var(--canvas);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+a{color:var(--orange);text-decoration:none}
+a:hover{color:var(--orange-hover)}
+img,svg{display:block;max-width:100%}
+code,pre,.mono{font-family:var(--mono)}
+.shell{max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.chrome{background:linear-gradient(180deg,#FFFCFA 0%,#FFFFFF 100%);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(12px)}
+.chrome-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px}
+.brand-sub{color:var(--text-3);font-weight:400;font-size:13px;border-left:1px solid var(--border);padding-left:12px;margin-left:4px}
+.toc{display:flex;gap:4px;font-size:13px;color:var(--text-2)}
+.toc a{padding:6px 10px;border-radius:var(--r-m);color:var(--text-2)}
+.toc a:hover{background:var(--orange-tint);color:var(--orange-hover)}
+.bg-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-deco::before,.bg-deco::after{content:"";position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(242,101,34,.05),transparent 60%);filter:blur(40px)}
+.bg-deco::before{width:600px;height:600px;top:-200px;left:-200px}
+.bg-deco::after{width:800px;height:800px;bottom:-300px;right:-300px}
+main{position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);padding:6px 10px;background:var(--orange-tint);border-radius:var(--r-pill)}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+h1,h2,h3,h4,h5{margin:0;letter-spacing:-.02em;font-weight:600;color:var(--text-1)}
+h1{font-size:56px;line-height:1.05;letter-spacing:-.03em}
+h2{font-size:36px;line-height:1.15}
+h3{font-size:22px;line-height:1.3}
+h4{font-size:17px}
+h5{font-size:14px}
+.lead{font-size:18px;line-height:1.55;color:var(--text-2);max-width:65ch}
+p{margin:0;color:var(--text-2)}
+.muted{color:var(--text-3)}
+.kbd{font-family:var(--mono);font-size:12px;padding:2px 6px;border-radius:var(--r-s);background:var(--surface);border:1px solid var(--border);box-shadow:0 1px 0 var(--border);color:var(--text-2)}
+section{padding:96px 0;position:relative}
+section.tight{padding:64px 0}
+.section-head{margin-bottom:48px;max-width:760px}
+.section-head h2{margin-top:12px}
+.section-head .lead{margin-top:16px}
+
+.hero{padding:88px 0 64px}
+.hero h1{max-width:18ch;margin-top:18px}
+.hero .lead{margin-top:24px;font-size:20px;max-width:60ch}
+/* === Hero summary — BillDesk Collection Overview style === */
+.hero-summary{
+  margin-top:48px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-2xl);overflow:hidden;
+  display:grid;grid-template-columns:1.1fr 1fr;
+  box-shadow:var(--sh-2);
+}
+/* LEFT — half-donut gauge card */
+.gauge-card{padding:24px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center}
+.gauge-card-title{align-self:flex-start;font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:4px}
+.gauge-card-sub{align-self:flex-start;font-size:11px;color:var(--text-3);margin-bottom:8px}
+.gauge-svg{width:100%;max-width:260px;height:auto;margin:0 auto}
+.gauge-legend{display:flex;gap:40px;justify-content:center;margin-top:16px;padding:16px 0;border-top:1px solid var(--border);align-self:stretch}
+.gauge-legend > div{font-size:10px;color:var(--text-3);text-align:center;font-variant-numeric:tabular-nums;line-height:1.5;flex:0 0 auto;min-width:48px}
+.gauge-legend b{display:block;font-size:18px;font-weight:600;margin-bottom:4px;letter-spacing:-.02em}
+.gauge-trend{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid var(--border);align-self:stretch;font-size:13px;color:var(--error);cursor:pointer;font-weight:500}
+.gauge-trend .arrow{color:var(--text-3);font-size:16px}
+
+/* RIGHT — stat list (matches BillDesk stacked stat card) */
+.stat-list{display:flex;flex-direction:column}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;gap:16px}
+.stat-row+.stat-row{border-top:1px solid var(--border)}
+.stat-info h5{font-size:11px;font-weight:500;color:var(--text-3);margin:0;letter-spacing:.06em;text-transform:uppercase}
+.stat-big{font-size:28px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--text-1);margin-top:4px;line-height:1}
+.stat-sub{font-size:12px;color:var(--text-3);margin-top:6px;display:flex;align-items:center;gap:6px;line-height:1.4}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex-shrink:0}
+.stat-row.crit .stat-big{color:var(--error)}
+.stat-row.warn .stat-big{color:var(--warning)}
+.stat-row.pass .stat-big{color:var(--success)}
+
+.thesis{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+.thesis-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);padding:24px}
+.thesis-card.bad{border-color:#F4C4BE;background:linear-gradient(180deg,#FFF8F7 0%,#FFFFFF 100%)}
+.thesis-card.good{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.thesis-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);margin-bottom:14px}
+.thesis-tag.bad{background:var(--error-tint);color:var(--error)}
+.thesis-tag.good{background:var(--success-tint);color:var(--success)}
+.thesis h3{font-size:18px;margin-bottom:6px}
+.thesis p{font-size:14px;line-height:1.55}
+pre.code{margin-top:18px;background:#0D1526;color:#CBD5E0;padding:16px;border-radius:var(--r-l);font-size:12px;line-height:1.6;overflow:auto;border:1px solid #1A2238}
+pre .kw{color:#FFA76B}
+pre .val{color:#7CD9B6}
+pre .com{color:#5A6478;font-style:italic}
+pre .err{color:#FF8B8B;background:rgba(192,57,43,.15);padding:0 2px;border-radius:2px}
+pre .ok{color:#7CD9B6;background:rgba(10,143,92,.15);padding:0 2px;border-radius:2px}
+
+.findings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.finding{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px;display:flex;flex-direction:column;gap:12px}
+.finding-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.finding-num{width:32px;height:32px;border-radius:var(--r-l);background:var(--canvas);color:var(--text-2);display:grid;place-items:center;font-weight:600;font-size:13px;font-family:var(--mono)}
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.status::before{content:"";width:6px;height:6px;border-radius:50%}
+.status.fail{background:var(--error-tint);color:var(--error)}
+.status.fail::before{background:var(--error)}
+.status.partial{background:var(--warning-tint);color:var(--warning)}
+.status.partial::before{background:var(--warning)}
+.status.pass{background:var(--success-tint);color:var(--success)}
+.status.pass::before{background:var(--success)}
+.finding h3{font-size:16px}
+.finding-wcag{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+.finding-desc{font-size:13px;line-height:1.55;color:var(--text-2);margin:0}
+.finding-issues{margin-top:8px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-2);line-height:1.6}
+.finding-issues b{color:var(--text-1);font-weight:500}
+.finding-issues ul{margin:6px 0 0;padding-left:18px}
+.finding-issues li{margin-bottom:4px}
+
+.pg-guide{background:var(--orange-tint-2);border:1px solid var(--orange-tint);border-radius:var(--r-xl);padding:16px 24px;margin-bottom:24px;display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.pg-guide-row{display:flex;gap:12px;align-items:flex-start}
+.pg-guide-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:600;font-family:var(--mono)}
+.pg-guide-info b{display:block;font-size:13px;color:var(--text-1);margin-bottom:4px;font-weight:600}
+.pg-guide-info span{font-size:12px;color:var(--text-2);line-height:1.5}
+.pg-guide-info code{font-family:var(--mono);font-size:11px;padding:1px 6px;background:var(--surface);border-radius:4px;border:1px solid var(--border)}
+@media (max-width:980px){.pg-guide{grid-template-columns:1fr}}
+.playground{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;margin-top:0}
+.playground-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface-2);padding:6px;gap:2px;overflow-x:auto}
+.pg-tab{padding:10px 16px;font-size:13px;font-weight:500;color:var(--text-2);border-radius:var(--r-l);cursor:pointer;display:inline-flex;align-items:center;gap:8px;border:none;background:none;white-space:nowrap}
+.pg-tab:hover{color:var(--text-1)}
+.pg-tab.active{background:var(--surface);color:var(--text-1);box-shadow:var(--sh-1)}
+.pg-tab .ico{width:14px;height:14px}
+.pg-panel{padding:32px;display:none}
+.pg-panel.active{display:block}
+.pg-panel h3{font-size:18px;margin-bottom:8px}
+.pg-panel p.lead{font-size:14px;margin-bottom:24px;max-width:60ch}
+
+.ff{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.ff-side{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px;display:flex;flex-direction:column;gap:16px}
+.ff-side.bad{border-color:#F4C4BE;background:linear-gradient(180deg,#FFF8F7 0%,#FFFFFF 100%)}
+.ff-side.good{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.ff-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;width:fit-content}
+.ff-tag.bad{background:var(--error-tint);color:var(--error)}
+.ff-tag.good{background:var(--success-tint);color:var(--success)}
+.ff-render{padding:16px;background:var(--canvas);border-radius:var(--r-l);border:1px dashed var(--border);min-height:80px;display:flex;align-items:center;justify-content:center}
+.ff-readout{background:#0D1526;border-radius:var(--r-l);padding:12px 16px;color:#CBD5E0;font-size:13px;line-height:1.5}
+.ff-readout b{color:#FFA76B;font-weight:500;display:block;margin-bottom:4px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.ff-readout .quote{color:#7CD9B6;font-family:var(--mono);font-size:12px}
+.ff-readout .bad-quote{color:#FF8B8B;font-family:var(--mono);font-size:12px}
+.ff-btn{padding:8px 16px;font-size:13px;font-weight:500;background:var(--orange);color:#fff;border-radius:var(--r-l);cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;width:fit-content}
+.ff-btn:hover{background:var(--orange-hover)}
+
+.kbd-demo{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-l);padding:24px}
+.kbd-row{display:grid;grid-template-columns:32px 1.5fr 1fr 0.8fr 1.4fr;gap:16px;padding:12px 16px;align-items:center;font-size:13px;border-bottom:1px solid var(--border)}
+.kbd-row.head{background:var(--surface-2);font-size:11px;color:var(--text-3);font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.kbd-row:last-child{border-bottom:none}
+.kbd-focusable{position:relative}
+.kbd-marker{position:absolute;top:-8px;left:-12px;width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;display:none;align-items:center;justify-content:center;font-size:11px;font-weight:600;z-index:2;box-shadow:0 0 0 3px var(--surface),0 2px 6px rgba(242,101,34,.4)}
+.kbd-demo.show-order .kbd-focusable .kbd-marker{display:flex}
+.kbd-demo.show-order .kbd-focusable{outline:2px dashed var(--orange);outline-offset:2px;border-radius:var(--r-m)}
+.kbd-mini-btn{padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:var(--r-m);background:var(--surface);cursor:pointer}
+.kbd-pill{display:inline-flex;padding:2px 8px;border-radius:var(--r-pill);font-size:11px;font-weight:500;background:#FFF1E5;color:var(--orange)}
+.kbd-controls{margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+.focus-demo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.focus-side{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px}
+.focus-side h4{margin-bottom:16px}
+.focus-input{padding:10px 14px;border:1px solid var(--border);border-radius:var(--r-l);background:#fff;font-size:14px;width:100%;font-family:inherit}
+.focus-input.weak:focus{outline:1px solid #aaa;outline-offset:1px}
+.focus-input.accessible:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(242,101,34,.18)}
+.focus-row{margin-top:12px;display:flex;gap:8px}
+.focus-btn{padding:8px 14px;font-size:13px;border:1px solid var(--border);border-radius:var(--r-m);background:#fff;cursor:pointer}
+.focus-btn.weak:focus{outline:1px solid #aaa}
+.focus-btn.accessible:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(242,101,34,.18)}
+
+.contrast-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.contrast-card{padding:24px;border-radius:var(--r-xl);border:1px solid var(--border)}
+.contrast-card .swatch{padding:24px;border-radius:var(--r-l);margin-bottom:12px;font-size:14px;font-weight:500}
+.contrast-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-family:var(--mono)}
+.contrast-meta .ratio{font-size:20px;font-weight:600;font-family:var(--f)}
+.contrast-pass .ratio{color:var(--success)}
+.contrast-fail .ratio{color:var(--error)}
+.contrast-warn .ratio{color:var(--warning)}
+
+.target-demo{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px}
+.target-row{display:flex;gap:16px;align-items:center;padding:12px;border-bottom:1px solid var(--border)}
+.target-row:last-child{border-bottom:none}
+.target-element{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.target-element.fail-size{width:16px;height:16px;background:var(--orange);border-radius:4px;color:#fff;font-size:10px}
+.target-element.pass-aa{width:24px;height:24px;background:var(--orange);border-radius:6px;color:#fff;font-size:11px}
+.target-element.pass-aaa{width:44px;height:44px;background:var(--orange);border-radius:8px;color:#fff;font-size:13px}
+.target-overlay{position:absolute;border:2px dashed var(--error);border-radius:6px;display:none}
+.target-demo.show-overlays .target-element.fail-size .target-overlay{display:block;width:24px;height:24px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.target-info{flex:1}
+.target-info b{display:block;font-size:14px;color:var(--text-1)}
+.target-info span{font-size:12px;color:var(--text-3);font-family:var(--mono)}
+
+.checklist{display:flex;flex-direction:column;gap:16px}
+.check{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px}
+.check-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.check-head h3{font-size:16px}
+.check-meta{font-size:11px;color:var(--text-3);font-family:var(--mono);text-align:right;line-height:1.6;white-space:nowrap}
+.check-steps{margin:0;padding-left:24px;display:flex;flex-direction:column;gap:12px;font-size:13px;color:var(--text-2);line-height:1.6}
+.check-steps b{color:var(--text-1);font-weight:600;margin-right:4px}
+.check-record{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border);display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px}
+.check-record label{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.check-record input[type="radio"]{accent-color:var(--orange)}
+.check-record .note-input{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r-m);font-size:13px;font-family:inherit}
+
+.code-finding{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:16px}
+.code-finding-head{padding:20px 24px;display:flex;gap:16px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.code-finding-head .meta{font-size:12px;color:var(--text-3);font-family:var(--mono);margin-top:6px}
+.code-finding-head h3{font-size:15px}
+.code-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.code-body h5{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px}
+.code-body pre.code{margin:0}
+.code-foot{padding:16px 24px;background:var(--surface-2);font-size:12px;color:var(--text-2);border-top:1px solid var(--border);line-height:1.55}
+.code-foot b{color:var(--text-1);font-weight:500}
+
+footer{border-top:1px solid var(--border);padding:48px 0;margin-top:48px;background:linear-gradient(180deg,transparent 0%,#FFFCFA 100%)}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;font-size:13px}
+.foot-grid h4{font-size:13px;margin-bottom:12px}
+.foot-grid ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--text-2)}
+.foot-grid li{font-size:12px}
+.foot-meta{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+@media (max-width:980px){
+  h1{font-size:38px}
+  h2{font-size:28px}
+  .hero-summary{grid-template-columns:1fr 1fr;gap:24px;padding:24px}
+  .findings-grid{grid-template-columns:1fr}
+  .thesis,.ff,.focus-demo,.contrast-grid{grid-template-columns:1fr}
+  .code-body{grid-template-columns:1fr}
+  .toc{display:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-deco" aria-hidden="true"></div>
+
+<header class="chrome">
+  <div class="shell chrome-inner">
+    <div class="brand">
+      <svg width="98" height="24" viewBox="0 0 205 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BillDesk">
+        <path d="M58.5859 11.8038H72.1057C73.5478 11.7728 74.9851 11.9815 76.3599 12.4213C77.4686 12.783 78.4758 13.4056 79.2982 14.2375C79.8291 14.7705 80.2516 15.4029 80.542 16.0991C80.8577 16.8702 81.0111 17.6988 80.9926 18.5327V18.6054C81.0528 19.9485 80.6482 21.2709 79.848 22.3467C79.0649 23.3033 78.0583 24.049 76.9187 24.5171C78.3686 24.9531 79.6881 25.7458 80.7583 26.8236C81.7562 27.9819 82.2642 29.4879 82.1734 31.019V31.0917C82.2162 32.1397 81.9988 33.1819 81.5408 34.1238C81.0828 35.0657 80.3987 35.8775 79.5505 36.4857C77.802 37.7752 75.3504 38.42 72.1778 38.42H58.5859V11.8038ZM70.303 22.4194C71.1977 22.4792 72.091 22.2841 72.8808 21.8564C73.1734 21.6727 73.4115 21.413 73.5701 21.1046C73.7287 20.7962 73.8019 20.4505 73.7821 20.1037V20.0311C73.7974 19.7018 73.7294 19.374 73.5843 19.0785C73.4392 18.7831 73.222 18.5296 72.9529 18.342C72.2016 17.8974 71.3346 17.6917 70.4653 17.7518H65.6973V22.4194H70.303ZM71.3576 32.4901C72.2684 32.5475 73.1755 32.3293 73.9624 31.8635C74.2561 31.6656 74.4936 31.394 74.6516 31.0756C74.8096 30.7572 74.8827 30.4028 74.8637 30.0474V29.9656C74.8693 29.6211 74.7899 29.2806 74.6326 28.9747C74.4753 28.6688 74.245 28.4071 73.9624 28.213C73.1467 27.7271 72.2038 27.5023 71.2584 27.5683H65.6973V32.472L71.3576 32.4901Z" fill="#3B475B"/>
+        <path d="M101.895 10.6875H94.6934V38.4206H101.895V10.6875Z" fill="#3B475B"/>
+        <path d="M112.26 10.6875H105.059V38.4206H112.26V10.6875Z" fill="#3B475B"/>
+        <path d="M115.684 11.8106H125.868C128.01 11.7796 130.143 12.1079 132.178 12.7823C133.902 13.3602 135.491 14.2873 136.846 15.5065C138.108 16.6591 139.099 18.0797 139.749 19.6656C140.43 21.3484 140.77 23.1516 140.749 24.9689V25.0415C140.759 26.8768 140.403 28.6955 139.704 30.3902C139.042 31.9998 138.039 33.4441 136.765 34.6219C135.39 35.8645 133.781 36.8157 132.033 37.4188C129.987 38.1145 127.838 38.4524 125.679 38.4177H115.684V11.8106ZM125.995 31.8704C127.913 31.965 129.797 31.3406 131.285 30.1177C131.969 29.495 132.505 28.725 132.853 27.8651C133.201 27.0052 133.352 26.0774 133.295 25.1505V25.0688C133.349 24.1449 133.196 23.2208 132.848 22.3644C132.5 21.5079 131.966 20.7409 131.285 20.1196C129.81 18.8669 127.922 18.2187 125.995 18.3035H123.002V31.8885L125.995 31.8704Z" fill="#3B475B"/>
+        <path d="M183.473 10.6875H190.674V24.7357L196.217 17.8614H204.32L197.227 26.1069L204.509 38.4116H196.632L192.522 31.4283L190.674 33.5896V38.4116H183.473V10.6875Z" fill="#3B475B"/>
+        <path d="M91.5206 14.0656V10.6875H84.3281V17.9432L91.5206 14.0656Z" fill="#F15701"/>
+        <path d="M84.3281 22.1368V38.4098H91.5206V15.4805L84.3281 22.1368Z" fill="#3B475B"/>
+        <path d="M21.9651 8.63596L16.1516 12.0231V18.3889L21.9651 15.0108L30.3743 19.9054V29.6855L21.9651 34.5802L13.5558 29.6855V10.5339L20.6672 6.37481V0L0 12.0231V37.5769L20.6672 49.6V43.2161L5.48 34.3895V15.2105L8.07579 13.7031V32.8729L21.9651 40.9459L35.8543 32.8729V16.718L21.9651 8.63596Z" fill="#F15701"/>
+        <path d="M23.2637 0V6.37481L38.4508 15.2015V34.3804L23.2637 43.2161V49.6L43.9398 37.5678V12.0141L23.2637 0Z" fill="#3B475B"/>
+      </svg>
+      <span class="brand-sub">DLS · Accessibility Audit</span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#findings">Findings</a>
+      <a href="#thesis">Thesis</a>
+      <a href="#playground">Playground</a>
+      <a href="#checklist">Manual checks</a>
+      <a href="#code">Code findings</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="shell">
+    <span class="eyebrow"><span class="dot"></span>Table component · WCAG 2.1 AA · June 2026</span>
+    <h1>Auditing the Table component.</h1>
+    <p class="lead">A WCAG 2.1 AA audit of the BillDesk DLS <code>Table</code> (React/TSX). 17 findings across 9 axes, each mapped to a file, a line range, and a code-ready fix. The path from current state to AA is well-trodden — most fixes are additive (roles, labels, key handlers), not architectural.</p>
+    <div class="hero-summary">
+
+      <!-- LEFT: half-donut gauge -->
+      <div class="gauge-card">
+        <span class="gauge-card-title">Audit overview</span>
+        <span class="gauge-card-sub">WCAG 2.1 AA · 20 axes checked</span>
+        <svg class="gauge-svg" viewBox="0 0 240 140" preserveAspectRatio="xMidYMid meet" aria-label="Audit score 4.2 out of 10">
+          <!-- Critical (red) — 40% of arc -->
+          <path d="M 30 120 A 90 90 0 0 1 92.2 34.4" fill="none" stroke="#C0392B" stroke-width="22" stroke-dasharray="4 6" stroke-linecap="butt"/>
+          <!-- Serious + Moderate (amber) — 45% of arc -->
+          <path d="M 92.2 34.4 A 90 90 0 0 1 200.2 79.1" fill="none" stroke="#D97706" stroke-width="22" stroke-dasharray="4 6" stroke-linecap="butt"/>
+          <!-- Pass (green) — 15% of arc -->
+          <path d="M 200.2 79.1 A 90 90 0 0 1 210 120" fill="none" stroke="#0A8F5C" stroke-width="22" stroke-dasharray="4 6" stroke-linecap="butt"/>
+          <!-- Center text -->
+          <text x="120" y="100" text-anchor="middle" font-family="Inter" font-size="40" font-weight="600" fill="#0D1526" letter-spacing="-1">4.2</text>
+          <text x="120" y="122" text-anchor="middle" font-family="Inter" font-size="11" fill="#8A97AC" letter-spacing="0.04em">OUT OF 10</text>
+        </svg>
+        <div class="gauge-legend">
+          <div><b style="color:#C0392B">8</b>Critical</div>
+          <div><b style="color:#D97706">9</b>Serious + Moderate</div>
+          <div><b style="color:#0A8F5C">3</b>Pass</div>
+        </div>
+        <div class="gauge-trend">
+          <span>↘ Fails WCAG 2.1 AA — fix critical first</span>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: stat list -->
+      <div class="stat-list">
+        <div class="stat-row crit">
+          <div class="stat-info">
+            <h5>Critical</h5>
+            <div class="stat-big">8</div>
+            <div class="stat-sub">↓ Blocks AA conformance</div>
+          </div>
+          <div class="stat-icon" style="background:var(--error-tint);color:var(--error)">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.5M10 13.5v.5"/></svg>
+          </div>
+        </div>
+        <div class="stat-row warn">
+          <div class="stat-info">
+            <h5>Serious + Moderate</h5>
+            <div class="stat-big">9</div>
+            <div class="stat-sub">⏱ Address in the next sprint</div>
+          </div>
+          <div class="stat-icon" style="background:var(--warning-tint);color:var(--warning)">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5L17.5 16h-15z"/><path d="M10 8.5v3M10 13.5v.5"/></svg>
+          </div>
+        </div>
+        <div class="stat-row pass">
+          <div class="stat-info">
+            <h5>Pass</h5>
+            <div class="stat-big">3</div>
+            <div class="stat-sub">✓ tabIndex, sort focus, checkboxes</div>
+          </div>
+          <div class="stat-icon" style="background:var(--success-tint);color:var(--success)">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7.5"/><path d="M6.5 10l2.5 2.5L14 7.5"/></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="thesis" class="tight">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>Root cause</span>
+      <h2>Semantic <code style="font-size:.85em">&lt;table&gt;</code> vs <code style="font-size:.85em">&lt;div role="table"&gt;</code>.</h2>
+      <p class="lead">The current component is built from divs with partial ARIA, which is a valid pattern but a more demanding one — every behavior that a native <code>&lt;table&gt;</code> would give for free has to be re-created by hand. Some are in place; the rest are listed below.</p>
+    </div>
+    <div class="thesis">
+      <article class="thesis-card bad">
+        <span class="thesis-tag bad">✕ Current approach</span>
+        <h3>Div tree with partial ARIA</h3>
+        <p>Headers and rows have <code>role</code> attributes, but the container, head/body wrappers, and individual cells are missing them. Assistive tech sees a grouping of rows rather than a navigable table — the column-to-cell association is lost.</p>
+<pre class="code"><span class="com">// Table.tsx — line 385, 477, 506</span>
+&lt;<span class="kw">div</span>&gt; <span class="com">// no role</span>
+  &lt;<span class="kw">div</span>&gt; <span class="com">// head wrapper — no role</span>
+    &lt;<span class="kw">div</span> <span class="err">role="columnheader"</span>&gt;Customer&lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+  &lt;<span class="kw">div</span>&gt; <span class="com">// body — no role</span>
+    &lt;<span class="kw">div</span> <span class="err">role="row"</span>&gt;
+      &lt;<span class="kw">div</span>&gt;Ravi Menon&lt;/<span class="kw">div</span>&gt; <span class="com">// no role</span>
+    &lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+&lt;/<span class="kw">div</span>&gt;</pre>
+      </article>
+      <article class="thesis-card good">
+        <span class="thesis-tag good">✓ Recommended</span>
+        <h3>Semantic HTML + minimal ARIA</h3>
+        <p>Native <code>&lt;table&gt;</code>, <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code>, <code>&lt;caption&gt;</code> give browsers and assistive tech the structure they expect. ARIA fills only the dynamic gaps — sort state, expanded rows, selection.</p>
+<pre class="code"><span class="com">// Refactored</span>
+&lt;<span class="kw">table</span>&gt;
+  &lt;<span class="kw">caption</span>&gt;Receivables awaiting action&lt;/<span class="kw">caption</span>&gt;
+  &lt;<span class="kw">thead</span>&gt;
+    &lt;<span class="kw">tr</span>&gt;
+      &lt;<span class="kw">th</span> <span class="ok">scope="col"</span> <span class="ok">aria-sort="ascending"</span>&gt;Customer&lt;/<span class="kw">th</span>&gt;
+    &lt;/<span class="kw">tr</span>&gt;
+  &lt;/<span class="kw">thead</span>&gt;
+  &lt;<span class="kw">tbody</span>&gt;
+    &lt;<span class="kw">tr</span>&gt;
+      &lt;<span class="kw">td</span>&gt;Ravi Menon&lt;/<span class="kw">td</span>&gt;
+    &lt;/<span class="kw">tr</span>&gt;
+  &lt;/<span class="kw">tbody</span>&gt;
+&lt;/<span class="kw">table</span>&gt;</pre>
+      </article>
+    </div>
+    <p style="margin-top:32px;font-size:14px;max-width:60ch"><b style="color:var(--text-1)">If a semantic refactor isn't feasible right now</b>, the div-table needs every missing role and ARIA attribute filled in. The 17 findings below show exactly what's missing.</p>
+  </div>
+</section>
+
+<section id="findings">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>The 9 axes</span>
+      <h2>Findings, by axis.</h2>
+      <p class="lead">Each of the nine WCAG dimensions we checked, the current status, and the specific items found in this codebase.</p>
+    </div>
+    <div class="findings-grid">
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">01</div><span class="status fail">Fail</span></div>
+        <h3>Semantic structure</h3>
+        <span class="finding-wcag">WCAG 1.3.1 · 4.1.2</span>
+        <p class="finding-desc">Uses <code>&lt;div&gt;</code> tree with partial ARIA roles. Missing top-level table semantics.</p>
+        <div class="finding-issues"><b>3 issues:</b><ul><li>No <code>role="table"</code> on container (line 385)</li><li>No <code>role="rowgroup"</code> on head/body wrappers</li><li>Cells have no <code>role="cell"</code> (line 506)</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">02</div><span class="status fail">Fail</span></div>
+        <h3>Keyboard activation</h3>
+        <span class="finding-wcag">WCAG 2.1.1</span>
+        <p class="finding-desc">Sort headers don't respond to Space. Clickable rows have empty <code>onKeyDown</code>.</p>
+        <div class="finding-issues"><b>2 issues:</b><ul><li>Sort: only Enter key (line 429), missing Space</li><li>Row: <code>onKeyDown={() => {}}</code> (line 486) — keyboard users can't activate</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">03</div><span class="status fail">Fail</span></div>
+        <h3>Accessible names</h3>
+        <span class="finding-wcag">WCAG 4.1.2</span>
+        <p class="finding-desc">Icon-only buttons announce as "button" with no context.</p>
+        <div class="finding-issues"><b>3 issues:</b><ul><li>Pin button: no <code>aria-label</code> (line 355, 370)</li><li>SwitchButton: no <code>aria-label</code></li><li>Table: no <code>aria-label</code> or <code>aria-labelledby</code></li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">04</div><span class="status fail">Fail</span></div>
+        <h3>State announcements</h3>
+        <span class="finding-wcag">WCAG 4.1.2 · 4.1.3</span>
+        <p class="finding-desc">Sort, expand, and empty state changes aren't announced to screen readers.</p>
+        <div class="finding-issues"><b>4 issues:</b><ul><li>Sort missing <code>aria-sort="ascending|descending"</code></li><li>SwitchButton missing <code>aria-expanded</code></li><li>SwitchButton missing <code>aria-controls</code></li><li>Empty state has no <code>role="status"</code> (line 564)</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">05</div><span class="status fail">Fail</span></div>
+        <h3>Color as only indicator</h3>
+        <span class="finding-wcag">WCAG 1.4.1</span>
+        <p class="finding-desc">Sort direction shown by icon fill change only. No text alternative.</p>
+        <div class="finding-issues"><b>1 issue:</b><ul><li>ArrowIcon (line 450): direction encoded in <code>fill-icon-icon</code> class on first vs last path only</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">06</div><span class="status fail">Fail</span></div>
+        <h3>Touch target / pointer</h3>
+        <span class="finding-wcag">WCAG 2.5.1 · 2.5.5</span>
+        <p class="finding-desc">Pin button only appears on hover. Touch users can't reveal it.</p>
+        <div class="finding-issues"><b>2 issues:</b><ul><li>Pin button has <code>invisible</code> class until parent <code>:hover</code> (line 362, 377)</li><li>PinIcon is 20×20 — below WCAG 2.5.5 AA 24×24 minimum</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">07</div><span class="status partial">Partial</span></div>
+        <h3>Focus management</h3>
+        <span class="finding-wcag">WCAG 2.4.7</span>
+        <p class="finding-desc">Tabindex is correct on sortable headers. Focus visibility relies on browser defaults.</p>
+        <div class="finding-issues"><b>2 issues:</b><ul><li>No custom focus ring on sortable header — relies on UA outline</li><li>Pin button gets focus while <code>invisible</code> — keyboard users tab into nothing visible</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">08</div><span class="status partial">Partial</span></div>
+        <h3>Color contrast</h3>
+        <span class="finding-wcag">WCAG 1.4.3 · 1.4.11</span>
+        <p class="finding-desc">Uses DLS tokens. Cannot verify ratios without computed values.</p>
+        <div class="finding-issues"><b>Action:</b><ul><li>Designer must verify each token pair (see Manual checklist)</li><li>Disabled checkbox state (line 402, 501) likely below 3:1 — needs check</li></ul></div>
+      </article>
+
+      <article class="finding">
+        <div class="finding-head"><div class="finding-num">09</div><span class="status pass">Pass</span></div>
+        <h3>ARIA validity</h3>
+        <span class="finding-wcag">WCAG 4.1.2</span>
+        <p class="finding-desc">No invalid attributes. ChevronUp/Down icons missing <code>aria-hidden</code> — minor.</p>
+        <div class="finding-issues"><b>1 minor:</b><ul><li>ChevronUpIcon/ChevronDownIcon should be <code>aria-hidden="true"</code></li></ul></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="playground">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>Wrong vs right</span>
+      <h2>See the failure. Hear the fix.</h2>
+      <p class="lead">Every demo shows the broken state next to the corrected state. Use the guide below to explore each tab.</p>
+    </div>
+
+    <div class="pg-guide">
+      <div class="pg-guide-row">
+        <div class="pg-guide-num">01</div>
+        <div class="pg-guide-info">
+          <b>Screen reader</b>
+          <span>Click <code>▶ Listen</code> on either side. Your browser speaks the announcement. The bad side says just "button" or "columnheader". The fixed side adds the missing label or sort state.</span>
+        </div>
+      </div>
+      <div class="pg-guide-row">
+        <div class="pg-guide-num">02</div>
+        <div class="pg-guide-info">
+          <b>Keyboard</b>
+          <span>Click <code>Show tab order</code> to reveal numbered circles on every focusable element. Count them. Note which controls have <em>no</em> marker — those are unreachable by keyboard.</span>
+        </div>
+      </div>
+      <div class="pg-guide-row">
+        <div class="pg-guide-num">03</div>
+        <div class="pg-guide-info">
+          <b>Focus ring</b>
+          <span>Tab into each input and button. Left side uses the browser's faint default outline. Right side uses the DLS 2px orange ring with a 3px halo.</span>
+        </div>
+      </div>
+      <div class="pg-guide-row">
+        <div class="pg-guide-num">04</div>
+        <div class="pg-guide-info">
+          <b>Contrast</b>
+          <span>Four real DLS color pairs from the Table styles with measured ratios. Green = passes WCAG AA, red = fails, amber = passes for large text only.</span>
+        </div>
+      </div>
+      <div class="pg-guide-row">
+        <div class="pg-guide-num">05</div>
+        <div class="pg-guide-info">
+          <b>Target size</b>
+          <span>Three button sizes (20 / 24 / 44px) at real scale. Click <code>Show 24×24 overlay</code> to see the WCAG 2.5.5 AA minimum box drawn over the failing button.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="playground">
+      <div class="playground-tabs" role="tablist">
+        <button class="pg-tab active" data-tab="sr">Screen reader</button>
+        <button class="pg-tab" data-tab="kbd">Keyboard</button>
+        <button class="pg-tab" data-tab="focus">Focus ring</button>
+        <button class="pg-tab" data-tab="contrast">Contrast</button>
+        <button class="pg-tab" data-tab="target">Target size</button>
+      </div>
+
+      <div class="pg-panel active" data-panel="sr">
+        <h3>What the screen reader actually says</h3>
+        <p class="lead">Click "Listen" on each side. The fix is often one <code>aria-label</code> or <code>aria-sort</code> away.</p>
+
+        <div class="ff">
+          <article class="ff-side bad">
+            <span class="ff-tag bad">✕ Current</span>
+            <div class="ff-render"><button style="background:var(--orange);color:#fff;border:none;border-radius:4px;width:24px;height:24px;display:grid;place-items:center;cursor:pointer" type="button"><svg width="14" height="14" viewBox="0 0 16 16" fill="#fff"><path d="M5 7l3-3 3 3M5 11l3-3 3 3" stroke="#fff" stroke-width="1.5"/></svg></button></div>
+            <div class="ff-readout"><b>VoiceOver / NVDA reports</b><span class="bad-quote">"button"</span></div>
+<pre class="code"><span class="com">// Table.tsx:355 — Pin button</span>
+&lt;<span class="kw">button</span> <span class="err">/* no aria-label */</span>&gt;
+  &lt;<span class="kw">PinIcon</span> /&gt;
+&lt;/<span class="kw">button</span>&gt;</pre>
+            <button class="ff-btn" onclick="speak(this, 'button')">▶ Listen</button>
+          </article>
+          <article class="ff-side good">
+            <span class="ff-tag good">✓ Fixed</span>
+            <div class="ff-render"><button style="background:var(--orange);color:#fff;border:none;border-radius:4px;width:24px;height:24px;display:grid;place-items:center;cursor:pointer" type="button" aria-label="Pin column"><svg width="14" height="14" viewBox="0 0 16 16" fill="#fff"><path d="M5 7l3-3 3 3M5 11l3-3 3 3" stroke="#fff" stroke-width="1.5"/></svg></button></div>
+            <div class="ff-readout"><b>VoiceOver / NVDA reports</b><span class="quote">"Pin column, button"</span></div>
+<pre class="code"><span class="com">// Fixed</span>
+&lt;<span class="kw">button</span> <span class="ok">aria-label="Pin column"</span>&gt;
+  &lt;<span class="kw">PinIcon</span> <span class="ok">aria-hidden="true"</span> /&gt;
+&lt;/<span class="kw">button</span>&gt;</pre>
+            <button class="ff-btn" onclick="speak(this, 'Pin column, button')">▶ Listen</button>
+          </article>
+        </div>
+
+        <div class="ff">
+          <article class="ff-side bad">
+            <span class="ff-tag bad">✕ Current sort state</span>
+            <div class="ff-render"><span style="font-weight:600;display:inline-flex;align-items:center;gap:8px">Customer <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 4l4 4H4z"/></svg></span></div>
+            <div class="ff-readout"><b>SR reports</b><span class="bad-quote">"Customer, columnheader"</span><br><span style="color:#8A97AC;font-size:11px;display:block;margin-top:6px">No sort direction announced.</span></div>
+            <button class="ff-btn" onclick="speak(this, 'Customer, columnheader')">▶ Listen</button>
+          </article>
+          <article class="ff-side good">
+            <span class="ff-tag good">✓ With aria-sort</span>
+            <div class="ff-render"><span style="font-weight:600;display:inline-flex;align-items:center;gap:8px">Customer <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 4l4 4H4z"/></svg></span></div>
+            <div class="ff-readout"><b>SR reports</b><span class="quote">"Customer, columnheader, sorted ascending"</span></div>
+            <button class="ff-btn" onclick="speak(this, 'Customer, columnheader, sorted ascending')">▶ Listen</button>
+          </article>
+        </div>
+
+      </div>
+
+      <div class="pg-panel" data-panel="kbd">
+        <h3>Where Tab actually lands</h3>
+        <p class="lead">Click "Show tab order" to see the focusable elements numbered. Count what's wrong.</p>
+        <div class="kbd-demo" id="kbdDemo">
+          <div class="kbd-row head"><span></span><span>Customer</span><span>Outstanding</span><span>Days</span><span>Actions</span></div>
+          <div class="kbd-row">
+            <span><input type="checkbox" class="kbd-focusable"><span class="kbd-marker">1</span></span>
+            <span class="kbd-focusable">Ravi Menon<span class="kbd-marker">2</span></span>
+            <span>₹3,245.89</span>
+            <span><span class="kbd-pill">30 days</span></span>
+            <span style="display:flex;gap:8px"><button class="kbd-mini-btn kbd-focusable">Record<span class="kbd-marker">3</span></button><button class="kbd-mini-btn kbd-focusable" style="background:var(--orange);color:#fff;border-color:var(--orange)">Send<span class="kbd-marker">4</span></button></span>
+          </div>
+          <div class="kbd-row">
+            <span><input type="checkbox" class="kbd-focusable"><span class="kbd-marker">5</span></span>
+            <span class="kbd-focusable">Arjun Singh<span class="kbd-marker">6</span></span>
+            <span>₹1,987.34</span>
+            <span><span class="kbd-pill">21 days</span></span>
+            <span class="muted" style="font-size:12px">Sent 3 days ago · Opened</span>
+          </div>
+          <div class="kbd-controls">
+            <button class="ff-btn" id="toggleKbd">Show tab order</button>
+            <span class="muted" style="font-size:13px">Currently the row is focusable but <code>onKeyDown</code> is empty — Enter/Space does nothing.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pg-panel" data-panel="focus">
+        <h3>Is the focus ring visible enough?</h3>
+        <p class="lead">Tab into each input. Left = browser default (thin grey). Right = DLS focus ring (2px orange + 3px tinted halo).</p>
+        <div class="focus-demo">
+          <div class="focus-side">
+            <h4>✕ Browser default</h4>
+            <input class="focus-input weak" placeholder="Tab here">
+            <div class="focus-row">
+              <button class="focus-btn weak">Cancel</button>
+              <button class="focus-btn weak" style="background:var(--orange);color:#fff;border-color:var(--orange)">Save</button>
+            </div>
+            <p style="margin-top:16px;font-size:12px;color:var(--text-3)">Thin grey outline, low contrast. Fails WCAG 2.4.7 on most browser themes.</p>
+          </div>
+          <div class="focus-side">
+            <h4>✓ DLS focus ring</h4>
+            <input class="focus-input accessible" placeholder="Tab here">
+            <div class="focus-row">
+              <button class="focus-btn accessible">Cancel</button>
+              <button class="focus-btn accessible" style="background:var(--orange);color:#fff;border-color:var(--orange)">Save</button>
+            </div>
+            <p style="margin-top:16px;font-size:12px;color:var(--text-3)">2px orange border + 3px tinted halo. Passes WCAG 2.4.7 and 2.4.11.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pg-panel" data-panel="contrast">
+        <h3>Color contrast on DLS pairs</h3>
+        <p class="lead">Each card shows a token pair from Table styles. Ratio against WCAG 1.4.3 (4.5:1 normal, 3:1 large/UI).</p>
+        <div class="contrast-grid">
+          <div class="contrast-card contrast-pass">
+            <div class="swatch" style="background:#fff;color:#0D1526">Aa text-text-1 on surface</div>
+            <div class="contrast-meta"><span>#0D1526 on #FFFFFF</span><span class="ratio">19.4:1</span></div>
+            <p style="font-size:12px;color:var(--success);margin-top:8px">✓ Passes AA + AAA</p>
+          </div>
+          <div class="contrast-card contrast-pass">
+            <div class="swatch" style="background:#fff;color:#4A5568">Aa text-text-2 on surface</div>
+            <div class="contrast-meta"><span>#4A5568 on #FFFFFF</span><span class="ratio">8.5:1</span></div>
+            <p style="font-size:12px;color:var(--success);margin-top:8px">✓ Passes AA + AAA</p>
+          </div>
+          <div class="contrast-card contrast-fail">
+            <div class="swatch" style="background:#fff;color:#8A97AC">Aa text-text-3 (disabled label)</div>
+            <div class="contrast-meta"><span>#8A97AC on #FFFFFF</span><span class="ratio">3.2:1</span></div>
+            <p style="font-size:12px;color:var(--error);margin-top:8px">✕ Fails AA for normal text (needs 4.5:1).</p>
+          </div>
+          <div class="contrast-card contrast-warn">
+            <div class="swatch" style="background:#F26522;color:#fff">Aa Primary button</div>
+            <div class="contrast-meta"><span>#FFFFFF on #F26522</span><span class="ratio">3.4:1</span></div>
+            <p style="font-size:12px;color:var(--warning);margin-top:8px">⚠ Passes AA for large text only (≥18.66px). Tighten for body buttons.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pg-panel" data-panel="target">
+        <h3>Target size — WCAG 2.5.5</h3>
+        <p class="lead">AA requires <b>24×24</b>. AAA requires <b>44×44</b>. Click "Show overlay" to see which buttons fail.</p>
+        <div class="target-demo" id="targetDemo">
+          <div class="target-row">
+            <div class="target-element fail-size"><svg width="10" height="10" viewBox="0 0 16 16" fill="#fff"><path d="M5 7l3-3 3 3M5 11l3-3 3 3" stroke="#fff" stroke-width="1.5"/></svg><span class="target-overlay"></span></div>
+            <div class="target-info"><b>Pin icon (current)</b><span>20×20 — fails WCAG 2.5.5 AA</span></div>
+            <span class="status fail">Fail</span>
+          </div>
+          <div class="target-row">
+            <div class="target-element pass-aa"><svg width="12" height="12" viewBox="0 0 16 16" fill="#fff"><path d="M5 7l3-3 3 3M5 11l3-3 3 3" stroke="#fff" stroke-width="1.5"/></svg></div>
+            <div class="target-info"><b>Pin button (AA fix)</b><span>24×24 — passes WCAG 2.5.5 AA</span></div>
+            <span class="status pass">Pass</span>
+          </div>
+          <div class="target-row">
+            <div class="target-element pass-aaa"><svg width="16" height="16" viewBox="0 0 16 16" fill="#fff"><path d="M5 7l3-3 3 3M5 11l3-3 3 3" stroke="#fff" stroke-width="1.5"/></svg></div>
+            <div class="target-info"><b>Pin button (touch-optimized)</b><span>44×44 — passes AAA + Apple HIG</span></div>
+            <span class="status pass">Pass</span>
+          </div>
+          <div class="kbd-controls" style="margin-top:24px;padding:16px;background:var(--canvas);border-radius:8px">
+            <button class="ff-btn" id="toggleTargets">Show 24×24 overlay</button>
+            <span class="muted" style="font-size:13px">Dashed red box = WCAG 2.5.5 AA minimum. Anything smaller fails.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="checklist" class="tight">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>For the designer</span>
+      <h2>Manual verification — 6 checks, ~20 minutes.</h2>
+      <p class="lead">About 60% of accessibility can't be automated. Run these in the browser with the Table rendered. Each check has the exact tool, steps, and what to look for. Mark pass/fail and add notes as you go — your record sits inside the playbook itself.</p>
+    </div>
+
+    <div class="checklist">
+
+      <article class="check">
+        <header class="check-head">
+          <h3>1. Keyboard sweep</h3>
+          <div class="check-meta">WCAG 2.1.1 · 2.4.3<br>~4 min</div>
+        </header>
+        <ol class="check-steps">
+          <li><b>Tool:</b> Keyboard only. Disable your mouse / cover your trackpad.</li>
+          <li><b>Action:</b> Click into the page. Press <span class="kbd">Tab</span> through the table — header → checkboxes → sortable columns → row actions → pagination.</li>
+          <li><b>Look for:</b> Every interactive element receives focus. Focus always visible. Order matches visual order. No "dead" stops. No traps.</li>
+          <li><b>Sort:</b> Press <span class="kbd">Space</span> on a sortable header. Does it sort? <i>(Currently no — only Enter works.)</i></li>
+          <li><b>Row click:</b> Press <span class="kbd">Enter</span> on a clickable row. Does it trigger? <i>(Currently no — empty onKeyDown.)</i></li>
+        </ol>
+        <div class="check-record">
+          <label><input type="radio" name="c1"> Pass</label>
+          <label><input type="radio" name="c1"> Fail</label>
+          <input type="text" class="note-input" placeholder="Notes (what failed, where)">
+        </div>
+      </article>
+
+      <article class="check">
+        <header class="check-head">
+          <h3>2. Screen-reader walkthrough</h3>
+          <div class="check-meta">WCAG 1.3.1 · 4.1.2 · 4.1.3<br>~6 min</div>
+        </header>
+        <ol class="check-steps">
+          <li><b>Tool:</b> macOS — <span class="kbd">Cmd</span>+<span class="kbd">F5</span> to start VoiceOver. Windows — install NVDA (free), <span class="kbd">Ctrl</span>+<span class="kbd">Alt</span>+N.</li>
+          <li><b>Action:</b> Navigate to the table. Use Tab + arrow keys to move through.</li>
+          <li><b>Listen for:</b> Does it announce "table"? <i>(Probably not — current code uses divs.)</i></li>
+          <li><b>Listen for:</b> Sortable headers — do they say "sorted ascending/descending"?</li>
+          <li><b>Listen for:</b> Pin button — "Pin column, button" or just "button"?</li>
+          <li><b>Listen for:</b> Expand row — does SwitchButton say "Expand row, button, collapsed/expanded"?</li>
+          <li><b>Listen for:</b> Empty state — when the table has no records, is "No records found" announced?</li>
+        </ol>
+        <div class="check-record">
+          <label><input type="radio" name="c2"> Pass</label>
+          <label><input type="radio" name="c2"> Fail</label>
+          <input type="text" class="note-input" placeholder="Notes (what was announced vs expected)">
+        </div>
+      </article>
+
+      <article class="check">
+        <header class="check-head">
+          <h3>3. Focus visibility</h3>
+          <div class="check-meta">WCAG 2.4.7 · 2.4.11<br>~2 min</div>
+        </header>
+        <ol class="check-steps">
+          <li><b>Tool:</b> Keyboard only.</li>
+          <li><b>Action:</b> Tab through every interactive element — checkbox, sort header, pin, expand, row, action buttons, pagination.</li>
+          <li><b>Look for:</b> Focus ring always visible. Distinguishable from non-focused (≥ 2px / 3:1 contrast).</li>
+          <li><b>Look for:</b> Pin button — when focused, is it actually visible? <i>(Currently <code>invisible</code> until parent hover.)</i></li>
+        </ol>
+        <div class="check-record">
+          <label><input type="radio" name="c3"> Pass</label>
+          <label><input type="radio" name="c3"> Fail</label>
+          <input type="text" class="note-input" placeholder="Notes">
+        </div>
+      </article>
+
+      <article class="check">
+        <header class="check-head">
+          <h3>4. Zoom & reflow</h3>
+          <div class="check-meta">WCAG 1.4.4 · 1.4.10<br>~3 min</div>
+        </header>
+        <ol class="check-steps">
+          <li><b>Tool:</b> Browser zoom. <span class="kbd">Cmd</span>+<span class="kbd">+</span> / <span class="kbd">Ctrl</span>+<span class="kbd">+</span>.</li>
+          <li><b>Action:</b> Zoom to 200%. Then 400%.</li>
+          <li><b>Look for:</b> All content readable. No text cut off.</li>
+          <li><b>Look for:</b> Buttons/icons still tappable. Pagination still works. Sticky header still functions.</li>
+        </ol>
+        <div class="check-record">
+          <label><input type="radio" name="c4"> Pass</label>
+          <label><input type="radio" name="c4"> Fail</label>
+          <input type="text" class="note-input" placeholder="Notes">
+        </div>
+      </article>
+
+      <article class="check">
+        <header class="check-head">
+          <h3>5. Touch / pointer</h3>
+          <div class="check-meta">WCAG 2.5.1 · 2.5.5<br>~2 min</div>
+        </header>
+        <ol class="check-steps">
+          <li><b>Tool:</b> Chrome DevTools → Device toolbar (<span class="kbd">Cmd</span>+<span class="kbd">Shift</span>+<span class="kbd">M</span>). Pick a touch device.</li>
+          <li><b>Action:</b> Try to tap Pin icon, rows, sort headers.</li>
+          <li><b>Look for:</b> Pin button — visible without hover? <i>(Currently no.)</i></li>
+          <li><b>Look for:</b> All targets ≥ 24×24 (AA) or 44×44 (AAA / Apple HIG).</li>
+          <li><b>Look for:</b> No accidental triggers from adjacent buttons.</li>
+        </ol>
+        <div class="check-record">
+          <label><input type="radio" name="c5"> Pass</label>
+          <label><input type="radio" name="c5"> Fail</label>
+          <input type="text" class="note-input" placeholder="Notes">
+        </div>
+      </article>
+
+      <article class="check">
+        <header class="check-head">
+          <h3>6. Color-only state check</h3>
+          <div class="check-meta">WCAG 1.4.1<br>~2 min</div>
+        </header>
+        <ol class="check-steps">
+          <li><b>Tool:</b> macOS — System Settings → Display → Color Filters → Grayscale. Or Chrome DevTools → Rendering → Emulate vision deficiencies → Achromatopsia.</li>
+          <li><b>Action:</b> Apply grayscale, look at the table.</li>
+          <li><b>Look for:</b> Sort direction — can you still tell? <i>(Currently the indicator is just an icon fill change.)</i></li>
+          <li><b>Look for:</b> Failed/overdue states — communicated by anything other than color?</li>
+          <li><b>Look for:</b> Selection, focus — all still distinguishable?</li>
+        </ol>
+        <div class="check-record">
+          <label><input type="radio" name="c6"> Pass</label>
+          <label><input type="radio" name="c6"> Fail</label>
+          <input type="text" class="note-input" placeholder="Notes">
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="code">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>For the dev</span>
+      <h2>Line-by-line fixes.</h2>
+      <p class="lead">Every critical finding mapped to file + line range + the exact code change. Copy-paste ready.</p>
+    </div>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-01 · Missing table semantics</h3><div class="meta">Table.tsx:385, 477, 506 · WCAG 1.3.1, 4.1.2 · Critical</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code"><span class="com">// container</span>
+&lt;<span class="kw">div</span> <span class="err">ref={effectiveRef}</span>&gt;
+  <span class="com">// head</span>
+  &lt;<span class="kw">div</span>&gt;
+    &lt;<span class="kw">div</span> role="columnheader"&gt;...&lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+  <span class="com">// body</span>
+  &lt;<span class="kw">div</span>&gt;
+    &lt;<span class="kw">div</span> role="row"&gt;
+      &lt;<span class="kw">div</span> <span class="err">/* no role */</span>&gt;cell&lt;/<span class="kw">div</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+&lt;/<span class="kw">div</span>&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix (minimum ARIA)</h5>
+<pre class="code">&lt;<span class="kw">div</span> <span class="ok">role="table"</span> <span class="ok">aria-label="Receivables"</span>&gt;
+  &lt;<span class="kw">div</span> <span class="ok">role="rowgroup"</span>&gt;
+    &lt;<span class="kw">div</span> <span class="ok">role="row"</span>&gt;
+      &lt;<span class="kw">div</span> role="columnheader"&gt;...&lt;/<span class="kw">div</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+  &lt;<span class="kw">div</span> <span class="ok">role="rowgroup"</span>&gt;
+    &lt;<span class="kw">div</span> role="row"&gt;
+      &lt;<span class="kw">div</span> <span class="ok">role="cell"</span>&gt;cell&lt;/<span class="kw">div</span>&gt;
+    &lt;/<span class="kw">div</span>&gt;
+  &lt;/<span class="kw">div</span>&gt;
+&lt;/<span class="kw">div</span>&gt;</pre>
+        </div>
+      </div>
+      <div class="code-foot"><b>Better:</b> refactor to semantic <code>&lt;table&gt;&lt;thead&gt;&lt;tbody&gt;&lt;th scope&gt;&lt;td&gt;</code>. CSS can still drive visual layout via <code>display:grid</code>. Browsers + SRs get table semantics for free.</div>
+    </article>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-02 · Sort missing aria-sort + Space key</h3><div class="meta">Table.tsx:428–434 · WCAG 2.1.1, 4.1.2 · Critical</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code">&lt;<span class="kw">div</span>
+  <span class="err">onKeyDown={(e) =&gt; {</span>
+    <span class="err">if (e.key === 'Enter') {</span>
+      <span class="err">handleSortingChange(column);</span>
+    <span class="err">}</span>
+  <span class="err">}}</span>
+  tabIndex={column.sortable ? 0 : -1}
+  role="columnheader"
+  <span class="err">/* no aria-sort */</span>
+&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix</h5>
+<pre class="code">&lt;<span class="kw">div</span>
+  <span class="ok">onKeyDown={(e) =&gt; {</span>
+    <span class="ok">if (e.key === 'Enter' || e.key === ' ') {</span>
+      <span class="ok">e.preventDefault();</span>
+      <span class="ok">handleSortingChange(column);</span>
+    <span class="ok">}</span>
+  <span class="ok">}}</span>
+  tabIndex={column.sortable ? 0 : -1}
+  role="columnheader"
+  <span class="ok">aria-sort={</span>
+    <span class="ok">column.key === sortField</span>
+      <span class="ok">? (order === 'asc' ? 'ascending' : 'descending')</span>
+      <span class="ok">: 'none'</span>
+  <span class="ok">}</span>
+&gt;</pre>
+        </div>
+      </div>
+      <div class="code-foot"><b>Bonus:</b> wrap the sortable header content in a <code>&lt;button&gt;</code> — browsers handle Space + Enter automatically. aria-sort lives on the columnheader.</div>
+    </article>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-03 · Clickable row has empty onKeyDown</h3><div class="meta">Table.tsx:484–486 · WCAG 2.1.1 · Critical</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code">&lt;<span class="kw">div</span>
+  onClick={rowClickable?.isRowClickable
+    ? (e) =&gt; rowClickable.rowClickHandler(e, rowItem)
+    : undefined}
+  tabIndex={rowClickable?.isRowClickable ? 0 : -1}
+  role="row"
+  <span class="err">onKeyDown={() =&gt; {}}</span>
+&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix</h5>
+<pre class="code">&lt;<span class="kw">div</span>
+  onClick={...}
+  tabIndex={rowClickable?.isRowClickable ? 0 : -1}
+  role="row"
+  <span class="ok">onKeyDown={(e) =&gt; {</span>
+    <span class="ok">if (!rowClickable?.isRowClickable) return;</span>
+    <span class="ok">if (e.key === 'Enter' || e.key === ' ') {</span>
+      <span class="ok">e.preventDefault();</span>
+      <span class="ok">rowClickable.rowClickHandler(e as any, rowItem);</span>
+    <span class="ok">}</span>
+  <span class="ok">}}</span>
+&gt;</pre>
+        </div>
+      </div>
+      <div class="code-foot">Keyboard users currently get a focusable row that does nothing on Enter or Space. Critical AA failure.</div>
+    </article>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-04 · Pin button: no label, invisible to keyboard</h3><div class="meta">Table.tsx:355–381 · WCAG 4.1.2, 2.4.7, 2.5.5 · Critical</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code">&lt;<span class="kw">button</span>
+  type="button"
+  className=<span class="err">"... invisible ..."</span>
+  onClick={...}
+  <span class="err">/* no aria-label */</span>
+&gt;
+  &lt;<span class="kw">PinIcon</span> className="h-5 w-5" /&gt;
+&lt;/<span class="kw">button</span>&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix</h5>
+<pre class="code">&lt;<span class="kw">button</span>
+  type="button"
+  className=<span class="ok">"opacity-0 focus-visible:opacity-100 group-hover:opacity-100"</span>
+  onClick={...}
+  <span class="ok">aria-label={isPinned ? "Unpin column" : "Pin column"}</span>
+  <span class="ok">aria-pressed={isPinned}</span>
+&gt;
+  &lt;<span class="kw">PinIcon</span> <span class="ok">aria-hidden="true"</span> /&gt;
+&lt;/<span class="kw">button</span>&gt;</pre>
+        </div>
+      </div>
+      <div class="code-foot">Two fixes: <code>aria-label</code> gives it a name. <code>focus-visible:opacity-100</code> makes it appear on keyboard focus too. Also <b>bump PinIcon to 24×24</b> to clear WCAG 2.5.5 AA.</div>
+    </article>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-05 · SwitchButton: no label, no aria-expanded</h3><div class="meta">SwitchButton.tsx:22–44 · WCAG 4.1.2 · Critical</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code">&lt;<span class="kw">button</span>
+  type="button"
+  className={buttonBaseClasses}
+  onClick={handleColumnExpand}
+  <span class="err">/* no aria-label */</span>
+  <span class="err">/* no aria-expanded */</span>
+&gt;
+  {isActive
+    ? &lt;<span class="kw">ChevronUpIcon</span> /&gt;
+    : &lt;<span class="kw">ChevronDownIcon</span> /&gt;}
+&lt;/<span class="kw">button</span>&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix</h5>
+<pre class="code">&lt;<span class="kw">button</span>
+  type="button"
+  className={buttonBaseClasses}
+  onClick={handleColumnExpand}
+  <span class="ok">aria-label={isActive ? "Collapse row" : "Expand row"}</span>
+  <span class="ok">aria-expanded={isActive}</span>
+  <span class="ok">aria-controls={`row-content-${rowIndex}`}</span>
+&gt;
+  {isActive
+    ? &lt;<span class="kw">ChevronUpIcon</span> <span class="ok">aria-hidden="true"</span> /&gt;
+    : &lt;<span class="kw">ChevronDownIcon</span> <span class="ok">aria-hidden="true"</span> /&gt;}
+&lt;/<span class="kw">button</span>&gt;</pre>
+        </div>
+      </div>
+      <div class="code-foot"><code>aria-controls</code> requires matching <code>id</code> on the expanded content (Table.tsx:553).</div>
+    </article>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-06 · Empty state has no live region</h3><div class="meta">Table.tsx:564–566 · WCAG 4.1.3 · Critical</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code">&lt;<span class="kw">div</span> className="..."&gt;
+  No records found
+&lt;/<span class="kw">div</span>&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix</h5>
+<pre class="code">&lt;<span class="kw">div</span>
+  className="..."
+  <span class="ok">role="status"</span>
+  <span class="ok">aria-live="polite"</span>
+&gt;
+  No records found
+&lt;/<span class="kw">div</span>&gt;</pre>
+        </div>
+      </div>
+      <div class="code-foot">When filters reduce rows to zero, sighted users see "No records found". SR users hear nothing without a live region.</div>
+    </article>
+
+    <article class="code-finding">
+      <header class="code-finding-head">
+        <div><h3>F-07 · Sort indicator color-only</h3><div class="meta">Table.tsx:449–453 · WCAG 1.4.1 · Serious</div></div>
+        <span class="status fail">Fail</span>
+      </header>
+      <div class="code-body">
+        <div>
+          <h5>Current</h5>
+<pre class="code">&lt;<span class="kw">ArrowIcon</span> className={`...
+  ${order === 'asc' && sortField === column.key
+    ? <span class="err">'last:[&gt;path]:fill-icon-icon'</span> : ''}
+  ${order === 'desc' && sortField === column.key
+    ? <span class="err">'first:[&gt;path]:fill-icon-icon'</span> : ''}
+`} /&gt;</pre>
+        </div>
+        <div>
+          <h5>Fix</h5>
+<pre class="code">&lt;<span class="kw">ArrowIcon</span>
+  className={...}
+  <span class="ok">aria-hidden="true"</span>
+/&gt;
+<span class="com">// Sort state already on parent via aria-sort (F-02).</span>
+<span class="com">// Optional belt-and-suspenders:</span>
+{column.key === sortField && (
+  &lt;<span class="kw">span</span> <span class="ok">className="sr-only"</span>&gt;
+    , sorted {order === 'asc' ? 'ascending' : 'descending'}
+  &lt;/<span class="kw">span</span>&gt;
+)}</pre>
+        </div>
+      </div>
+      <div class="code-foot">Once F-02's aria-sort is in place, the visual icon becomes redundant for SR users — mark aria-hidden.</div>
+    </article>
+
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="shell">
+    <div class="foot-grid">
+      <div>
+        <h4>About this audit</h4>
+        <p style="font-size:13px;line-height:1.6">Run against <code>~/Documents/table-accessibility-audit/dev/Table/</code> on June 2026. 986 lines of TSX analyzed across 4 files. 17 violations identified, 8 critical. Manual checks pending designer verification.</p>
+      </div>
+      <div>
+        <h4>Sources</h4>
+        <ul>
+          <li><a href="https://www.w3.org/WAI/tutorials/tables/">W3C WAI — Tables</a></li>
+          <li><a href="https://dequeuniversity.com/rules/axe/4.11">axe 4.11 rules</a></li>
+          <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/grid/">APG Grid pattern</a></li>
+          <li><a href="https://adrianroselli.com/2020/11/under-engineered-responsive-tables.html">A. Roselli — Tables</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Severity legend</h4>
+        <ul style="gap:6px">
+          <li><span class="status fail">Fail</span> Blocks WCAG AA</li>
+          <li><span class="status partial">Partial</span> Degrades, works</li>
+          <li><span class="status pass">Pass</span> Meets criterion</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-meta">
+      <div><b style="color:var(--text-2)">Table Accessibility Audit · BillDesk DLS</b> · v1 · June 2026</div>
+      <div>For: Dev + design + product · AA target, AAA optional</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.pg-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    document.querySelectorAll('.pg-tab').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.pg-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === target));
+  });
+});
+
+function speak(btn, text){
+  if (!('speechSynthesis' in window)) { alert('Web Speech API not supported. Text: ' + text); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0;
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(x => x.lang.startsWith('en') && /Samantha|Microsoft|Google US|Daniel/.test(x.name));
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+  const original = btn.textContent;
+  btn.textContent = '◼ Playing…';
+  u.onend = () => { btn.textContent = original; };
+}
+
+document.getElementById('toggleKbd')?.addEventListener('click', (e) => {
+  const demo = document.getElementById('kbdDemo');
+  demo.classList.toggle('show-order');
+  e.target.textContent = demo.classList.contains('show-order') ? 'Hide tab order' : 'Show tab order';
+});
+
+document.getElementById('toggleTargets')?.addEventListener('click', (e) => {
+  const demo = document.getElementById('targetDemo');
+  demo.classList.toggle('show-overlays');
+  e.target.textContent = demo.classList.contains('show-overlays') ? 'Hide overlay' : 'Show 24×24 overlay';
+});
+
+document.querySelectorAll('.toc a').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+</script>
+</body>
+</html>

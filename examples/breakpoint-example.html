@@ -1,0 +1,3034 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BillDesk DLS — Responsive Breakpoint Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS — BillDesk DLS
+   ============================================================ */
+:root{
+  --orange:#F26522;
+  --orange-hover:#D9541A;
+  --orange-tint:#FEF0E8;
+  --orange-tint-2:#FFF7F1;
+  --text-1:#0D1526;
+  --text-2:#4A5568;
+  --text-3:#8A97AC;
+  --canvas:#F7F8FA;
+  --surface:#FFFFFF;
+  --surface-2:#FAFBFC;
+  --border:#E2E8F0;
+  --border-strong:#CBD5E0;
+  --success:#0A8F5C;
+  --success-tint:#E6F4EE;
+  --warning:#D97706;
+  --warning-tint:#FEF3E2;
+  --error:#C0392B;
+  --error-tint:#FBE9E7;
+  --f:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+
+  /* radii */
+  --r-s:4px; --r-m:6px; --r-l:8px; --r-xl:12px; --r-2xl:16px; --r-pill:999px;
+
+  /* shadows */
+  --sh-1:0 1px 2px rgba(13,21,38,.04), 0 0 0 1px rgba(13,21,38,.04);
+  --sh-2:0 4px 12px rgba(13,21,38,.06), 0 0 0 1px rgba(13,21,38,.05);
+  --sh-3:0 12px 32px rgba(13,21,38,.08), 0 0 0 1px rgba(13,21,38,.06);
+
+  /* layout */
+  --container:1280px;
+  --gutter:32px;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--f);
+  font-size:16px;
+  line-height:1.55;
+  color:var(--text-1);
+  background:var(--canvas);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-feature-settings:'cv11','ss01','ss03';
+}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+a{color:var(--orange);text-decoration:none}
+a:hover{color:var(--orange-hover)}
+img,svg{display:block;max-width:100%}
+hr{border:none;border-top:1px solid var(--border);margin:0}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.shell{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--gutter);
+}
+.chrome{
+  background:linear-gradient(180deg,#FFFCFA 0%,#FFFFFF 100%);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:saturate(180%) blur(12px);
+}
+.chrome-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand-mark{
+  width:28px;height:28px;border-radius:7px;
+  background:linear-gradient(135deg,var(--orange) 0%,#FF8A4C 100%);
+  display:grid;place-items:center;color:#fff;font-weight:600;font-size:13px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15), 0 2px 8px rgba(242,101,34,.25);
+}
+.brand-sub{color:var(--text-3);font-weight:400;font-size:13px;border-left:1px solid var(--border);padding-left:12px;margin-left:4px}
+.toc{display:flex;gap:4px;font-size:13px;color:var(--text-2)}
+.toc a{
+  padding:6px 10px;border-radius:var(--r-m);color:var(--text-2);
+  transition:background 100ms ease-out,color 100ms ease-out;
+}
+.toc a:hover{background:var(--orange-tint);color:var(--orange-hover)}
+
+/* Decorative bg shapes — like the BillDesk screenshots */
+.bg-deco{
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.bg-deco::before,.bg-deco::after{
+  content:"";position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, rgba(242,101,34,.05), transparent 60%);
+  filter:blur(40px);
+}
+.bg-deco::before{width:600px;height:600px;top:-200px;left:-200px}
+.bg-deco::after{width:800px;height:800px;bottom:-300px;right:-300px;background:radial-gradient(circle at 70% 70%, rgba(242,101,34,.04), transparent 60%)}
+
+main{position:relative;z-index:1}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--orange);
+  padding:6px 10px;background:var(--orange-tint);border-radius:var(--r-pill);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+h1,h2,h3,h4,h5{margin:0;letter-spacing:-.02em;font-weight:600;color:var(--text-1)}
+h1{font-size:56px;line-height:1.05;letter-spacing:-.03em}
+h2{font-size:36px;line-height:1.15;letter-spacing:-.025em}
+h3{font-size:22px;line-height:1.3}
+h4{font-size:17px;line-height:1.35}
+h5{font-size:14px;line-height:1.4}
+.lead{font-size:18px;line-height:1.55;color:var(--text-2);max-width:65ch}
+p{margin:0;color:var(--text-2)}
+.muted{color:var(--text-3)}
+.mono{font-family:var(--mono);font-size:.92em;letter-spacing:-.01em}
+.kbd{
+  font-family:var(--mono);font-size:12px;
+  padding:2px 6px;border-radius:var(--r-s);
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:0 1px 0 var(--border);color:var(--text-2);
+}
+
+/* ============================================================
+   SECTION
+   ============================================================ */
+section{padding:96px 0;position:relative}
+section.section-tight{padding:64px 0}
+.section-head{margin-bottom:48px;max-width:760px}
+.section-head h2{margin-top:12px}
+.section-head .lead{margin-top:16px}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding:88px 0 64px}
+.hero h1{max-width:14ch;margin-top:18px}
+.hero .lead{margin-top:24px;font-size:20px;max-width:60ch}
+.hero-meta{
+  margin-top:40px;display:flex;gap:32px;flex-wrap:wrap;
+  padding-top:32px;border-top:1px solid var(--border);
+}
+.hero-meta dt{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.hero-meta dd{margin:0;font-size:14px;color:var(--text-1);font-weight:500}
+
+/* ============================================================
+   THESIS COMPARISON
+   ============================================================ */
+.thesis{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;
+}
+.thesis-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);
+  padding:24px;overflow:hidden;
+}
+.thesis-card.bad{border-color:#F4C4BE;background:linear-gradient(180deg,#FFF8F7 0%,#FFFFFF 100%)}
+.thesis-card.good{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.thesis-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r-pill);margin-bottom:14px;
+}
+.thesis-tag.bad{background:var(--error-tint);color:var(--error)}
+.thesis-tag.good{background:var(--success-tint);color:var(--success)}
+.thesis h3{font-size:18px;margin-bottom:6px}
+.thesis p{font-size:14px;line-height:1.55}
+.thesis-viz{
+  margin-top:18px;height:160px;border-radius:var(--r-l);
+  background:repeating-linear-gradient(45deg,rgba(13,21,38,.02) 0 6px,transparent 6px 12px),var(--surface-2);
+  border:1px dashed var(--border);
+  position:relative;overflow:hidden;
+}
+.thesis-viz .row{position:absolute;left:0;right:0;height:8px;background:var(--text-3);opacity:.35;border-radius:2px}
+.thesis-viz.bad .row{margin:0 16px}
+.thesis-viz.bad .row:nth-child(1){top:20px}
+.thesis-viz.bad .row:nth-child(2){top:36px;right:120px}
+.thesis-viz.bad .row:nth-child(3){top:52px}
+.thesis-viz.bad .row:nth-child(4){top:88px;height:48px;background:var(--orange);opacity:.4;border-radius:6px}
+.thesis-viz.good .row{margin:0 calc(50% - 130px);width:260px}
+.thesis-viz.good .row:nth-child(1){top:20px}
+.thesis-viz.good .row:nth-child(2){top:36px;width:180px}
+.thesis-viz.good .row:nth-child(3){top:52px}
+.thesis-viz.good .row:nth-child(4){top:88px;height:48px;background:var(--orange);opacity:.6;border-radius:6px}
+.thesis-viz-label{
+  position:absolute;bottom:8px;right:12px;
+  font-family:var(--mono);font-size:11px;color:var(--text-3);
+}
+
+/* ============================================================
+   PEER SET
+   ============================================================ */
+.peer-set{
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:32px;
+}
+.peer-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:var(--r-pill);
+  background:var(--surface);border:1px solid var(--border);
+  font-size:13px;font-weight:500;color:var(--text-1);
+}
+.peer-chip .pdot{width:8px;height:8px;border-radius:50%}
+
+/* ============================================================
+   UX LAWS GRID
+   ============================================================ */
+.laws-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+}
+.law-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:24px;cursor:pointer;
+  transition:transform 150ms ease-out,box-shadow 150ms ease-out,border-color 150ms ease-out;
+  display:flex;flex-direction:column;gap:14px;
+}
+.law-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--sh-2);
+  border-color:var(--border-strong);
+}
+.law-card.open{
+  border-color:var(--orange);
+  box-shadow:0 0 0 3px rgba(242,101,34,.08), var(--sh-2);
+}
+.law-num{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--orange-tint);color:var(--orange);
+  display:grid;place-items:center;font-weight:600;font-size:14px;
+}
+.law-name{font-size:17px;font-weight:600;color:var(--text-1);margin:0}
+.law-origin{font-size:12px;color:var(--text-3);margin-top:2px;font-family:var(--mono);line-height:1.4}
+.law-def{font-size:14px;color:var(--text-2);line-height:1.5;margin:0}
+.law-svg{
+  background:var(--surface-2);border-radius:var(--r-l);
+  height:90px;display:grid;place-items:center;border:1px solid var(--border);
+}
+.law-apply{
+  background:var(--orange-tint-2);border-radius:var(--r-m);padding:12px 14px;
+  border-left:3px solid var(--orange);
+  font-size:13px;color:var(--text-2);line-height:1.55;
+  display:none;
+}
+.law-card.open .law-apply{display:block}
+.law-apply b{color:var(--text-1);font-weight:600}
+.law-meta{
+  margin-top:auto;display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;color:var(--text-3);
+}
+.law-toggle{
+  font-size:12px;font-weight:500;color:var(--orange);
+  display:inline-flex;align-items:center;gap:4px;
+}
+.law-card.open .law-toggle .chev{transform:rotate(180deg)}
+.chev{display:inline-block;transition:transform 150ms ease-out}
+
+/* ============================================================
+   BREAKPOINT TIERS
+   ============================================================ */
+.bp-tiers{display:flex;flex-direction:column;gap:12px}
+.bp-tier{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:24px 28px;display:grid;grid-template-columns:160px 1fr 200px;
+  gap:32px;align-items:center;
+  transition:border-color 150ms ease-out;
+}
+.bp-tier:hover{border-color:var(--border-strong)}
+.bp-tier.is-baseline{
+  border-color:var(--orange);
+  background:linear-gradient(90deg,var(--orange-tint-2) 0%,var(--surface) 60%);
+}
+.bp-tier.is-compact{
+  border-color:#FBBF60;
+  background:linear-gradient(90deg,var(--warning-tint) 0%,var(--surface) 60%);
+}
+.bp-tier.is-compact .bp-width .label-base{color:var(--warning)}
+
+/* ====== Mock COMPACT MODE (720px wide) — same layout, smaller everything ====== */
+/* No layout reflow: nav stays visible, cards stay 3-col, table stays 5-col. */
+/* Only fonts and spacing shrink (8px multiples). */
+
+/* Nav — all items stay visible */
+.mock.is-compact .mock-nav{padding:8px 16px}
+.mock.is-compact .mock-nav-l{font-size:13px;gap:8px}
+.mock.is-compact .mock-brand-svg{width:64px;height:16px}
+.mock.is-compact .mock-nav-c{font-size:11px;gap:16px}
+.mock.is-compact .mock-nav-c span{padding:8px 0}
+.mock.is-compact .mock-nav-c span.act::after{bottom:-8px}
+.mock.is-compact .mock-nav-r{gap:8px}
+.mock.is-compact .mock-nav-r .avatar{width:24px;height:24px}
+.mock.is-compact .mock-nav-r .bell{width:14px;height:14px}
+
+/* Body */
+.mock.is-compact .mock-body{padding:16px 16px 0}
+
+/* Page header — horizontal */
+.mock.is-compact .mock-page-head{margin-bottom:16px}
+.mock.is-compact .mock-h1{font-size:18px}
+.mock.is-compact .mock-page-sub{font-size:10px;margin-top:0}
+.mock.is-compact .mock-page-actions{gap:8px}
+.mock.is-compact .mock-btn{padding:8px;font-size:11px;gap:8px}
+.mock.is-compact .mock-btn-sm{padding:8px;font-size:10px}
+
+/* Cards row — keep 3-col */
+.mock.is-compact .mock-cards-row{gap:8px;margin-bottom:16px}
+.mock.is-compact .mock-card{padding:8px;border-radius:8px}
+.mock.is-compact .mock-card h4{font-size:11px}
+.mock.is-compact .mock-card-sub{display:none}
+
+/* Card 1 — gauge */
+.mock.is-compact .mock-card-gauge{padding:8px}
+.mock.is-compact .mock-gauge{max-width:144px;margin:0 auto}
+.mock.is-compact .mock-gauge-legend{gap:8px;margin-top:0;padding-top:8px}
+.mock.is-compact .mock-gauge-legend > div{font-size:9px}
+.mock.is-compact .mock-gauge-legend b{font-size:10px}
+.mock.is-compact .mock-gauge-trend{margin-top:8px;padding-top:8px;font-size:10px}
+
+/* Card 2 — stats */
+.mock.is-compact .mock-stat{padding:8px;gap:8px}
+.mock.is-compact .mock-stat-info h5{font-size:9px}
+.mock.is-compact .mock-stat-big{font-size:14px;margin-top:0}
+.mock.is-compact .mock-stat-sub{font-size:9px;margin-top:0}
+.mock.is-compact .mock-stat-icon{width:24px;height:24px}
+.mock.is-compact .mock-stat-icon svg{width:14px;height:14px}
+
+/* Card 3 — activities */
+.mock.is-compact .mock-card-activity{padding:8px}
+.mock.is-compact .mock-activity-list{margin-top:0}
+.mock.is-compact .mock-activity{padding:0;gap:8px;border-bottom:none}
+.mock.is-compact .mock-activity + .mock-activity{padding-top:8px}
+.mock.is-compact .mock-activity-icon{width:24px;height:24px}
+.mock.is-compact .mock-activity-icon svg{width:12px;height:12px}
+.mock.is-compact .mock-activity-title{font-size:10px}
+.mock.is-compact .mock-activity-meta{font-size:9px}
+.mock.is-compact .mock-activity-arrow{font-size:14px}
+
+/* Table — keep 5-col, tighter */
+.mock.is-compact .mock-table{border-radius:8px}
+.mock.is-compact .mock-table-head{padding:8px 16px}
+.mock.is-compact .mock-table-head h4{font-size:12px}
+.mock.is-compact .mock-table-head p{font-size:10px}
+.mock.is-compact .mock-table-tabs{padding:0 16px 8px}
+.mock.is-compact .mock-tab{padding:8px;font-size:10px}
+.mock.is-compact .mock-tr{
+  grid-template-columns:16px minmax(0,1fr) 1fr 64px 1.5fr;
+  padding:8px 16px;font-size:10px;gap:8px;
+}
+.mock.is-compact .mock-tr.head{padding:8px 16px;font-size:9px}
+.mock.is-compact .mock-pill{padding:0 8px;font-size:9px}
+.mock.is-compact .mock-row-meta{font-size:9px}
+.bp-width{display:flex;flex-direction:column;gap:4px}
+.bp-width .num{font-size:32px;font-weight:600;letter-spacing:-.02em;color:var(--text-1);font-variant-numeric:tabular-nums}
+.bp-width .range{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+.bp-width .label-base{
+  display:inline-block;margin-top:4px;
+  font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--orange);
+}
+.bp-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.bp-meta dt{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.bp-meta dd{margin:0;font-size:14px;color:var(--text-1);font-weight:500;font-variant-numeric:tabular-nums}
+.bp-diagram{
+  height:60px;background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--r-m);position:relative;overflow:hidden;
+}
+.bp-diagram .content-bar{
+  position:absolute;top:50%;transform:translateY(-50%);
+  height:32px;background:var(--orange);opacity:.7;border-radius:var(--r-s);
+  left:50%;margin-left:0;
+}
+
+/* ============================================================
+   PLAYGROUND
+   ============================================================ */
+.playground-wrap{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);
+  overflow:hidden;
+}
+.playground-controls{
+  display:flex;align-items:center;gap:16px;padding:18px 22px;
+  border-bottom:1px solid var(--border);background:var(--surface-2);
+  flex-wrap:wrap;
+}
+.playground-tier-group{
+  display:inline-flex;gap:2px;padding:3px;background:var(--canvas);
+  border:1px solid var(--border);border-radius:var(--r-l);
+}
+.tier-btn{
+  padding:7px 14px;font-size:13px;font-weight:500;color:var(--text-2);
+  border-radius:var(--r-m);transition:all 100ms ease-out;
+  font-variant-numeric:tabular-nums;
+}
+.tier-btn:hover{color:var(--text-1)}
+.tier-btn.active{background:var(--orange);color:#fff;box-shadow:0 1px 2px rgba(242,101,34,.3)}
+.tier-btn-compact{
+  position:relative;color:var(--warning);
+  font-size:12px;padding:7px 10px;
+}
+.tier-btn-compact::before{
+  content:"";position:absolute;left:6px;top:50%;width:5px;height:5px;
+  border-radius:50%;background:var(--warning);transform:translateY(-50%);
+  display:none;
+}
+.tier-btn-compact.active{background:var(--warning);color:#fff;box-shadow:0 1px 2px rgba(217,119,6,.3)}
+.playground-mode{
+  display:inline-flex;gap:2px;padding:3px;background:var(--canvas);
+  border:1px solid var(--border);border-radius:var(--r-l);margin-left:auto;
+}
+.mode-btn{
+  padding:7px 12px;font-size:13px;font-weight:500;color:var(--text-2);
+  border-radius:var(--r-m);transition:all 100ms ease-out;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.mode-btn:hover{color:var(--text-1)}
+.mode-btn.active{background:var(--surface);color:var(--text-1);box-shadow:var(--sh-1)}
+.mode-btn .dot{width:6px;height:6px;border-radius:50%}
+.mode-btn[data-mode="capped"] .dot{background:var(--success)}
+.mode-btn[data-mode="fluid"] .dot{background:var(--error)}
+
+.playground-layout{
+  display:inline-flex;gap:2px;padding:3px;background:var(--canvas);
+  border:1px solid var(--border);border-radius:var(--r-l);
+}
+.layout-btn{
+  padding:7px 12px;font-size:13px;font-weight:500;color:var(--text-2);
+  border-radius:var(--r-m);transition:all 100ms ease-out;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.layout-btn:hover{color:var(--text-1)}
+.layout-btn.active{background:var(--surface);color:var(--text-1);box-shadow:var(--sh-1)}
+.layout-btn svg{width:14px;height:14px;opacity:.7}
+
+/* ====== Side-nav mock (vertical nav variant) ====== */
+.mock.mock-side{
+  display:flex;flex-direction:row;height:100%;background:#F4EFE8;overflow:hidden;
+}
+.mock-sidenav{
+  width:240px;flex-shrink:0;background:#3D2418;color:#fff;
+  display:flex;flex-direction:column;padding:16px;
+  transition:width 200ms ease-out;
+}
+.mock-sidenav-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;padding:0 8px;
+}
+.mock-sidenav-head .brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px;letter-spacing:-.01em;color:#fff}
+.mock-sidenav-head .brand .mark{
+  width:24px;height:24px;border-radius:8px;
+  background:linear-gradient(135deg,var(--orange) 0%,#FF8A4C 100%);
+  display:grid;place-items:center;color:#fff;font-weight:600;font-size:13px;
+}
+.mock-sn-collapse{
+  background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;
+  padding:0;display:grid;place-items:center;
+}
+.mock-sn-items{display:flex;flex-direction:column;gap:0;flex:1;overflow:hidden}
+.mock-sn-item{
+  display:flex;align-items:center;gap:16px;
+  padding:8px;color:rgba(255,255,255,.78);border-radius:8px;
+  font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;
+}
+.mock-sn-item:hover{background:rgba(255,255,255,.04);color:#fff}
+.mock-sn-item svg{width:18px;height:18px;flex-shrink:0;opacity:.9}
+.mock-sn-item .lbl{flex:1;overflow:hidden;text-overflow:ellipsis}
+.mock-sn-item .chev{width:14px;height:14px;opacity:.5;flex-shrink:0}
+.mock-sn-item.is-expanded{color:#fff}
+.mock-sn-sub{display:flex;flex-direction:column;padding-left:40px;margin:0}
+.mock-sn-subitem{
+  padding:8px;color:rgba(255,255,255,.6);font-size:13px;
+  border-radius:8px;cursor:pointer;white-space:nowrap;
+}
+.mock-sn-subitem:hover{color:#fff}
+.mock-sn-subitem.is-active{background:#5C3525;color:#fff}
+.mock-sidenav-foot{
+  display:flex;align-items:center;gap:8px;
+  padding:16px 8px 0;margin-top:auto;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.mock-sidenav-foot .avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#FF9966,#D97706);flex-shrink:0;
+}
+.mock-sn-user{flex:1;min-width:0;overflow:hidden}
+.mock-sn-user .nm{font-size:13px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-sn-user .em{font-size:11px;color:rgba(255,255,255,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-sn-kebab{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;padding:0}
+
+.mock-main{
+  flex:1;margin:16px;background:#fff;border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.mock-main .mock-body{padding:32px}
+.mock-main .mock-content{max-width:1280px;margin:0 auto;transition:max-width 250ms ease-out}
+.mode-fluid .mock-main .mock-content{max-width:100%}
+
+/* Refresh icon in table head right */
+.mock-table-head-row{display:flex;justify-content:space-between;align-items:center}
+.mock-refresh{
+  color:var(--orange);background:none;border:none;cursor:pointer;
+  display:grid;place-items:center;padding:0;
+}
+
+/* Table footer pagination */
+.mock-table-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 24px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--text-3);gap:16px;flex-wrap:wrap;
+}
+.mock-pager{display:flex;align-items:center;gap:8px}
+.mock-pager .pg{
+  width:24px;height:24px;border-radius:6px;display:grid;place-items:center;
+  font-size:12px;color:var(--text-2);border:1px solid transparent;cursor:pointer;
+}
+.mock-pager .pg.act{border-color:var(--orange);color:var(--orange);font-weight:500}
+.mock-pager .nav-btn{
+  padding:6px 12px;font-size:12px;border:1px solid var(--border);
+  background:var(--surface);border-radius:8px;color:var(--text-2);cursor:pointer;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.mock-show-sel{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;
+  border:1px solid var(--border);border-radius:8px;background:var(--surface);
+  font-size:12px;color:var(--text-1);cursor:pointer;
+}
+
+/* Failed pill (red variant) */
+.mock-pill-fail{
+  display:inline-flex;align-items:center;gap:6px;padding:0 8px;
+  border-radius:999px;font-size:11px;font-weight:500;
+  background:#FBE9E7;color:var(--error);line-height:1.6;
+}
+.mock-pill-fail::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--error)}
+
+/* Side nav COMPACT — icon rail */
+.mock-side.is-compact .mock-sidenav{
+  width:56px;padding:8px;
+}
+.mock-side.is-compact .mock-sidenav-head{padding:0;margin-bottom:16px;justify-content:center}
+.mock-side.is-compact .brand-wordmark,
+.mock-side.is-compact .mock-sn-collapse,
+.mock-side.is-compact .mock-sn-item .lbl,
+.mock-side.is-compact .mock-sn-item .chev,
+.mock-side.is-compact .mock-sn-sub,
+.mock-side.is-compact .mock-sn-user,
+.mock-side.is-compact .mock-sn-kebab{display:none}
+/* logomark hidden by default, shown only in compact icon-rail */
+.mock-sidenav .brand-logomark{display:none}
+.mock-side.is-compact .brand-logomark{display:block}
+.mock-side.is-compact .mock-sn-item{justify-content:center;padding:8px;gap:0}
+.mock-side.is-compact .mock-sidenav-foot{padding:8px 0 0;justify-content:center}
+.mock-side.is-compact .mock-main{margin:8px;border-radius:8px}
+.mock-side.is-compact .mock-main .mock-body{padding:16px}
+
+/* Side nav MEDIUM — narrow non-compact (1024) */
+.mock-side.is-medium .mock-sidenav{width:200px;padding:12px}
+.mock-side.is-medium .mock-sn-item{font-size:13px;padding:8px;gap:12px}
+.mock-side.is-medium .mock-sn-item svg{width:16px;height:16px}
+.mock-side.is-medium .mock-sn-sub{padding-left:32px}
+.mock-side.is-medium .mock-sn-subitem{font-size:12px;padding:8px}
+.mock-side.is-medium .mock-sidenav-head{margin-bottom:16px}
+.mock-side.is-medium .mock-main{margin:12px}
+.mock-side.is-medium .mock-main .mock-body{padding:24px}
+.mock-side.is-medium .mock-h1{font-size:24px}
+.mock-side.is-medium .mock-table-head{padding:12px 16px}
+.mock-side.is-medium .mock-tr{padding:12px 16px;font-size:12px;gap:12px}
+.mock-side.is-medium .mock-tr.head{padding:8px 16px;font-size:10px}
+.mock-side.is-medium .mock-table-foot{padding:12px 16px}
+
+/* Table cells: one line always, no wrap */
+.mock-side .mock-tr > span{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  min-width:0;
+}
+
+.playground-readout{
+  display:flex;gap:24px;padding:14px 22px;background:var(--surface);
+  border-bottom:1px solid var(--border);font-size:12px;
+}
+.readout{display:flex;flex-direction:column;gap:2px}
+.readout-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.readout-value{font-size:14px;font-weight:500;color:var(--text-1);font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.readout-value.ok{color:var(--success)}
+.readout-value.warn{color:var(--warning)}
+
+.playground-stage{
+  position:relative;height:760px;overflow:hidden;
+  background:
+    linear-gradient(rgba(13,21,38,.025) 1px,transparent 1px) 0 0 / 100% 24px,
+    linear-gradient(90deg,rgba(13,21,38,.025) 1px,transparent 1px) 0 0 / 24px 100%,
+    var(--canvas);
+}
+.playground-frame{
+  position:absolute;top:24px;left:50%;
+  transform-origin:top center;
+  background:var(--surface);
+  border-radius:var(--r-l);
+  box-shadow:0 12px 40px rgba(13,21,38,.12);
+  overflow:hidden;
+  transition:width 200ms ease-out;
+  height:712px;
+}
+.playground-handle{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-pill);box-shadow:var(--sh-2);
+  cursor:ew-resize;user-select:none;font-size:12px;color:var(--text-2);
+}
+.playground-handle:hover{border-color:var(--orange)}
+.playground-handle svg{color:var(--text-3)}
+.playground-handle .val{font-family:var(--mono);font-weight:500;color:var(--text-1);min-width:60px;text-align:center}
+
+/* ====== Mock dashboard — Smart Collect fidelity, 8px grid ====== */
+.mock{
+  font-family:var(--f);font-size:14px;color:var(--text-1);
+  height:100%;display:flex;flex-direction:column;overflow:hidden;
+  background:
+    radial-gradient(ellipse 600px 400px at 0% 100%, rgba(242,101,34,.05), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 100% 0%, rgba(242,101,34,.04), transparent 60%),
+    linear-gradient(180deg, #FFFCFA 0%, #FFFFFF 30%);
+}
+.mock-nav{
+  padding:16px 40px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.mock-nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1280px;margin:0 auto;
+  transition:max-width 250ms ease-out;
+}
+.mode-fluid .mock-nav-inner{max-width:100%}
+.mock-nav-l{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px;letter-spacing:-.01em}
+.mock-nav-l .mark{
+  width:24px;height:24px;border-radius:8px;
+  background:linear-gradient(135deg,var(--orange) 0%,#FF8A4C 100%);
+  display:grid;place-items:center;color:#fff;font-weight:600;font-size:13px;
+}
+.mock-nav-c{display:flex;gap:32px;font-size:14px;color:var(--text-2);font-weight:500}
+.mock-nav-c span{position:relative;padding:8px 0;cursor:pointer}
+.mock-nav-c span.act{color:var(--orange)}
+.mock-nav-c span.act::after{
+  content:"";position:absolute;bottom:-16px;left:0;right:0;height:2px;
+  background:var(--orange);border-radius:1px;
+}
+.mock-nav-r{display:flex;gap:16px;align-items:center}
+.mock-nav-r .avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#FF9966,#D97706);
+  border:2px solid #fff;box-shadow:0 0 0 1px var(--border);
+}
+.mock-nav-r .bell{width:16px;height:16px;color:var(--text-2)}
+
+.mock-body{flex:1;overflow:hidden;padding:32px 40px 0}
+.mock-content{margin:0 auto;transition:max-width 250ms ease-out}
+.mode-capped .mock-content{max-width:1280px}
+.mode-fluid .mock-content{max-width:100%}
+
+/* Page header */
+.mock-page-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
+.mock-h1{font-size:32px;font-weight:600;letter-spacing:-.025em;margin:0;line-height:1.15;color:var(--text-1)}
+.mock-page-sub{font-size:13px;color:var(--text-3);margin-top:8px}
+.mock-page-actions{display:flex;gap:8px}
+
+.mock-btn{
+  padding:8px 16px;font-size:13px;font-weight:500;border-radius:8px;
+  border:1px solid var(--border);background:var(--surface);color:var(--text-1);
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  transition:all 100ms ease-out;font-family:inherit;
+}
+.mock-btn:hover{border-color:var(--border-strong)}
+.mock-btn-primary{
+  background:var(--orange);color:#fff;border-color:var(--orange);
+  box-shadow:0 1px 2px rgba(242,101,34,.25);
+}
+.mock-btn-primary:hover{background:var(--orange-hover);border-color:var(--orange-hover)}
+.mock-btn-sm{padding:8px 16px;font-size:12px}
+
+/* Cards row */
+.mock-cards-row{display:grid;grid-template-columns:1.2fr 0.95fr 1.05fr;gap:16px;margin-bottom:24px}
+.mock-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column}
+.mock-card h4{font-size:14px;font-weight:600;margin:0;color:var(--text-1)}
+.mock-card-sub{font-size:11px;color:var(--text-3);margin-top:8px}
+
+/* Card 1 — Gauge */
+.mock-card-gauge{padding:16px;align-items:center;text-align:center}
+.mock-card-gauge h4{align-self:flex-start}
+.mock-gauge{width:100%;max-width:240px;height:auto;margin:8px auto 0}
+.mock-gauge-legend{
+  display:flex;gap:16px;justify-content:center;margin-top:8px;
+  padding-top:16px;border-top:1px solid var(--border);align-self:stretch;
+}
+.mock-gauge-legend > div{font-size:10px;color:var(--text-3);text-align:center;font-variant-numeric:tabular-nums;line-height:1.5}
+.mock-gauge-legend b{display:block;font-size:13px;font-weight:600}
+.mock-gauge-trend{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--border);
+  align-self:stretch;font-size:12px;color:var(--success);cursor:pointer;
+}
+.mock-gauge-trend .arrow{color:var(--text-3);font-size:16px}
+
+/* Card 2 — Stacked stats */
+.mock-card-stack{padding:0;overflow:hidden}
+.mock-stat{display:flex;justify-content:space-between;align-items:center;padding:16px;gap:16px}
+.mock-stat + .mock-stat{border-top:1px solid var(--border)}
+.mock-stat-info h5{font-size:11px;font-weight:500;color:var(--text-3);margin:0}
+.mock-stat-big{font-size:20px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--text-1);margin-top:8px}
+.mock-stat-sub{font-size:11px;color:var(--text-3);margin-top:8px;display:flex;align-items:center;gap:8px}
+.mock-stat-sub.down{color:var(--error)}
+.mock-stat-icon{width:40px;height:40px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+
+/* Card 3 — Activities */
+.mock-card-activity{padding:16px}
+.mock-activity-list{
+  display:flex;flex-direction:column;
+  flex:1;justify-content:space-between;
+  margin-top:8px;
+}
+.mock-activity{
+  display:flex;align-items:center;gap:16px;
+  padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;
+}
+.mock-activity:last-child{border-bottom:none;padding-bottom:0}
+.mock-activity-icon{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  background:var(--canvas);display:grid;place-items:center;color:var(--text-2);
+}
+.mock-activity-info{flex:1;min-width:0}
+.mock-activity-title{font-size:13px;font-weight:500;color:var(--text-1)}
+.mock-activity-meta{font-size:11px;color:var(--text-3)}
+.mock-activity-meta .pos{color:var(--success);font-weight:500}
+.mock-activity-meta .hi{color:var(--orange);font-weight:500}
+.mock-activity-arrow{color:var(--text-3);font-size:18px;flex-shrink:0;line-height:1}
+
+/* Table */
+.mock-table{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.mock-table-head{padding:16px 24px}
+.mock-table-head h4{margin:0;font-size:16px;font-weight:600}
+.mock-table-head p{margin-top:0;font-size:12px;color:var(--text-3)}
+.mock-table-tabs{padding:0 24px 16px}
+.mock-tab-group{display:inline-flex;background:var(--canvas);border-radius:8px;padding:0;border:1px solid var(--border)}
+.mock-tab{
+  padding:8px 16px;font-size:12px;font-weight:500;color:var(--text-3);
+  border-radius:8px;cursor:pointer;border:none;background:none;font-family:inherit;
+}
+.mock-tab.active{background:var(--surface);color:var(--text-1);box-shadow:var(--sh-1)}
+
+.mock-tr{
+  display:grid;grid-template-columns:24px minmax(0,1.1fr) 1fr 128px 1.7fr;gap:16px;
+  padding:16px 24px;border-top:1px solid var(--border);
+  font-size:13px;align-items:center;
+}
+.mock-tr.head{
+  background:var(--surface-2);font-size:11px;color:var(--text-3);
+  font-weight:500;letter-spacing:.04em;text-transform:uppercase;
+  padding:8px 24px;border-top:none;
+}
+.mock-tr.is-active{background:#FFF8F1}
+.mock-tr .amt{font-variant-numeric:tabular-nums;font-weight:500;color:var(--text-1)}
+.mock-tr .name{font-weight:500;color:var(--text-1)}
+.mock-tr .mock-pill{
+  display:inline-flex;padding:0 8px;border-radius:999px;
+  font-size:11px;font-weight:500;background:#FFF1E5;color:var(--orange);
+  width:fit-content;line-height:1.6;
+}
+.mock-row-meta{color:var(--text-3);font-size:12px}
+.mock-row-meta b{color:var(--text-2);font-weight:500}
+.mock-row-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center}
+.mock-chk{
+  width:16px;height:16px;border:1.5px solid var(--border-strong);border-radius:4px;
+  display:inline-block;position:relative;flex-shrink:0;
+}
+.mock-tr.is-active .mock-chk{background:var(--orange);border-color:var(--orange)}
+.mock-tr.is-active .mock-chk::after{
+  content:"";position:absolute;left:3px;top:6px;
+  width:7px;height:3px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;
+  transform:rotate(-45deg);
+}
+
+/* ============================================================
+   MATRIX (Scales / Holds / Dies)
+   ============================================================ */
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.matrix-col{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:24px;
+}
+.matrix-col .col-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.matrix-col .ico{
+  width:32px;height:32px;border-radius:var(--r-m);display:grid;place-items:center;
+}
+.matrix-col.scale .ico{background:var(--success-tint);color:var(--success)}
+.matrix-col.hold .ico{background:var(--orange-tint);color:var(--orange)}
+.matrix-col.die .ico{background:var(--error-tint);color:var(--error)}
+.matrix-col h3{font-size:16px}
+.matrix-col .desc{font-size:12px;color:var(--text-3);margin-top:2px}
+.matrix-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.matrix-list li{
+  font-size:13px;color:var(--text-2);line-height:1.5;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.matrix-list li::before{content:"";flex-shrink:0;width:4px;height:4px;border-radius:50%;background:var(--text-3);margin-top:8px}
+.matrix-list li b{color:var(--text-1);font-weight:600}
+
+/* ============================================================
+   COMPONENT BEHAVIOR
+   ============================================================ */
+.comp-block{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:22px 24px;margin-bottom:14px;
+}
+.comp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.comp-head h3{font-size:16px}
+.comp-head .rule{
+  font-size:12px;color:var(--text-2);font-family:var(--mono);
+  background:var(--canvas);padding:4px 10px;border-radius:var(--r-m);
+  border:1px solid var(--border);
+}
+.comp-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+}
+.comp-step{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-l);
+  padding:14px;
+}
+.comp-step .step-w{
+  font-size:10px;color:var(--text-3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:8px;font-family:var(--mono);
+}
+.comp-viz{
+  height:80px;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-m);
+  position:relative;overflow:hidden;
+}
+.comp-step p{font-size:12px;color:var(--text-2);margin-top:8px;line-height:1.5}
+
+/* component viz variations */
+.cv-card{position:absolute;background:var(--orange);opacity:.6;border-radius:3px;height:44px;top:18px}
+.cv-table-row{position:absolute;left:8px;right:8px;height:5px;background:var(--text-3);opacity:.3;border-radius:2px}
+.cv-form-field{position:absolute;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:3px;height:14px}
+.cv-nav{position:absolute;left:8px;right:8px;top:14px;height:6px;background:var(--text-3);opacity:.2;border-radius:2px}
+
+/* ============================================================
+   STEP-DOWN LADDER
+   ============================================================ */
+.step-intro{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;
+}
+.step-rule{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:24px;
+}
+.step-rule .ico{
+  width:40px;height:40px;border-radius:10px;background:var(--orange-tint);
+  color:var(--orange);display:grid;place-items:center;margin-bottom:16px;
+}
+.step-rule h3{font-size:16px;margin-bottom:8px}
+.step-rule p{font-size:13px;line-height:1.55;color:var(--text-2);margin:0}
+.step-rule.a11y{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.step-rule.a11y .ico{background:var(--success-tint);color:var(--success)}
+
+.step-ladder{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;
+}
+.step-tier{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:32px 24px 24px;display:flex;flex-direction:column;align-items:center;
+}
+.step-tier.is-base{border-color:var(--orange);background:linear-gradient(180deg,var(--orange-tint-2) 0%,var(--surface) 60%)}
+.step-tier-meta{
+  display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:24px;
+}
+.step-tier-tier{
+  font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-3);
+}
+.step-tier.is-base .step-tier-tier{color:var(--orange)}
+.step-tier-vw{
+  font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--text-1);
+  font-variant-numeric:tabular-nums;
+}
+.step-tier-range{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+.step-demo{
+  margin:8px 0 16px;display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.step-demo-btn{
+  background:var(--orange);color:#fff;border-radius:8px;font-weight:500;
+  border:1px solid var(--orange);font-family:var(--f);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;
+}
+.step-demo-btn.l{height:48px;padding:0 24px;font-size:15px}
+.step-demo-btn.m{height:40px;padding:0 20px;font-size:14px}
+.step-demo-btn.s{height:32px;padding:0 16px;font-size:13px}
+.step-demo-row{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  display:flex;align-items:center;padding:0 16px;font-size:13px;color:var(--text-2);
+  font-variant-numeric:tabular-nums;
+}
+.step-demo-row.r72{height:72px}
+.step-demo-row.r64{height:64px}
+.step-demo-row.r56{height:56px}
+.step-demo-spec{
+  font-family:var(--mono);font-size:11px;color:var(--text-3);
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding-top:16px;border-top:1px dashed var(--border);width:100%;margin-top:auto;
+}
+.step-demo-spec b{font-weight:500;color:var(--text-1);font-size:12px}
+
+.step-table{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  overflow:hidden;
+}
+.step-table-row{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;
+  padding:14px 24px;border-bottom:1px solid var(--border);
+  font-size:13px;align-items:center;font-variant-numeric:tabular-nums;
+}
+.step-table-row:last-child{border-bottom:none}
+.step-table-row.head{
+  background:var(--surface-2);font-size:10px;color:var(--text-3);
+  font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:12px 24px;
+}
+.step-table-row.head span{display:flex;flex-direction:column;gap:2px}
+.step-table-row.head span small{font-size:10px;color:var(--text-3);text-transform:none;letter-spacing:0;font-weight:400}
+.step-table-row .label{font-weight:500;color:var(--text-1)}
+.step-table-row .base{color:var(--orange);font-weight:500}
+.step-table-row .floor{color:var(--success);font-size:12px;font-weight:500}
+.step-table-row .unchanged{color:var(--text-3)}
+.step-table-row .tbd{color:var(--text-3);font-style:italic;font-size:12px}
+
+.step-callout{
+  background:linear-gradient(180deg, var(--orange-tint-2) 0%, var(--surface) 60%);
+  border:1px solid var(--orange-tint);
+  border-radius:var(--r-xl);
+  padding:24px;margin-top:24px;
+  display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start;
+}
+.step-callout-ico{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--orange-tint);color:var(--orange);
+  display:grid;place-items:center;flex-shrink:0;
+}
+.step-callout h4{font-size:15px;margin:0 0 8px;color:var(--text-1)}
+.step-callout p{font-size:13px;line-height:1.6;color:var(--text-2);margin:0 0 10px}
+.step-callout p:last-child{margin-bottom:0}
+.step-callout .ratio-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);
+}
+.step-callout .ratio-grid > div{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:8px 10px;text-align:center;
+}
+.step-callout .ratio-grid b{display:block;font-size:13px;color:var(--text-1);font-variant-numeric:tabular-nums;font-weight:500}
+.step-callout .ratio-grid span{font-size:10px;color:var(--text-3);font-family:var(--mono)}
+
+/* ============================================================
+   ANTI-PATTERNS
+   ============================================================ */
+.anti-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.anti-card{
+  background:var(--surface);border:1px solid #F4C4BE;border-radius:var(--r-xl);
+  padding:22px;position:relative;overflow:hidden;
+}
+.anti-card::before{
+  content:"";position:absolute;top:0;right:0;width:80px;height:80px;
+  background:radial-gradient(circle at top right,rgba(192,57,43,.08),transparent 70%);
+}
+.anti-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r-pill);
+  background:var(--error-tint);color:var(--error);margin-bottom:12px;
+}
+.anti-card h3{font-size:16px;margin-bottom:6px}
+.anti-card p{font-size:13px;line-height:1.55;color:var(--text-2);margin-bottom:14px}
+.anti-viz{
+  background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-l);
+  height:120px;position:relative;overflow:hidden;
+}
+.anti-fix{
+  margin-top:14px;padding:12px 14px;background:var(--success-tint);border-radius:var(--r-m);
+  border-left:3px solid var(--success);font-size:12px;color:var(--text-2);line-height:1.55;
+}
+.anti-fix b{color:var(--success);font-weight:600}
+
+/* ============================================================
+   TOKENS / CODE
+   ============================================================ */
+.tokens{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
+.code-block{
+  background:#0D1526;border-radius:var(--r-xl);padding:0;overflow:hidden;
+  border:1px solid #1A2238;
+}
+.code-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 18px;border-bottom:1px solid #1A2238;
+  font-size:12px;color:#8A97AC;font-family:var(--mono);
+}
+.code-head .copy{
+  font-size:11px;padding:4px 10px;border-radius:var(--r-s);
+  background:#1A2238;color:#CBD5E0;font-family:var(--f);font-weight:500;
+}
+.code-head .copy:hover{background:#252D45;color:#fff}
+.code-block pre{
+  margin:0;padding:18px;font-family:var(--mono);font-size:12px;line-height:1.7;
+  color:#CBD5E0;overflow:auto;
+}
+.code-block .kw{color:#FFA76B}
+.code-block .val{color:#7CD9B6}
+.code-block .com{color:#5A6478;font-style:italic}
+.code-block .prop{color:#8FB8FF}
+
+/* checklist */
+.checklist{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:24px;
+}
+.checklist h3{margin-bottom:16px}
+.check-item{
+  display:flex;align-items:flex-start;gap:12px;padding:10px 0;
+  border-bottom:1px dashed var(--border);font-size:13px;line-height:1.55;color:var(--text-2);
+}
+.check-item:last-child{border-bottom:none}
+.check-box{
+  width:18px;height:18px;border-radius:var(--r-s);
+  border:1.5px solid var(--border-strong);flex-shrink:0;margin-top:2px;
+  display:grid;place-items:center;
+}
+.check-box.done{background:var(--success);border-color:var(--success);color:#fff}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  border-top:1px solid var(--border);
+  padding:48px 0;margin-top:48px;
+  background:linear-gradient(180deg,transparent 0%,#FFFCFA 100%);
+}
+.foot-inner{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-3)}
+.foot-inner b{color:var(--text-2);font-weight:500}
+
+/* ============================================================
+   FLOATING NAV BUTTON (FAB) — bottom center, mobile/tablet only
+   ============================================================ */
+.fab-menu{
+  display:none;
+  position:fixed;
+  bottom:28px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:150;
+  height:48px;
+  padding:0 20px 0 16px;
+  border-radius:var(--r-pill);
+  background:var(--text-1);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  box-shadow:0 4px 20px rgba(13,21,38,.28), 0 1px 4px rgba(13,21,38,.18);
+  transition:transform 180ms cubic-bezier(.34,1.56,.64,1),
+             box-shadow 180ms ease-out,
+             background 120ms ease-out,
+             opacity 200ms ease-out;
+}
+.fab-menu.fab-hidden{
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(-50%) translateY(8px);
+}
+.fab-menu:hover{
+  background:#1A2540;
+  box-shadow:0 8px 28px rgba(13,21,38,.32), 0 2px 6px rgba(13,21,38,.2);
+  transform:translateX(-50%) translateY(-2px);
+}
+.fab-menu:active{
+  transform:translateX(-50%) translateY(0px) scale(0.97);
+  box-shadow:0 2px 10px rgba(13,21,38,.22);
+}
+.fab-menu.open{
+  background:var(--orange);
+  box-shadow:0 4px 20px rgba(242,101,34,.35), 0 1px 4px rgba(242,101,34,.2);
+}
+.fab-menu.open:hover{
+  background:var(--orange-hover);
+  transform:translateX(-50%) translateY(-2px);
+}
+.fab-inner{
+  display:flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:600;letter-spacing:-.01em;
+  font-family:var(--f);
+}
+.fab-label{ line-height:1 }
+.fab-menu svg.icon-close{ display:none }
+.fab-menu.open svg.icon-burger{ display:none }
+.fab-menu.open svg.icon-close{ display:block }
+.fab-menu .fab-label::after{ content:'Menu' }
+.fab-menu.open .fab-label::after{ content:'Close' }
+
+/* Backdrop */
+.nav-backdrop{
+  position:fixed;inset:0;z-index:90;
+  background:rgba(13,21,38,.4);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity 220ms ease-out, visibility 220ms ease-out;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.nav-backdrop.visible{
+  opacity:1;
+  visibility:visible;
+}
+
+/* Modal panel — rises from bottom-center above the FAB */
+.nav-modal{
+  position:fixed;z-index:200;
+  background:var(--surface);
+  border:1px solid var(--border);
+  box-shadow:0 16px 48px rgba(13,21,38,.16), 0 0 0 1px rgba(13,21,38,.06);
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(16px) scale(0.96);
+  transform-origin:bottom center;
+  transition:opacity 240ms cubic-bezier(.16,1,.3,1),
+             transform 240ms cubic-bezier(.16,1,.3,1),
+             visibility 240ms ease-out;
+  touch-action:manipulation;
+  /* centered above FAB */
+  bottom:88px;
+  left:50%;
+  transform:translateX(-50%) translateY(16px) scale(0.96);
+  width:300px;
+  border-radius:var(--r-2xl);
+  overflow:hidden;
+}
+.nav-modal.visible{
+  opacity:1;
+  visibility:visible;
+  transform:translateX(-50%) translateY(0) scale(1);
+}
+
+.nav-modal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 12px;border-bottom:1px solid var(--border);
+}
+.nav-modal-head span{
+  font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-3);
+}
+.nav-modal-close{
+  width:28px;height:28px;border-radius:var(--r-m);
+  display:grid;place-items:center;
+  color:var(--text-2);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 100ms ease-out;
+}
+.nav-modal-close:hover,.nav-modal-close:active{background:var(--canvas);color:var(--text-1)}
+
+.nav-modal-links{
+  display:flex;flex-direction:column;
+  padding:6px;
+}
+.nav-modal-links a{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:var(--r-l);
+  color:var(--text-1);font-size:15px;font-weight:500;
+  text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  transition:background 80ms ease-out,color 80ms ease-out;
+}
+.nav-modal-links a:hover,
+.nav-modal-links a:active{background:var(--orange-tint);color:var(--orange-hover)}
+.nav-modal-links a .nav-num{
+  width:24px;height:24px;border-radius:6px;
+  background:var(--canvas);border:1px solid var(--border);
+  display:grid;place-items:center;
+  font-size:10px;font-weight:600;color:var(--text-3);flex-shrink:0;
+  font-family:var(--mono);
+}
+.nav-modal-links a:hover .nav-num,
+.nav-modal-links a:active .nav-num{
+  background:var(--orange-tint);border-color:var(--orange);color:var(--orange);
+}
+
+/* ============================================================
+   LARGE / DESKTOP (> 980px) — existing rules
+   ============================================================ */
+@media (max-width: 980px){
+  h1{font-size:38px}
+  h2{font-size:28px}
+  .laws-grid{grid-template-columns:1fr}
+  .thesis{grid-template-columns:1fr}
+  .matrix{grid-template-columns:1fr}
+  .anti-grid{grid-template-columns:1fr}
+  .bp-tier{grid-template-columns:1fr;gap:18px}
+  .bp-meta{grid-template-columns:repeat(2,1fr)}
+  .tokens{grid-template-columns:1fr}
+  .comp-row{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   TABLET (≤ 900px) — hide inline TOC, show floating FAB
+   ============================================================ */
+@media (max-width: 900px){
+  :root{ --gutter:20px }
+  .toc{ display:none }
+  .fab-menu{ display:inline-flex }
+  /* give page bottom breathing room so FAB doesn't cover content */
+  main{ padding-bottom:80px }
+  footer{ margin-bottom:80px }
+}
+
+/* ============================================================
+   MOBILE (≤ 600px)
+   ============================================================ */
+@media (max-width: 600px){
+  :root{ --gutter:16px }
+  .chrome{ display:none }
+  .chrome-inner{ height:56px; justify-content:center }
+  .brand-sub{ display:none }
+  .brand{ font-size:14px }
+  .brand-mark{ width:26px;height:26px;font-size:12px }
+  /* modal stays centered above FAB — just tighten the width a touch */
+  .nav-modal{ width:calc(100vw - 32px); bottom:84px }
+  .hero{ padding:48px 0 40px }
+  h1{ font-size:30px }
+  h2{ font-size:24px }
+  .hero .lead{ font-size:16px }
+  .hero-meta{ gap:16px }
+  .hero-meta > div{ min-width:calc(50% - 8px) }
+  section{ padding:56px 0 }
+  section.section-tight{ padding:40px 0 }
+  .section-head{ margin-bottom:32px }
+  .section-head .lead{ font-size:15px }
+  .lead{ font-size:15px }
+  .bp-meta{ grid-template-columns:repeat(2,1fr);gap:12px }
+  .bp-width .num{ font-size:24px }
+  .playground-controls{ gap:10px;padding:12px 14px;flex-wrap:wrap }
+  .playground-tier-group{ gap:1px;overflow-x:auto;-webkit-overflow-scrolling:touch }
+  .tier-btn{ padding:6px 10px;font-size:12px;white-space:nowrap }
+  .playground-mode{ margin-left:0;width:100% }
+  .mode-btn{ flex:1;justify-content:center;font-size:12px;padding:6px 8px }
+  .playground-readout{ flex-wrap:wrap;gap:12px;padding:12px 14px }
+  .readout{ min-width:calc(50% - 6px) }
+  .playground-stage{ height:480px }
+  .playground-handle{ bottom:10px }
+  .mock-cards-row{ grid-template-columns:1fr }
+  .laws-grid{ grid-template-columns:1fr }
+  .law-card{ padding:18px }
+  .thesis{ grid-template-columns:1fr }
+  .thesis-viz{ height:120px }
+  .peer-set{ gap:8px }
+  .peer-chip{ font-size:12px;padding:6px 12px }
+  .matrix{ grid-template-columns:1fr }
+  .anti-grid{ grid-template-columns:1fr }
+  .comp-row{ grid-template-columns:1fr }
+  .comp-block{ padding:16px }
+  .foot-inner{ flex-direction:column;gap:8px;text-align:center }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-deco" aria-hidden="true"></div>
+
+<!-- ============================================================
+     HEADER / CHROME — Full-bleed (intentionally)
+     ============================================================ -->
+<header class="chrome">
+  <div class="shell chrome-inner">
+    <div class="brand">
+      <svg class="brand-logo" width="98" height="24" viewBox="0 0 205 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BillDesk">
+        <path d="M58.5859 11.8038H72.1057C73.5478 11.7728 74.9851 11.9815 76.3599 12.4213C77.4686 12.783 78.4758 13.4056 79.2982 14.2375C79.8291 14.7705 80.2516 15.4029 80.542 16.0991C80.8577 16.8702 81.0111 17.6988 80.9926 18.5327V18.6054C81.0528 19.9485 80.6482 21.2709 79.848 22.3467C79.0649 23.3033 78.0583 24.049 76.9187 24.5171C78.3686 24.9531 79.6881 25.7458 80.7583 26.8236C81.7562 27.9819 82.2642 29.4879 82.1734 31.019V31.0917C82.2162 32.1397 81.9988 33.1819 81.5408 34.1238C81.0828 35.0657 80.3987 35.8775 79.5505 36.4857C77.802 37.7752 75.3504 38.42 72.1778 38.42H58.5859V11.8038ZM70.303 22.4194C71.1977 22.4792 72.091 22.2841 72.8808 21.8564C73.1734 21.6727 73.4115 21.413 73.5701 21.1046C73.7287 20.7962 73.8019 20.4505 73.7821 20.1037V20.0311C73.7974 19.7018 73.7294 19.374 73.5843 19.0785C73.4392 18.7831 73.222 18.5296 72.9529 18.342C72.2016 17.8974 71.3346 17.6917 70.4653 17.7518H65.6973V22.4194H70.303ZM71.3576 32.4901C72.2684 32.5475 73.1755 32.3293 73.9624 31.8635C74.2561 31.6656 74.4936 31.394 74.6516 31.0756C74.8096 30.7572 74.8827 30.4028 74.8637 30.0474V29.9656C74.8693 29.6211 74.7899 29.2806 74.6326 28.9747C74.4753 28.6688 74.245 28.4071 73.9624 28.213C73.1467 27.7271 72.2038 27.5023 71.2584 27.5683H65.6973V32.472L71.3576 32.4901Z" fill="#3B475B"/>
+        <path d="M101.895 10.6875H94.6934V38.4206H101.895V10.6875Z" fill="#3B475B"/>
+        <path d="M112.26 10.6875H105.059V38.4206H112.26V10.6875Z" fill="#3B475B"/>
+        <path d="M115.684 11.8106H125.868C128.01 11.7796 130.143 12.1079 132.178 12.7823C133.902 13.3602 135.491 14.2873 136.846 15.5065C138.108 16.6591 139.099 18.0797 139.749 19.6656C140.43 21.3484 140.77 23.1516 140.749 24.9689V25.0415C140.759 26.8768 140.403 28.6955 139.704 30.3902C139.042 31.9998 138.039 33.4441 136.765 34.6219C135.39 35.8645 133.781 36.8157 132.033 37.4188C129.987 38.1145 127.838 38.4524 125.679 38.4177H115.684V11.8106ZM125.995 31.8704C127.913 31.965 129.797 31.3406 131.285 30.1177C131.969 29.495 132.505 28.725 132.853 27.8651C133.201 27.0052 133.352 26.0774 133.295 25.1505V25.0688C133.349 24.1449 133.196 23.2208 132.848 22.3644C132.5 21.5079 131.966 20.7409 131.285 20.1196C129.81 18.8669 127.922 18.2187 125.995 18.3035H123.002V31.8885L125.995 31.8704Z" fill="#3B475B"/>
+        <path d="M153.278 38.9105C151.773 38.9277 150.279 38.6629 148.87 38.1295C147.589 37.6459 146.416 36.9113 145.418 35.9682C144.434 35.0206 143.663 33.8719 143.156 32.5992C142.601 31.2148 142.326 29.7331 142.345 28.2404V28.1496C142.336 26.7167 142.59 25.2944 143.093 23.9542C143.576 22.6835 144.302 21.5204 145.229 20.5307C146.151 19.5505 147.261 18.7689 148.492 18.2332C149.801 17.6669 151.213 17.3823 152.638 17.3977C154.212 17.3591 155.775 17.6691 157.216 18.3058C158.454 18.8678 159.548 19.7063 160.416 20.7577C161.278 21.8073 161.922 23.021 162.309 24.3265C162.73 25.7246 162.94 27.1788 162.931 28.6399V29.3573C162.929 29.6092 162.914 29.8608 162.886 30.111H149.24C149.433 31.1344 149.991 32.0515 150.808 32.69C151.645 33.2677 152.643 33.5605 153.656 33.5255C154.467 33.5347 155.27 33.3642 156.009 33.026C156.822 32.6329 157.558 32.0945 158.181 31.4369L162.138 34.7332C161.167 35.9965 159.937 37.0341 158.532 37.7753C156.907 38.5768 155.113 38.9694 153.305 38.9195L153.278 38.9105ZM156.243 26.4605C156.176 25.4502 155.777 24.4914 155.107 23.7362C154.799 23.395 154.421 23.1256 154 22.9468C153.578 22.768 153.122 22.6841 152.665 22.701C152.228 22.687 151.793 22.77 151.391 22.9442C150.989 23.1184 150.63 23.3795 150.339 23.709C149.686 24.4816 149.267 25.4273 149.132 26.4333L156.243 26.4605Z" fill="#3B475B"/>
+        <path d="M173.144 38.8629C171.435 38.8663 169.735 38.6185 168.097 38.1274C166.447 37.6273 164.893 36.8506 163.5 35.8299L166.204 31.462C167.319 32.2141 168.533 32.8069 169.809 33.2237C170.907 33.6 172.057 33.7993 173.216 33.8139C174.433 33.8139 175.019 33.4507 175.019 32.7151V32.6334C175.019 32.2339 174.739 31.916 174.19 31.7253C173.387 31.4166 172.568 31.1499 171.738 30.9262C170.776 30.6863 169.831 30.3829 168.908 30.0181C168.089 29.7108 167.316 29.2923 166.61 28.774C165.922 28.2707 165.369 27.6031 165.001 26.8311C164.633 26.0592 164.461 25.2071 164.5 24.3516V24.2426C164.483 23.2387 164.695 22.2441 165.122 21.3368C165.525 20.5039 166.115 19.7765 166.844 19.2118C167.615 18.6181 168.489 18.1746 169.422 17.9042C170.481 17.589 171.58 17.436 172.684 17.4501C174.187 17.4462 175.683 17.6541 177.128 18.0676C178.529 18.4707 179.863 19.0828 181.085 19.8838L178.642 24.4243C177.621 23.8609 176.55 23.3957 175.442 23.0349C174.526 22.7269 173.569 22.5556 172.603 22.5264C172.17 22.496 171.738 22.5939 171.359 22.8079C171.237 22.8812 171.134 22.9846 171.062 23.1084C170.989 23.2322 170.949 23.3725 170.945 23.5162V23.607C170.945 24.0065 171.233 24.3335 171.846 24.5786C172.459 24.8238 173.225 25.0963 174.316 25.4322C175.406 25.7682 176.263 26.0225 177.146 26.3403C177.935 26.6488 178.681 27.061 179.363 27.5663C180.001 28.0503 180.524 28.6705 180.895 29.3825C181.3 30.1666 181.498 31.0419 181.472 31.9251V31.9978C181.494 33.0265 181.287 34.047 180.868 34.9854C180.471 35.8215 179.888 36.5547 179.165 37.1285C178.383 37.7394 177.489 38.1871 176.533 38.4452C175.424 38.7379 174.281 38.8815 173.135 38.872" fill="#3B475B"/>
+        <path d="M183.473 10.6875H190.674V24.7357L196.217 17.8614H204.32L197.227 26.1069L204.509 38.4116H196.632L192.522 31.4283L190.674 33.5896V38.4116H183.473V10.6875Z" fill="#3B475B"/>
+        <path d="M91.5206 14.0656V10.6875H84.3281V17.9432L91.5206 14.0656Z" fill="#F15701"/>
+        <path d="M84.3281 22.1368V38.4098H91.5206V15.4805L84.3281 22.1368Z" fill="#3B475B"/>
+        <path d="M21.9651 8.63596L16.1516 12.0231V18.3889L21.9651 15.0108L30.3743 19.9054V29.6855L21.9651 34.5802L13.5558 29.6855V10.5339L20.6672 6.37481V0L0 12.0231V37.5769L20.6672 49.6V43.2161L5.48 34.3895V15.2105L8.07579 13.7031V32.8729L21.9651 40.9459L35.8543 32.8729V16.718L21.9651 8.63596Z" fill="#F15701"/>
+        <path d="M23.2637 0V6.37481L38.4508 15.2015V34.3804L23.2637 43.2161V49.6L43.9398 37.5678V12.0141L23.2637 0Z" fill="#3B475B"/>
+      </svg>
+      <span class="brand-sub">DLS · Breakpoint Playbook</span>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#tiers">Breakpoints</a>
+      <a href="#playground">Playground</a>
+      <a href="#matrix">Matrix</a>
+      <a href="#components">Components</a>
+      <a href="#step-down">Step-down</a>
+      <a href="#anti">Anti-patterns</a>
+      <a href="#thesis">Thesis</a>
+      <a href="#laws">9 Laws</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Floating nav button — visible on mobile/tablet only -->
+<button class="fab-menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">
+  <span class="fab-inner">
+    <svg class="icon-burger" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="5.5" x2="15" y2="5.5"/><line x1="3" y1="9" x2="15" y2="9"/><line x1="3" y1="12.5" x2="15" y2="12.5"/>
+    </svg>
+    <svg class="icon-close" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/>
+    </svg>
+    <span class="fab-label"></span>
+  </span>
+</button>
+
+<!-- Nav backdrop -->
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<!-- Nav modal -->
+<nav class="nav-modal" id="navModal" aria-label="Section navigation">
+  <div class="nav-modal-head">
+    <span>Sections</span>
+    <button class="nav-modal-close" id="navModalClose" aria-label="Close navigation">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="nav-modal-links">
+    <a href="#tiers" class="nav-link"><span class="nav-num">01</span>Breakpoints</a>
+    <a href="#playground" class="nav-link"><span class="nav-num">02</span>Playground</a>
+    <a href="#matrix" class="nav-link"><span class="nav-num">03</span>Matrix</a>
+    <a href="#components" class="nav-link"><span class="nav-num">04</span>Components</a>
+    <a href="#step-down" class="nav-link"><span class="nav-num">05</span>Step-down</a>
+    <a href="#anti" class="nav-link"><span class="nav-num">06</span>Anti-patterns</a>
+    <a href="#thesis" class="nav-link"><span class="nav-num">07</span>Thesis</a>
+    <a href="#laws" class="nav-link"><span class="nav-num">08</span>9 Laws</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="shell">
+    <span class="eyebrow"><span class="dot"></span>BillDesk DLS · v1 · June 2026</span>
+    <h1>A playbook for responsive scale.</h1>
+    <p class="lead">
+      Layouts that cap and center. Components that step down in 8s.
+      An accessibility floor that holds. Inside: the rationale behind every rule,
+      and a live playground that proves them — from 720 to 4K.
+    </p>
+    <dl class="hero-meta">
+      <div><dt>For</dt><dd>Any BillDesk product surface</dd></div>
+      <div><dt>Design system</dt><dd>BillDesk DLS</dd></div>
+      <div><dt>Range</dt><dd>720 → 3840px</dd></div>
+      <div><dt>Design baseline</dt><dd>1440px (content cap)</dd></div>
+      <div><dt>Step</dt><dd>8px grid, type-scale fonts</dd></div>
+      <div><dt>Floor</dt><dd>WCAG 2.5.5 · target ≥ 24px</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 3 — 5 BREAKPOINTS
+     ============================================================ -->
+<section id="tiers">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>The tiers</span>
+      <h2>Five breakpoints. One container rule.</h2>
+      <p class="lead">Container width scales until 1440. Then it locks. Type, padding, and grid columns adapt within each tier — but the lane never widens past the design baseline.</p>
+    </div>
+
+    <div class="bp-tiers">
+
+      <article class="bp-tier is-compact">
+        <div class="bp-width">
+          <span class="num">720</span>
+          <span class="range">720–1023px</span>
+          <span class="label-base">Compact mode</span>
+        </div>
+        <dl class="bp-meta">
+          <div><dt>Container</dt><dd>688px (fluid)</dd></div>
+          <div><dt>Gutter</dt><dd>16px</dd></div>
+          <div><dt>Grid</dt><dd>3-col preserved</dd></div>
+          <div><dt>Type scale</dt><dd>−1 step</dd></div>
+        </dl>
+        <div class="bp-diagram">
+          <div class="content-bar" style="width:95%;margin-left:-47.5%;height:20px"></div>
+        </div>
+      </article>
+
+      <article class="bp-tier">
+        <div class="bp-width">
+          <span class="num">1024</span>
+          <span class="range">1024–1279px</span>
+        </div>
+        <dl class="bp-meta">
+          <div><dt>Container</dt><dd>960px</dd></div>
+          <div><dt>Gutter</dt><dd>24px</dd></div>
+          <div><dt>Grid</dt><dd>2-col</dd></div>
+          <div><dt>Type scale</dt><dd>–1 step</dd></div>
+        </dl>
+        <div class="bp-diagram">
+          <div class="content-bar" style="width:90%;margin-left:-45%"></div>
+        </div>
+      </article>
+
+      <article class="bp-tier">
+        <div class="bp-width">
+          <span class="num">1280</span>
+          <span class="range">1280–1439px</span>
+        </div>
+        <dl class="bp-meta">
+          <div><dt>Container</dt><dd>1200px</dd></div>
+          <div><dt>Gutter</dt><dd>32px</dd></div>
+          <div><dt>Grid</dt><dd>3-col</dd></div>
+          <div><dt>Type scale</dt><dd>base</dd></div>
+        </dl>
+        <div class="bp-diagram">
+          <div class="content-bar" style="width:85%;margin-left:-42.5%"></div>
+        </div>
+      </article>
+
+      <article class="bp-tier is-baseline">
+        <div class="bp-width">
+          <span class="num">1440</span>
+          <span class="range">1440–1919px</span>
+          <span class="label-base">Design baseline</span>
+        </div>
+        <dl class="bp-meta">
+          <div><dt>Container</dt><dd>1280px</dd></div>
+          <div><dt>Gutter</dt><dd>40px</dd></div>
+          <div><dt>Grid</dt><dd>3-col</dd></div>
+          <div><dt>Type scale</dt><dd>base</dd></div>
+        </dl>
+        <div class="bp-diagram">
+          <div class="content-bar" style="width:80%;margin-left:-40%"></div>
+        </div>
+      </article>
+
+      <article class="bp-tier">
+        <div class="bp-width">
+          <span class="num">1920</span>
+          <span class="range">1920–2559px</span>
+        </div>
+        <dl class="bp-meta">
+          <div><dt>Container</dt><dd>1280px <span class="muted">(locked)</span></dd></div>
+          <div><dt>Gutter</dt><dd>40px</dd></div>
+          <div><dt>Grid</dt><dd>3-col</dd></div>
+          <div><dt>Type scale</dt><dd>base</dd></div>
+        </dl>
+        <div class="bp-diagram">
+          <div class="content-bar" style="width:60%;margin-left:-30%"></div>
+        </div>
+      </article>
+
+      <article class="bp-tier">
+        <div class="bp-width">
+          <span class="num">2560+</span>
+          <span class="range">2560–3840px · QHD/4K</span>
+        </div>
+        <dl class="bp-meta">
+          <div><dt>Container</dt><dd>1280px <span class="muted">(locked)</span></dd></div>
+          <div><dt>Gutter</dt><dd>40px</dd></div>
+          <div><dt>Grid</dt><dd>3-col</dd></div>
+          <div><dt>Type scale</dt><dd>base · +5%</dd></div>
+        </dl>
+        <div class="bp-diagram">
+          <div class="content-bar" style="width:42%;margin-left:-21%"></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 4 — INTERACTIVE PLAYGROUND
+     ============================================================ -->
+<section id="playground">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>See it move</span>
+      <h2>The playground.</h2>
+      <p class="lead">Scaled-down DLS-based screens. Switch between layouts (horizontal / vertical nav), jump between breakpoints, or drag the handle. Toggle "Capped (ours)" vs "Fluid (naive)" to feel the difference. Watch the readouts.</p>
+    </div>
+
+    <div class="playground-wrap">
+      <div class="playground-controls">
+        <div class="playground-tier-group" role="tablist" aria-label="Breakpoint">
+          <button class="tier-btn tier-btn-compact" data-tier="720">720</button>
+          <button class="tier-btn" data-tier="1024">1024</button>
+          <button class="tier-btn" data-tier="1280">1280</button>
+          <button class="tier-btn active" data-tier="1440">1440</button>
+          <button class="tier-btn" data-tier="1920">1920</button>
+          <button class="tier-btn" data-tier="2560">2560</button>
+          <button class="tier-btn" data-tier="3840">3840</button>
+        </div>
+        <div class="playground-layout" role="tablist" aria-label="Example layout">
+          <button class="layout-btn active" data-layout="top">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="2.5" rx="1"/><rect x="2" y="7.5" width="12" height="5.5" rx="1"/></svg>
+            Horizontal nav
+          </button>
+          <button class="layout-btn" data-layout="side">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="4" height="10" rx="1"/><rect x="7.5" y="3" width="6.5" height="10" rx="1"/></svg>
+            Vertical nav
+          </button>
+        </div>
+        <div class="playground-mode" role="tablist" aria-label="Layout mode">
+          <button class="mode-btn active" data-mode="capped"><span class="dot"></span>Capped (ours)</button>
+          <button class="mode-btn" data-mode="fluid"><span class="dot"></span>Fluid (naive)</button>
+        </div>
+      </div>
+
+      <div class="playground-readout">
+        <div class="readout"><span class="readout-label">Viewport</span><span class="readout-value" id="r-vp">1440px</span></div>
+        <div class="readout"><span class="readout-label">Content lane</span><span class="readout-value ok" id="r-content">1280px</span></div>
+        <div class="readout"><span class="readout-label">Side margin</span><span class="readout-value" id="r-margin">80px each</span></div>
+        <div class="readout"><span class="readout-label">Whitespace ratio</span><span class="readout-value" id="r-ws">11%</span></div>
+        <div class="readout"><span class="readout-label">Display scale</span><span class="readout-value" id="r-scale">×0.85</span></div>
+      </div>
+
+      <div class="playground-stage mode-capped" id="stage">
+        <div class="playground-frame" id="frame">
+          <div class="mock" data-layout="top">
+            <div class="mock-nav">
+              <div class="mock-nav-inner">
+                <div class="mock-nav-l">
+                  <svg class="mock-brand-svg" width="82" height="20" viewBox="0 0 205 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BillDesk">
+                    <path d="M58.5859 11.8038H72.1057C73.5478 11.7728 74.9851 11.9815 76.3599 12.4213C77.4686 12.783 78.4758 13.4056 79.2982 14.2375C79.8291 14.7705 80.2516 15.4029 80.542 16.0991C80.8577 16.8702 81.0111 17.6988 80.9926 18.5327V18.6054C81.0528 19.9485 80.6482 21.2709 79.848 22.3467C79.0649 23.3033 78.0583 24.049 76.9187 24.5171C78.3686 24.9531 79.6881 25.7458 80.7583 26.8236C81.7562 27.9819 82.2642 29.4879 82.1734 31.019V31.0917C82.2162 32.1397 81.9988 33.1819 81.5408 34.1238C81.0828 35.0657 80.3987 35.8775 79.5505 36.4857C77.802 37.7752 75.3504 38.42 72.1778 38.42H58.5859V11.8038ZM70.303 22.4194C71.1977 22.4792 72.091 22.2841 72.8808 21.8564C73.1734 21.6727 73.4115 21.413 73.5701 21.1046C73.7287 20.7962 73.8019 20.4505 73.7821 20.1037V20.0311C73.7974 19.7018 73.7294 19.374 73.5843 19.0785C73.4392 18.7831 73.222 18.5296 72.9529 18.342C72.2016 17.8974 71.3346 17.6917 70.4653 17.7518H65.6973V22.4194H70.303ZM71.3576 32.4901C72.2684 32.5475 73.1755 32.3293 73.9624 31.8635C74.2561 31.6656 74.4936 31.394 74.6516 31.0756C74.8096 30.7572 74.8827 30.4028 74.8637 30.0474V29.9656C74.8693 29.6211 74.7899 29.2806 74.6326 28.9747C74.4753 28.6688 74.245 28.4071 73.9624 28.213C73.1467 27.7271 72.2038 27.5023 71.2584 27.5683H65.6973V32.472L71.3576 32.4901Z" fill="#3B475B"/>
+                    <path d="M101.895 10.6875H94.6934V38.4206H101.895V10.6875Z" fill="#3B475B"/>
+                    <path d="M112.26 10.6875H105.059V38.4206H112.26V10.6875Z" fill="#3B475B"/>
+                    <path d="M115.684 11.8106H125.868C128.01 11.7796 130.143 12.1079 132.178 12.7823C133.902 13.3602 135.491 14.2873 136.846 15.5065C138.108 16.6591 139.099 18.0797 139.749 19.6656C140.43 21.3484 140.77 23.1516 140.749 24.9689V25.0415C140.759 26.8768 140.403 28.6955 139.704 30.3902C139.042 31.9998 138.039 33.4441 136.765 34.6219C135.39 35.8645 133.781 36.8157 132.033 37.4188C129.987 38.1145 127.838 38.4524 125.679 38.4177H115.684V11.8106ZM125.995 31.8704C127.913 31.965 129.797 31.3406 131.285 30.1177C131.969 29.495 132.505 28.725 132.853 27.8651C133.201 27.0052 133.352 26.0774 133.295 25.1505V25.0688C133.349 24.1449 133.196 23.2208 132.848 22.3644C132.5 21.5079 131.966 20.7409 131.285 20.1196C129.81 18.8669 127.922 18.2187 125.995 18.3035H123.002V31.8885L125.995 31.8704Z" fill="#3B475B"/>
+                    <path d="M153.278 38.9105C151.773 38.9277 150.279 38.6629 148.87 38.1295C147.589 37.6459 146.416 36.9113 145.418 35.9682C144.434 35.0206 143.663 33.8719 143.156 32.5992C142.601 31.2148 142.326 29.7331 142.345 28.2404V28.1496C142.336 26.7167 142.59 25.2944 143.093 23.9542C143.576 22.6835 144.302 21.5204 145.229 20.5307C146.151 19.5505 147.261 18.7689 148.492 18.2332C149.801 17.6669 151.213 17.3823 152.638 17.3977C154.212 17.3591 155.775 17.6691 157.216 18.3058C158.454 18.8678 159.548 19.7063 160.416 20.7577C161.278 21.8073 161.922 23.021 162.309 24.3265C162.73 25.7246 162.94 27.1788 162.931 28.6399V29.3573C162.929 29.6092 162.914 29.8608 162.886 30.111H149.24C149.433 31.1344 149.991 32.0515 150.808 32.69C151.645 33.2677 152.643 33.5605 153.656 33.5255C154.467 33.5347 155.27 33.3642 156.009 33.026C156.822 32.6329 157.558 32.0945 158.181 31.4369L162.138 34.7332C161.167 35.9965 159.937 37.0341 158.532 37.7753C156.907 38.5768 155.113 38.9694 153.305 38.9195L153.278 38.9105ZM156.243 26.4605C156.176 25.4502 155.777 24.4914 155.107 23.7362C154.799 23.395 154.421 23.1256 154 22.9468C153.578 22.768 153.122 22.6841 152.665 22.701C152.228 22.687 151.793 22.77 151.391 22.9442C150.989 23.1184 150.63 23.3795 150.339 23.709C149.686 24.4816 149.267 25.4273 149.132 26.4333L156.243 26.4605Z" fill="#3B475B"/>
+                    <path d="M173.144 38.8629C171.435 38.8663 169.735 38.6185 168.097 38.1274C166.447 37.6273 164.893 36.8506 163.5 35.8299L166.204 31.462C167.319 32.2141 168.533 32.8069 169.809 33.2237C170.907 33.6 172.057 33.7993 173.216 33.8139C174.433 33.8139 175.019 33.4507 175.019 32.7151V32.6334C175.019 32.2339 174.739 31.916 174.19 31.7253C173.387 31.4166 172.568 31.1499 171.738 30.9262C170.776 30.6863 169.831 30.3829 168.908 30.0181C168.089 29.7108 167.316 29.2923 166.61 28.774C165.922 28.2707 165.369 27.6031 165.001 26.8311C164.633 26.0592 164.461 25.2071 164.5 24.3516V24.2426C164.483 23.2387 164.695 22.2441 165.122 21.3368C165.525 20.5039 166.115 19.7765 166.844 19.2118C167.615 18.6181 168.489 18.1746 169.422 17.9042C170.481 17.589 171.58 17.436 172.684 17.4501C174.187 17.4462 175.683 17.6541 177.128 18.0676C178.529 18.4707 179.863 19.0828 181.085 19.8838L178.642 24.4243C177.621 23.8609 176.55 23.3957 175.442 23.0349C174.526 22.7269 173.569 22.5556 172.603 22.5264C172.17 22.496 171.738 22.5939 171.359 22.8079C171.237 22.8812 171.134 22.9846 171.062 23.1084C170.989 23.2322 170.949 23.3725 170.945 23.5162V23.607C170.945 24.0065 171.233 24.3335 171.846 24.5786C172.459 24.8238 173.225 25.0963 174.316 25.4322C175.406 25.7682 176.263 26.0225 177.146 26.3403C177.935 26.6488 178.681 27.061 179.363 27.5663C180.001 28.0503 180.524 28.6705 180.895 29.3825C181.3 30.1666 181.498 31.0419 181.472 31.9251V31.9978C181.494 33.0265 181.287 34.047 180.868 34.9854C180.471 35.8215 179.888 36.5547 179.165 37.1285C178.383 37.7394 177.489 38.1871 176.533 38.4452C175.424 38.7379 174.281 38.8815 173.135 38.872" fill="#3B475B"/>
+                    <path d="M183.473 10.6875H190.674V24.7357L196.217 17.8614H204.32L197.227 26.1069L204.509 38.4116H196.632L192.522 31.4283L190.674 33.5896V38.4116H183.473V10.6875Z" fill="#3B475B"/>
+                    <path d="M91.5206 14.0656V10.6875H84.3281V17.9432L91.5206 14.0656Z" fill="#F15701"/>
+                    <path d="M84.3281 22.1368V38.4098H91.5206V15.4805L84.3281 22.1368Z" fill="#3B475B"/>
+                    <path d="M21.9651 8.63596L16.1516 12.0231V18.3889L21.9651 15.0108L30.3743 19.9054V29.6855L21.9651 34.5802L13.5558 29.6855V10.5339L20.6672 6.37481V0L0 12.0231V37.5769L20.6672 49.6V43.2161L5.48 34.3895V15.2105L8.07579 13.7031V32.8729L21.9651 40.9459L35.8543 32.8729V16.718L21.9651 8.63596Z" fill="#F15701"/>
+                    <path d="M23.2637 0V6.37481L38.4508 15.2015V34.3804L23.2637 43.2161V49.6L43.9398 37.5678V12.0141L23.2637 0Z" fill="#3B475B"/>
+                  </svg>
+                </div>
+                <div class="mock-nav-c">
+                  <span class="act">Dashboard</span>
+                  <span>Customers</span>
+                  <span>Items</span>
+                  <span>Invoices</span>
+                  <span>Reminders</span>
+                  <span>Settings</span>
+                </div>
+                <div class="mock-nav-r">
+                  <svg class="bell" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 2v1.5m0 0a4.5 4.5 0 014.5 4.5v3.5L15 14H3l1.5-2.5V8A4.5 4.5 0 019 3.5zM7 16a2 2 0 004 0"/></svg>
+                  <div class="avatar"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mock-body">
+              <div class="mock-content">
+
+                <!-- Page header -->
+                <div class="mock-page-head">
+                  <div>
+                    <h2 class="mock-h1">Welcome admin</h2>
+                    <div class="mock-page-sub">Monday, 20 April 2026 · Last refreshed 2 min ago</div>
+                  </div>
+                  <div class="mock-page-actions">
+                    <button class="mock-btn">More <span style="font-size:9px;color:var(--text-3)">▾</span></button>
+                    <button class="mock-btn mock-btn-primary"><span style="font-size:14px;line-height:1">+</span> Add invoice</button>
+                  </div>
+                </div>
+
+                <!-- Cards row -->
+                <div class="mock-cards-row">
+
+                  <!-- Card 1: Collection Overview gauge -->
+                  <div class="mock-card mock-card-gauge">
+                    <h4>Collection Overview</h4>
+                    <svg class="mock-gauge" viewBox="0 0 240 140" preserveAspectRatio="xMidYMid meet">
+                      <path d="M 35 120 A 85 85 0 0 1 150.1 40.5" fill="none" stroke="#0A8F5C" stroke-width="20" stroke-dasharray="4 6" stroke-linecap="butt"/>
+                      <path d="M 150.1 40.5 A 85 85 0 0 1 202.5 99.6" fill="none" stroke="#F59E0B" stroke-width="20" stroke-dasharray="4 6" stroke-linecap="butt"/>
+                      <path d="M 202.5 99.6 A 85 85 0 0 1 205 120" fill="none" stroke="#C0392B" stroke-width="20" stroke-dasharray="4 6" stroke-linecap="butt"/>
+                      <text x="120" y="105" font-family="Inter" font-size="22" font-weight="600" fill="#0D1526" text-anchor="middle">₹74,200</text>
+                      <text x="120" y="122" font-family="Inter" font-size="11" fill="#8A97AC" text-anchor="middle">Total outstanding</text>
+                    </svg>
+                    <div class="mock-gauge-legend">
+                      <div><b style="color:#0A8F5C">₹40,000</b>Paid</div>
+                      <div><b style="color:#F59E0B">₹20,000</b>Pending</div>
+                      <div><b style="color:#C0392B">₹5,000</b>Overdue</div>
+                    </div>
+                    <div class="mock-gauge-trend">
+                      <span>↗ 18% up from last month</span>
+                      <span class="arrow">›</span>
+                    </div>
+                  </div>
+
+                  <!-- Card 2: Stacked stats -->
+                  <div class="mock-card mock-card-stack">
+                    <div class="mock-stat">
+                      <div class="mock-stat-info">
+                        <h5>Total Overdue</h5>
+                        <div class="mock-stat-big">₹18,400</div>
+                        <div class="mock-stat-sub down">↓ 12 Receivables past due</div>
+                      </div>
+                      <div class="mock-stat-icon" style="background:#FBE9E7;color:#C0392B">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 2"/></svg>
+                      </div>
+                    </div>
+                    <div class="mock-stat">
+                      <div class="mock-stat-info">
+                        <h5>Due in 7 days</h5>
+                        <div class="mock-stat-big">₹9,600</div>
+                        <div class="mock-stat-sub">⏱ 8 Receivables upcoming</div>
+                      </div>
+                      <div class="mock-stat-icon" style="background:#E6EFFB;color:#3B82F6">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.5" y="3.5" width="13" height="12" rx="2"/><path d="M2.5 7h13M6 1.5v3M12 1.5v3"/></svg>
+                      </div>
+                    </div>
+                    <div class="mock-stat">
+                      <div class="mock-stat-info">
+                        <h5>Collected this month</h5>
+                        <div class="mock-stat-big">₹42,300</div>
+                        <div class="mock-stat-sub">From 28/80 customers</div>
+                      </div>
+                      <div class="mock-stat-icon" style="background:#FEF0E8;color:#F26522">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 11v3a1 1 0 001 1h10a1 1 0 001-1v-3M9 2v8m0 0l-3-3m3 3l3-3"/></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card 3: Activities -->
+                  <div class="mock-card mock-card-activity">
+                    <h4>Smart collect activities</h4>
+                    <div class="mock-card-sub">Track all activities here</div>
+                    <div class="mock-activity-list">
+                      <div class="mock-activity">
+                        <div class="mock-activity-icon">
+                          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 2"/></svg>
+                        </div>
+                        <div class="mock-activity-info">
+                          <div class="mock-activity-title">Reminder sent</div>
+                          <div class="mock-activity-meta">5 invoices · <span class="hi">3 opened</span></div>
+                        </div>
+                        <span class="mock-activity-arrow">›</span>
+                      </div>
+                      <div class="mock-activity">
+                        <div class="mock-activity-icon">
+                          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M2 8h14M5 11.5h3"/></svg>
+                        </div>
+                        <div class="mock-activity-info">
+                          <div class="mock-activity-title">Payments received</div>
+                          <div class="mock-activity-meta">3 invoices · <span class="pos">+₹8,400</span></div>
+                        </div>
+                        <span class="mock-activity-arrow">›</span>
+                      </div>
+                      <div class="mock-activity">
+                        <div class="mock-activity-icon">
+                          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 10.5L10.5 7.5M6 9l-1.5 1.5a2.5 2.5 0 003.5 3.5L9.5 12.5M12 9l1.5-1.5a2.5 2.5 0 00-3.5-3.5L8.5 5.5"/></svg>
+                        </div>
+                        <div class="mock-activity-info">
+                          <div class="mock-activity-title">Payment link opened</div>
+                          <div class="mock-activity-meta">2 invoices</div>
+                        </div>
+                        <span class="mock-activity-arrow">›</span>
+                      </div>
+                      <div class="mock-activity">
+                        <div class="mock-activity-icon">
+                          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4M9 12v.01"/></svg>
+                        </div>
+                        <div class="mock-activity-info">
+                          <div class="mock-activity-title">Invoice overdue</div>
+                          <div class="mock-activity-meta">Ravi Menon · 1 invoice</div>
+                        </div>
+                        <span class="mock-activity-arrow">›</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Table -->
+                <div class="mock-table">
+                  <div class="mock-table-head">
+                    <h4>Who needs attention</h4>
+                    <p>Prioritized by overdue amount and customer health</p>
+                  </div>
+                  <div class="mock-table-tabs">
+                    <div class="mock-tab-group">
+                      <button class="mock-tab active">Overdue</button>
+                      <button class="mock-tab">Due in 7 days</button>
+                    </div>
+                  </div>
+                  <div class="mock-tr head">
+                    <span></span>
+                    <span>Customer</span>
+                    <span>Outstanding</span>
+                    <span>Days overdue</span>
+                    <span>Final notice</span>
+                  </div>
+                  <div class="mock-tr is-active">
+                    <span class="mock-chk"></span>
+                    <span class="name">Ravi Menon</span>
+                    <span class="amt">₹3,245.89</span>
+                    <span><span class="mock-pill">30 days</span></span>
+                    <span class="mock-row-actions">
+                      <button class="mock-btn mock-btn-sm">Record payment</button>
+                      <button class="mock-btn mock-btn-primary mock-btn-sm">Send reminder</button>
+                    </span>
+                  </div>
+                  <div class="mock-tr">
+                    <span class="mock-chk"></span>
+                    <span class="name">Arjun Singh</span>
+                    <span class="amt">₹1,987.34</span>
+                    <span><span class="mock-pill">21 days</span></span>
+                    <span class="mock-row-meta">Sent <b>3 days ago</b> · Opened</span>
+                  </div>
+                  <div class="mock-tr">
+                    <span class="mock-chk"></span>
+                    <span class="name">Priya Sharma</span>
+                    <span class="amt">₹2,765.12</span>
+                    <span><span class="mock-pill">14 days</span></span>
+                    <span class="mock-row-meta">Sent <b>5 days ago</b> · Not opened</span>
+                  </div>
+                  <div class="mock-tr">
+                    <span class="mock-chk"></span>
+                    <span class="name">Anil Kumar</span>
+                    <span class="amt">₹3,599.47</span>
+                    <span><span class="mock-pill">10 days</span></span>
+                    <span class="mock-row-meta">Sent <b>1 day ago</b> · Opened</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ Side-nav mock (Repush page) ============ -->
+          <div class="mock mock-side" data-layout="side" style="display:none">
+            <aside class="mock-sidenav">
+              <div class="mock-sidenav-head">
+                <div class="brand">
+                  <svg class="brand-logomark" width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BillDesk">
+                    <rect width="40" height="40" rx="20" fill="#F4F4F6"/>
+                    <path d="M19.9973 10.1718L16.4691 12.2313V16.1018L19.9973 14.0478L25.1009 17.0239V22.9704L19.9973 25.9465L14.8937 22.9704V11.3257L19.2096 8.79694V4.9209L6.66675 12.2313V27.7685L19.2096 35.0789V31.1973L9.99255 25.8305V14.1693L11.5679 13.2527V24.9084L19.9973 29.817L28.4267 24.9084V15.0858L19.9973 10.1718Z" fill="#F15701"/>
+                    <path d="M20.7852 4.9209V8.79694L30.0022 14.1638V25.825L20.7852 31.1973V35.0789L33.3335 27.763V12.2257L20.7852 4.9209Z" fill="#4F4F4F"/>
+                  </svg>
+                  <svg class="brand-wordmark" width="90" height="22" viewBox="0 0 205 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BillDesk">
+                    <path d="M58.5859 11.8038H72.1057C73.5478 11.7728 74.9851 11.9815 76.3599 12.4213C77.4686 12.783 78.4758 13.4056 79.2982 14.2375C79.8291 14.7705 80.2516 15.4029 80.542 16.0991C80.8577 16.8702 81.0111 17.6988 80.9926 18.5327V18.6054C81.0528 19.9485 80.6482 21.2709 79.848 22.3467C79.0649 23.3033 78.0583 24.049 76.9187 24.5171C78.3686 24.9531 79.6881 25.7458 80.7583 26.8236C81.7562 27.9819 82.2642 29.4879 82.1734 31.019V31.0917C82.2162 32.1397 81.9988 33.1819 81.5408 34.1238C81.0828 35.0657 80.3987 35.8775 79.5505 36.4857C77.802 37.7752 75.3504 38.42 72.1778 38.42H58.5859V11.8038ZM70.303 22.4194C71.1977 22.4792 72.091 22.2841 72.8808 21.8564C73.1734 21.6727 73.4115 21.413 73.5701 21.1046C73.7287 20.7962 73.8019 20.4505 73.7821 20.1037V20.0311C73.7974 19.7018 73.7294 19.374 73.5843 19.0785C73.4392 18.7831 73.222 18.5296 72.9529 18.342C72.2016 17.8974 71.3346 17.6917 70.4653 17.7518H65.6973V22.4194H70.303ZM71.3576 32.4901C72.2684 32.5475 73.1755 32.3293 73.9624 31.8635C74.2561 31.6656 74.4936 31.394 74.6516 31.0756C74.8096 30.7572 74.8827 30.4028 74.8637 30.0474V29.9656C74.8693 29.6211 74.7899 29.2806 74.6326 28.9747C74.4753 28.6688 74.245 28.4071 73.9624 28.213C73.1467 27.7271 72.2038 27.5023 71.2584 27.5683H65.6973V32.472L71.3576 32.4901Z" fill="white"/>
+                    <path d="M101.895 10.6875H94.6934V38.4206H101.895V10.6875Z" fill="white"/>
+                    <path d="M112.26 10.6875H105.059V38.4206H112.26V10.6875Z" fill="white"/>
+                    <path d="M115.684 11.8106H125.868C128.01 11.7796 130.143 12.1079 132.178 12.7823C133.902 13.3602 135.491 14.2873 136.846 15.5065C138.108 16.6591 139.099 18.0797 139.749 19.6656C140.43 21.3484 140.77 23.1516 140.749 24.9689V25.0415C140.759 26.8768 140.403 28.6955 139.704 30.3902C139.042 31.9998 138.039 33.4441 136.765 34.6219C135.39 35.8645 133.781 36.8157 132.033 37.4188C129.987 38.1145 127.838 38.4524 125.679 38.4177H115.684V11.8106ZM125.995 31.8704C127.913 31.965 129.797 31.3406 131.285 30.1177C131.969 29.495 132.505 28.725 132.853 27.8651C133.201 27.0052 133.352 26.0774 133.295 25.1505V25.0688C133.349 24.1449 133.196 23.2208 132.848 22.3644C132.5 21.5079 131.966 20.7409 131.285 20.1196C129.81 18.8669 127.922 18.2187 125.995 18.3035H123.002V31.8885L125.995 31.8704Z" fill="white"/>
+                    <path d="M153.278 38.9105C151.773 38.9277 150.279 38.6629 148.87 38.1295C147.589 37.6459 146.416 36.9113 145.418 35.9682C144.434 35.0206 143.663 33.8719 143.156 32.5992C142.601 31.2148 142.326 29.7331 142.345 28.2404V28.1496C142.336 26.7167 142.59 25.2944 143.093 23.9542C143.576 22.6835 144.302 21.5204 145.229 20.5307C146.151 19.5505 147.261 18.7689 148.492 18.2332C149.801 17.6669 151.213 17.3823 152.638 17.3977C154.212 17.3591 155.775 17.6691 157.216 18.3058C158.454 18.8678 159.548 19.7063 160.416 20.7577C161.278 21.8073 161.922 23.021 162.309 24.3265C162.73 25.7246 162.94 27.1788 162.931 28.6399V29.3573C162.929 29.6092 162.914 29.8608 162.886 30.111H149.24C149.433 31.1344 149.991 32.0515 150.808 32.69C151.645 33.2677 152.643 33.5605 153.656 33.5255C154.467 33.5347 155.27 33.3642 156.009 33.026C156.822 32.6329 157.558 32.0945 158.181 31.4369L162.138 34.7332C161.167 35.9965 159.937 37.0341 158.532 37.7753C156.907 38.5768 155.113 38.9694 153.305 38.9195L153.278 38.9105ZM156.243 26.4605C156.176 25.4502 155.777 24.4914 155.107 23.7362C154.799 23.395 154.421 23.1256 154 22.9468C153.578 22.768 153.122 22.6841 152.665 22.701C152.228 22.687 151.793 22.77 151.391 22.9442C150.989 23.1184 150.63 23.3795 150.339 23.709C149.686 24.4816 149.267 25.4273 149.132 26.4333L156.243 26.4605Z" fill="white"/>
+                    <path d="M173.144 38.8629C171.435 38.8663 169.735 38.6185 168.097 38.1274C166.447 37.6273 164.893 36.8506 163.5 35.8299L166.204 31.462C167.319 32.2141 168.533 32.8069 169.809 33.2237C170.907 33.6 172.057 33.7993 173.216 33.8139C174.433 33.8139 175.019 33.4507 175.019 32.7151V32.6334C175.019 32.2339 174.739 31.916 174.19 31.7253C173.387 31.4166 172.568 31.1499 171.738 30.9262C170.776 30.6863 169.831 30.3829 168.908 30.0181C168.089 29.7108 167.316 29.2923 166.61 28.774C165.922 28.2707 165.369 27.6031 165.001 26.8311C164.633 26.0592 164.461 25.2071 164.5 24.3516V24.2426C164.483 23.2387 164.695 22.2441 165.122 21.3368C165.525 20.5039 166.115 19.7765 166.844 19.2118C167.615 18.6181 168.489 18.1746 169.422 17.9042C170.481 17.589 171.58 17.436 172.684 17.4501C174.187 17.4462 175.683 17.6541 177.128 18.0676C178.529 18.4707 179.863 19.0828 181.085 19.8838L178.642 24.4243C177.621 23.8609 176.55 23.3957 175.442 23.0349C174.526 22.7269 173.569 22.5556 172.603 22.5264C172.17 22.496 171.738 22.5939 171.359 22.8079C171.237 22.8812 171.134 22.9846 171.062 23.1084C170.989 23.2322 170.949 23.3725 170.945 23.5162V23.607C170.945 24.0065 171.233 24.3335 171.846 24.5786C172.459 24.8238 173.225 25.0963 174.316 25.4322C175.406 25.7682 176.263 26.0225 177.146 26.3403C177.935 26.6488 178.681 27.061 179.363 27.5663C180.001 28.0503 180.524 28.6705 180.895 29.3825C181.3 30.1666 181.498 31.0419 181.472 31.9251V31.9978C181.494 33.0265 181.287 34.047 180.868 34.9854C180.471 35.8215 179.888 36.5547 179.165 37.1285C178.383 37.7394 177.489 38.1871 176.533 38.4452C175.424 38.7379 174.281 38.8815 173.135 38.872" fill="white"/>
+                    <path d="M183.473 10.6875H190.674V24.7357L196.217 17.8614H204.32L197.227 26.1069L204.509 38.4116H196.632L192.522 31.4283L190.674 33.5896V38.4116H183.473V10.6875Z" fill="white"/>
+                    <path d="M91.5206 14.0656V10.6875H84.3281V17.9432L91.5206 14.0656Z" fill="#F15701"/>
+                    <path d="M84.3281 22.1368V38.4098H91.5206V15.4805L84.3281 22.1368Z" fill="white"/>
+                    <path d="M21.9651 8.63596L16.1516 12.0231V18.3889L21.9651 15.0108L30.3743 19.9054V29.6855L21.9651 34.5802L13.5558 29.6855V10.5339L20.6672 6.37481V0L0 12.0231V37.5769L20.6672 49.6V43.2161L5.48 34.3895V15.2105L8.07579 13.7031V32.8729L21.9651 40.9459L35.8543 32.8729V16.718L21.9651 8.63596Z" fill="#F15701"/>
+                    <path d="M23.2637 0V6.37481L38.4508 15.2015V34.3804L23.2637 43.2161V49.6L43.9398 37.5678V12.0141L23.2637 0Z" fill="white"/>
+                  </svg>
+                </div>
+                <button class="mock-sn-collapse" aria-label="Collapse">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="3.5" width="13" height="11" rx="1.5"/><line x1="7" y1="3.5" x2="7" y2="14.5"/></svg>
+                </button>
+              </div>
+
+              <div class="mock-sn-items">
+                <a class="mock-sn-item">
+                  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2.5 8.5L9 3l6.5 5.5V15a1 1 0 01-1 1H3.5a1 1 0 01-1-1V8.5z"/><path d="M7 16v-4h4v4"/></svg>
+                  <span class="lbl">Home</span>
+                </a>
+                <a class="mock-sn-item is-expanded">
+                  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4.5" width="13" height="9" rx="1.5"/><path d="M2.5 8h13M5 11h2.5"/></svg>
+                  <span class="lbl">Transactions</span>
+                  <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.5 5.5l3.5 3 3.5-3"/></svg>
+                </a>
+                <div class="mock-sn-sub">
+                  <a class="mock-sn-subitem">Payments</a>
+                  <a class="mock-sn-subitem is-active">Repush</a>
+                </div>
+                <a class="mock-sn-item">
+                  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="2.5" width="11" height="13" rx="1.5"/><path d="M6 7h6M6 10h6M6 13h4"/></svg>
+                  <span class="lbl">Reports</span>
+                  <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5.5 3.5l3 3.5-3 3.5"/></svg>
+                </a>
+                <a class="mock-sn-item">
+                  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 2.5h7l3 3V15a.5.5 0 01-.5.5h-9.5a.5.5 0 01-.5-.5V3a.5.5 0 01.5-.5z"/><path d="M11 2.5V5.5h3"/></svg>
+                  <span class="lbl">Biller Manager</span>
+                  <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5.5 3.5l3 3.5-3 3.5"/></svg>
+                </a>
+                <a class="mock-sn-item">
+                  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M4 2.5v13l2-1 2 1 2-1 2 1 2-1v-13z"/><path d="M7 6h4M7 9h4M7 12h3"/></svg>
+                  <span class="lbl">Settlement Recon</span>
+                  <svg class="chev" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5.5 3.5l3 3.5-3 3.5"/></svg>
+                </a>
+                <a class="mock-sn-item">
+                  <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="6.5" r="2.5"/><path d="M3 16c0-3 2.5-5 6-5s6 2 6 5"/></svg>
+                  <span class="lbl">User Manager</span>
+                </a>
+              </div>
+
+              <div class="mock-sidenav-foot">
+                <div class="avatar"></div>
+                <div class="mock-sn-user">
+                  <div class="nm">User name</div>
+                  <div class="em">username@mail.com</div>
+                </div>
+                <button class="mock-sn-kebab" aria-label="More">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="7" cy="3" r="1.2"/><circle cx="7" cy="7" r="1.2"/><circle cx="7" cy="11" r="1.2"/></svg>
+                </button>
+              </div>
+            </aside>
+
+            <main class="mock-main">
+              <div class="mock-body">
+                <div class="mock-content">
+                  <div class="mock-page-head">
+                    <div>
+                      <h2 class="mock-h1">Repush</h2>
+                      <div class="mock-page-sub">Repush previously failed or pending transactions</div>
+                    </div>
+                    <div class="mock-page-actions">
+                      <button class="mock-btn mock-btn-primary">Upload</button>
+                    </div>
+                  </div>
+
+                  <div class="mock-table">
+                    <div class="mock-table-head">
+                      <div class="mock-table-head-row">
+                        <h4>Repush transaction uploads displayed below</h4>
+                        <button class="mock-refresh" aria-label="Refresh">
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a6 6 0 0110.5-4M14 2v3h-3M14 8a6 6 0 01-10.5 4M2 14v-3h3"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="mock-tr head" style="grid-template-columns:1.2fr 1.4fr 1.4fr 1fr 1fr 1.4fr">
+                      <span>Upload Date ⇅</span>
+                      <span>File Name 🔍</span>
+                      <span>Success / Total Count</span>
+                      <span>Failed Count</span>
+                      <span>File Status</span>
+                      <span>Rejected remarks ⓘ</span>
+                    </div>
+                    <div class="mock-tr" style="grid-template-columns:1.2fr 1.4fr 1.4fr 1fr 1fr 1.4fr">
+                      <span>25 Jul 2025, 13:01</span>
+                      <span>New_Repush_11.csv</span>
+                      <span>99/100</span>
+                      <span>1</span>
+                      <span><span class="mock-pill-fail">Failed</span></span>
+                      <span>RC1-5</span>
+                    </div>
+                    <div class="mock-tr" style="grid-template-columns:1.2fr 1.4fr 1.4fr 1fr 1fr 1.4fr">
+                      <span>25 Jul 2025, 13:01</span>
+                      <span>New_Repush_11.csv</span>
+                      <span>99/100</span>
+                      <span>1</span>
+                      <span><span class="mock-pill-fail">Failed</span></span>
+                      <span>RC1-5</span>
+                    </div>
+                    <div class="mock-tr" style="grid-template-columns:1.2fr 1.4fr 1.4fr 1fr 1fr 1.4fr">
+                      <span>25 Jul 2025, 13:01</span>
+                      <span>New_Repush_11.csv</span>
+                      <span>99/100</span>
+                      <span>1</span>
+                      <span><span class="mock-pill-fail">Failed</span></span>
+                      <span>RC1-5</span>
+                    </div>
+                    <div class="mock-tr" style="grid-template-columns:1.2fr 1.4fr 1.4fr 1fr 1fr 1.4fr">
+                      <span>25 Jul 2025, 13:01</span>
+                      <span>New_Repush_11.csv</span>
+                      <span>99/100</span>
+                      <span>1</span>
+                      <span><span class="mock-pill-fail">Failed</span></span>
+                      <span>RC1-5</span>
+                    </div>
+                    <div class="mock-table-foot">
+                      <button class="mock-show-sel">Show: 5 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 4l2.5 2.5L7.5 4"/></svg></button>
+                      <span>Result: 1 - 5 of 50</span>
+                      <div class="mock-pager">
+                        <button class="nav-btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2.5L3.5 5 6 7.5"/></svg> Previous</button>
+                        <button class="pg act">1</button>
+                        <button class="pg">2</button>
+                        <button class="pg">3</button>
+                        <button class="pg">4</button>
+                        <button class="pg">5</button>
+                        <span>…</span>
+                        <button class="pg">10</button>
+                        <button class="nav-btn">Next <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2.5L6.5 5 4 7.5"/></svg></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+
+        <div class="playground-handle" id="handle" title="Drag to resize">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 4L2 8l3 4M11 4l3 4-3 4"/></svg>
+          <span class="val" id="handleVal">1440px</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.4"><circle cx="4" cy="8" r="1.5" fill="currentColor"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="12" cy="8" r="1.5" fill="currentColor"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:14px;font-size:12px;text-align:center">
+      Frame is scaled to fit. <strong>Side-margin</strong> and <strong>whitespace ratio</strong> reflect what the user would actually see on the simulated viewport.
+    </p>
+    <p class="muted" style="margin-top:6px;font-size:12px;text-align:center">
+      The mock uses a representative scale for visual demonstration. For canonical token values (button 48, row 72, body 16, card pad 24), see the <a href="#step-down">Step-down ladder</a> reference table.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 5 — SCALES / HOLDS / DIES MATRIX
+     ============================================================ -->
+<section id="matrix">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>The matrix</span>
+      <h2>What scales, what holds, what dies.</h2>
+      <p class="lead">A property either grows with the viewport, locks at a value, or disappears entirely above the cap. No "it depends" — the matrix decides.</p>
+    </div>
+
+    <div class="matrix">
+      <div class="matrix-col scale">
+        <div class="col-head">
+          <div class="ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h12M9 3l6 6-6 6"/></svg></div>
+          <div>
+            <h3>Scales</h3>
+            <div class="desc">Grows with viewport — bounded</div>
+          </div>
+        </div>
+        <ul class="matrix-list">
+          <li><b>Container</b> — grows 960 → 1280, then locks</li>
+          <li><b>Section padding</b> — 24 → 32 → 40 → 48</li>
+          <li><b>Hero type</b> — 36 → 48 → 56 → 64</li>
+          <li><b>Page gutters</b> — 16 → 24 → 32</li>
+          <li><b>Image hero</b> — fills container but never beyond</li>
+          <li><b>Card grid gap</b> — 12 → 16 → 20</li>
+        </ul>
+      </div>
+
+      <div class="matrix-col hold">
+        <div class="col-head">
+          <div class="ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="10" height="10" rx="2"/></svg></div>
+          <div>
+            <h3>Holds</h3>
+            <div class="desc">Constant across all tiers</div>
+          </div>
+        </div>
+        <ul class="matrix-list">
+          <li><b>Body text</b> — 14px (15ch–75ch comfortable)</li>
+          <li><b>Click targets</b> — 36px min, 44px primary</li>
+          <li><b>Input field width</b> — 320–480px never wider</li>
+          <li><b>Table column widths</b> — designed, not fluid</li>
+          <li><b>Form column width</b> — 560px (one) / 720px (two)</li>
+          <li><b>Modal widths</b> — 440 / 560 / 720 (DLS)</li>
+          <li><b>Border radius, shadows, ring</b> — token-fixed</li>
+        </ul>
+      </div>
+
+      <div class="matrix-col die">
+        <div class="col-head">
+          <div class="ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l8 8M13 5l-8 8"/></svg></div>
+          <div>
+            <h3>Dies</h3>
+            <div class="desc">Disallowed at any breakpoint</div>
+          </div>
+        </div>
+        <ul class="matrix-list">
+          <li><b>Full-bleed body content</b> — text edge-to-edge</li>
+          <li><b>Stretched tables</b> — column padding > content</li>
+          <li><b>100% fluid forms</b> — inputs wider than 50ch</li>
+          <li><b>Edge-pinned primary CTA</b> — Fitts penalty</li>
+          <li><b>Floating action buttons</b> — chrome-only</li>
+          <li><b>Cropped hero focals</b> — never sacrifice subject</li>
+          <li><b>"Stretch to fill" mode</b> — no user toggle for this</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 6 — COMPONENT BEHAVIOR
+     ============================================================ -->
+<section id="components">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>By component</span>
+      <h2>How each component behaves.</h2>
+      <p class="lead">Three columns per component: behavior at 1024, 1440 (baseline), and 2560+. The rule on the right is the one-liner an engineer should remember.</p>
+    </div>
+
+    <!-- Navigation -->
+    <article class="comp-block">
+      <div class="comp-head">
+        <h3>Navigation</h3>
+        <span class="rule">Chrome is full-bleed. Logo + nav items centered within shell.</span>
+      </div>
+      <div class="comp-row">
+        <div class="comp-step">
+          <div class="step-w">1024px</div>
+          <div class="comp-viz">
+            <div class="cv-nav"></div>
+            <div class="cv-card" style="left:8px;right:8px;border-radius:0;height:14px;top:8px;background:#F26522;opacity:.15"></div>
+          </div>
+          <p>Bg bleeds edge-to-edge. Container holds logo + nav + actions at 960.</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">1440px · baseline</div>
+          <div class="comp-viz">
+            <div class="cv-nav"></div>
+            <div class="cv-card" style="left:8px;right:8px;border-radius:0;height:14px;top:8px;background:#F26522;opacity:.15"></div>
+          </div>
+          <p>Same pattern. Container at 1280, gutters at 80px each side.</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">2560px+</div>
+          <div class="comp-viz">
+            <div class="cv-nav"></div>
+            <div class="cv-card" style="left:8px;right:8px;border-radius:0;height:14px;top:8px;background:#F26522;opacity:.15"></div>
+          </div>
+          <p>Bg still bleeds. Container locks. Nav items don't fly to the edge.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Cards -->
+    <article class="comp-block">
+      <div class="comp-head">
+        <h3>KPI Cards</h3>
+        <span class="rule">Max 3 across. Stack to 2 below 1280. Stack to 1 below 1024.</span>
+      </div>
+      <div class="comp-row">
+        <div class="comp-step">
+          <div class="step-w">1024px</div>
+          <div class="comp-viz">
+            <div class="cv-card" style="left:8px;width:calc(50% - 12px)"></div>
+            <div class="cv-card" style="right:8px;width:calc(50% - 12px)"></div>
+          </div>
+          <p>2 cards across. Third wraps below.</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">1440px · baseline</div>
+          <div class="comp-viz">
+            <div class="cv-card" style="left:8px;width:calc(33.33% - 11px)"></div>
+            <div class="cv-card" style="left:33.33%;width:calc(33.33% - 11px);transform:translateX(6px)"></div>
+            <div class="cv-card" style="right:8px;width:calc(33.33% - 11px)"></div>
+          </div>
+          <p>3 cards across. Optimal density for finance KPIs.</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">2560px+</div>
+          <div class="comp-viz">
+            <div class="cv-card" style="left:25%;width:calc(16.67% - 4px)"></div>
+            <div class="cv-card" style="left:42%;width:calc(16.67% - 4px)"></div>
+            <div class="cv-card" style="left:59%;width:calc(16.67% - 4px)"></div>
+          </div>
+          <p>Still 3 across — wider margins absorb the gain. Never 4+.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Tables -->
+    <article class="comp-block">
+      <div class="comp-head">
+        <h3>Data tables</h3>
+        <span class="rule">Column widths designed, not fluid. Horizontal scroll for &gt;7 columns below 1280.</span>
+      </div>
+      <div class="comp-row">
+        <div class="comp-step">
+          <div class="step-w">1024px</div>
+          <div class="comp-viz">
+            <div class="cv-table-row" style="top:12px"></div>
+            <div class="cv-table-row" style="top:24px"></div>
+            <div class="cv-table-row" style="top:36px"></div>
+            <div class="cv-table-row" style="top:48px"></div>
+            <div class="cv-table-row" style="top:60px"></div>
+            <span style="position:absolute;right:8px;bottom:6px;font-size:9px;color:var(--text-3);font-family:var(--mono)">→ scroll</span>
+          </div>
+          <p>Collapses non-priority columns. Horizontal scroll for the rest.</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">1440px · baseline</div>
+          <div class="comp-viz">
+            <div class="cv-table-row" style="top:12px"></div>
+            <div class="cv-table-row" style="top:24px"></div>
+            <div class="cv-table-row" style="top:36px"></div>
+            <div class="cv-table-row" style="top:48px"></div>
+            <div class="cv-table-row" style="top:60px"></div>
+          </div>
+          <p>All columns fit. Comfortable 56px row height (DLS).</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">2560px+</div>
+          <div class="comp-viz">
+            <div class="cv-table-row" style="top:12px;left:16%;right:16%"></div>
+            <div class="cv-table-row" style="top:24px;left:16%;right:16%"></div>
+            <div class="cv-table-row" style="top:36px;left:16%;right:16%"></div>
+            <div class="cv-table-row" style="top:48px;left:16%;right:16%"></div>
+            <div class="cv-table-row" style="top:60px;left:16%;right:16%"></div>
+          </div>
+          <p>Same column widths. Margins grow. Never widen the columns.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Forms -->
+    <article class="comp-block">
+      <div class="comp-head">
+        <h3>Forms (Create New Item)</h3>
+        <span class="rule">Single column ≤720px below 1024. Two-column 720px above. Never wider.</span>
+      </div>
+      <div class="comp-row">
+        <div class="comp-step">
+          <div class="step-w">1024px</div>
+          <div class="comp-viz">
+            <div class="cv-form-field" style="left:24px;width:calc(100% - 48px);top:14px"></div>
+            <div class="cv-form-field" style="left:24px;width:calc(100% - 48px);top:36px"></div>
+            <div class="cv-form-field" style="left:24px;width:calc(100% - 48px);top:58px"></div>
+          </div>
+          <p>Single column. Inputs full container width (≤560px).</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">1440px · baseline</div>
+          <div class="comp-viz">
+            <div class="cv-form-field" style="left:20%;width:28%;top:14px"></div>
+            <div class="cv-form-field" style="right:20%;width:28%;top:14px"></div>
+            <div class="cv-form-field" style="left:20%;width:28%;top:36px"></div>
+            <div class="cv-form-field" style="right:20%;width:28%;top:36px"></div>
+            <div class="cv-form-field" style="left:20%;width:28%;top:58px"></div>
+            <div class="cv-form-field" style="right:20%;width:28%;top:58px"></div>
+          </div>
+          <p>Two columns inside a 720px form lane, centered.</p>
+        </div>
+        <div class="comp-step">
+          <div class="step-w">2560px+</div>
+          <div class="comp-viz">
+            <div class="cv-form-field" style="left:34%;width:14%;top:14px"></div>
+            <div class="cv-form-field" style="right:34%;width:14%;top:14px"></div>
+            <div class="cv-form-field" style="left:34%;width:14%;top:36px"></div>
+            <div class="cv-form-field" style="right:34%;width:14%;top:36px"></div>
+          </div>
+          <p>Form lane locked. White space frames the form, never stretches it.</p>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 6.5 — STEP-DOWN LADDER (component density rules)
+     ============================================================ -->
+<section id="step-down">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>The step-down ladder</span>
+      <h2>Components shrink in 8s.</h2>
+      <p class="lead">When the viewport drops below 1280, components step down one size — never the layout. Compact treatment begins at 1024 and persists at 720 (same tokens, same sizes). Spacing and heights step in strict multiples of 8; typography rides a type-scale ratio (rationale below). At 720, the table absorbs viewport pressure through horizontal scroll or column hiding — the components themselves don't shrink further.</p>
+    </div>
+
+    <!-- The three rules -->
+    <div class="step-intro">
+      <article class="step-rule">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 10h14M10 3v14"/></svg></div>
+        <h3>The 8-step rule</h3>
+        <p>Spacing, padding, and component heights step in multiples of 8 (8, 16, 24, 32…). A 48px button drops to 40, not 44. Typography is the exception — it uses the DLS type scale (a perceptual ratio), not arithmetic 8s. See the rationale below.</p>
+      </article>
+      <article class="step-rule">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6l3 3 3-3M3 14l3 3 3-3M11 5h6M11 10h6M11 15h6"/></svg></div>
+        <h3>One step, two tiers</h3>
+        <p>1280+ uses base sizes. At 1024, every component drops one size — button 48→40, row 72→56, padding 24→16, container radius 32→16, side-nav collapses to a 56 icon rail. 720 holds the same compact tokens; the table absorbs the squeeze through scroll or column hiding.</p>
+      </article>
+      <article class="step-rule a11y">
+        <div class="ico"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M10 6v4M10 13.5v.5"/></svg></div>
+        <h3>The accessibility floor</h3>
+        <p>Click targets never go below 24×24 (WCAG 2.5.5 AA). Touch targets stay ≥44 (AAA / Apple HIG). Body text holds at 14px. The system stops stepping when the floor is reached.</p>
+      </article>
+    </div>
+
+    <!-- Visual ladder: button + table row at 3 tiers -->
+    <div class="step-ladder">
+
+      <article class="step-tier is-base">
+        <div class="step-tier-meta">
+          <span class="step-tier-tier">Base</span>
+          <span class="step-tier-vw">1280+</span>
+          <span class="step-tier-range">design baseline</span>
+        </div>
+        <div class="step-demo">
+          <button class="step-demo-btn l">Send reminder</button>
+          <div class="step-demo-row r72">Ravi Menon · ₹3,245.89 · 30 days</div>
+        </div>
+        <div class="step-demo-spec">
+          <b>Button 48 · Row 72 · Pad 24 · Radius 32</b>
+          <span>Header 36 · Subtext 16 · Side-nav 264</span>
+        </div>
+      </article>
+
+      <article class="step-tier">
+        <div class="step-tier-meta">
+          <span class="step-tier-tier">Compact</span>
+          <span class="step-tier-vw">1024</span>
+          <span class="step-tier-range">step-down kicks in</span>
+        </div>
+        <div class="step-demo">
+          <button class="step-demo-btn m">Send reminder</button>
+          <div class="step-demo-row r56">Ravi Menon · ₹3,245.89 · 30 days</div>
+        </div>
+        <div class="step-demo-spec">
+          <b>Button −8 · Row −16 · Pad −8 · Radius −16</b>
+          <span>Header 24* · Subtext 14* · Side-nav 56</span>
+        </div>
+      </article>
+
+      <article class="step-tier">
+        <div class="step-tier-meta">
+          <span class="step-tier-tier">Compact (held)</span>
+          <span class="step-tier-vw">720</span>
+          <span class="step-tier-range">same tokens as 1024</span>
+        </div>
+        <div class="step-demo">
+          <button class="step-demo-btn m">Send reminder</button>
+          <div class="step-demo-row r56">Ravi Menon · ₹3,245.89 · 30 days</div>
+        </div>
+        <div class="step-demo-spec">
+          <b>No further step-down</b>
+          <span>Table scrolls / columns hide</span>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- The reference table -->
+    <h4 style="font-size:14px;margin-bottom:16px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);font-weight:500">The full reference</h4>
+    <div class="step-table">
+      <div class="step-table-row head">
+        <span>Component</span>
+        <span>1280+ <small>baseline</small></span>
+        <span>1024 <small>step-down</small></span>
+        <span>720 <small>held compact</small></span>
+        <span>WCAG floor <small>do not cross</small></span>
+      </div>
+
+      <div class="step-table-row">
+        <span class="label">Layout padding</span>
+        <span class="base">24px</span>
+        <span>16px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>16px</span>
+        <span class="floor">≥ 8</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Content spacing</span>
+        <span class="base">40px</span>
+        <span>32px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>32px</span>
+        <span class="floor">≥ 16</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Container padding</span>
+        <span class="base">24px</span>
+        <span>16px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>16px</span>
+        <span class="floor">≥ 8</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Container radius</span>
+        <span class="base">32px</span>
+        <span>16px <span style="color:var(--text-3);font-size:11px">(−16)</span></span>
+        <span>16px</span>
+        <span class="floor">≥ 8 (recognizable)</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Side-nav (open)</span>
+        <span class="base">264px</span>
+        <span>56px <span style="color:var(--text-3);font-size:11px">(icon rail)</span></span>
+        <span>56px</span>
+        <span class="floor">≥ 56 (icon row)</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Side-nav padding</span>
+        <span class="base">16px</span>
+        <span>8px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>8px</span>
+        <span class="floor">≥ 8</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Header (H1)</span>
+        <span class="base">36px</span>
+        <span>24px <span style="color:var(--text-3);font-size:11px">(type scale*)</span></span>
+        <span>24px</span>
+        <span class="floor">≥ 18 (hierarchy)</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Subtext / Body</span>
+        <span class="base">16px</span>
+        <span>14px <span style="color:var(--text-3);font-size:11px">(type scale*)</span></span>
+        <span>14px</span>
+        <span class="floor">≥ 14 (WCAG SC 1.4.4)</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Button (primary)</span>
+        <span class="base">48px</span>
+        <span>40px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>40px</span>
+        <span class="floor">≥ 24 click · 44 touch</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Table row padding</span>
+        <span class="base">24px</span>
+        <span>16px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>16px</span>
+        <span class="floor">≥ 8</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Table row height</span>
+        <span class="base">72px</span>
+        <span>56px <span style="color:var(--text-3);font-size:11px">(−16)</span></span>
+        <span>56px</span>
+        <span class="floor">≥ 44 (touch) · 24 (click)</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Table overflow</span>
+        <span class="base">all columns fit</span>
+        <span>all columns fit</span>
+        <span class="tbd">scroll-x or hide last col</span>
+        <span class="floor">—</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Pagination padding</span>
+        <span class="base">24px</span>
+        <span>16px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>16px</span>
+        <span class="floor">≥ 8</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Pagination height</span>
+        <span class="base">72px</span>
+        <span>56px <span style="color:var(--text-3);font-size:11px">(−16)</span></span>
+        <span>56px</span>
+        <span class="floor">≥ 44 (touch)</span>
+      </div>
+      <div class="step-table-row">
+        <span class="label">Pagination button</span>
+        <span class="base">40px</span>
+        <span>32px <span style="color:var(--text-3);font-size:11px">(−8)</span></span>
+        <span>32px</span>
+        <span class="floor">≥ 24 click · 44 touch</span>
+      </div>
+    </div>
+
+    <!-- Type-scale rationale callout -->
+    <div class="step-callout">
+      <div class="step-callout-ico">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h12M5 4v12M10 4v12M14 8l2 2-2 2"/></svg>
+      </div>
+      <div>
+        <h4>Why typography doesn't follow the 8-step rule</h4>
+        <p>Spacing and component heights are <b>arithmetic</b> — 8, 16, 24, 32. Predictable additive steps work because the eye perceives spatial change linearly. Pixels of empty space are pixels of empty space.</p>
+        <p>Typography is <b>perceptual</b> — the eye reads size on a logarithmic curve. A jump from 14→16 (delta 2) reads as the same "step" as 24→28 (delta 4) or 48→56 (delta 8). To make hierarchy feel consistent, type scales use a <b>ratio</b> instead of a fixed delta. DLS uses a perceptual scale with steps that map roughly to a 1.2–1.33 ratio — same perceived "one step" across the whole range.</p>
+        <p><b>Accessibility consequence:</b> WCAG SC 1.4.4 requires text to remain functional when resized to 200%. A ratio-based scale preserves the relative hierarchy at any zoom level. A flat 8px delta would either crush small text faster than large text shrinks (proportion breaks) or leave large headings imperceptibly different (no hierarchy). The type scale prevents both failures.</p>
+        <div class="ratio-grid">
+          <div><b>36 → 24</b><span>Header · 1.50×</span></div>
+          <div><b>16 → 14</b><span>Body · 1.14×</span></div>
+          <div><b>14 → 12</b><span>Caption · 1.17×</span></div>
+          <div><b>32 → 24</b><span>Icon · 1.33×</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:11px;color:var(--text-3);margin-top:16px;font-family:var(--mono)">* Type-scale step, not strict 8. See rationale above. At 720, the compact tokens hold — overflow is absorbed by the table (horizontal scroll or trailing column hidden), not by further shrinking components.</p>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 7 — ANTI-PATTERNS
+     ============================================================ -->
+<section id="anti">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>Don't do this</span>
+      <h2>The four cardinal sins.</h2>
+      <p class="lead">The most common "but it's a big screen, let's use it" mistakes — and the actual fix for each.</p>
+    </div>
+
+    <div class="anti-grid">
+
+      <article class="anti-card">
+        <span class="anti-tag">✕ Anti-pattern 01</span>
+        <h3>The stretched table</h3>
+        <p>Letting columns absorb 4K width — gaps between "Customer" and "Outstanding" become 800px. Eye can't trace the row.</p>
+        <div class="anti-viz">
+          <div style="position:absolute;top:14px;left:12px;font-size:9px;color:var(--text-3);font-family:var(--mono)">Customer</div>
+          <div style="position:absolute;top:14px;right:12px;font-size:9px;color:var(--text-3);font-family:var(--mono)">₹3,245.89</div>
+          <div style="position:absolute;top:30px;left:12px;right:12px;height:1px;background:var(--border)"></div>
+          <div style="position:absolute;top:40px;left:12px;font-size:9px;color:var(--text-1)">Ravi Menon</div>
+          <div style="position:absolute;top:40px;right:12px;font-size:9px;color:var(--text-1)">₹3,245.89</div>
+          <svg style="position:absolute;top:50px;left:60px;right:60px" viewBox="0 0 200 12" preserveAspectRatio="none" height="12"><path d="M0 6 L195 6" stroke="#C0392B" stroke-width="1" stroke-dasharray="3 3"/></svg>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:var(--error);font-family:var(--mono)">~800px eye travel</div>
+        </div>
+        <div class="anti-fix"><b>Fix —</b> cap table at 1280. Center it. Extra space becomes margin, not padding.</div>
+      </article>
+
+      <article class="anti-card">
+        <span class="anti-tag">✕ Anti-pattern 02</span>
+        <h3>The fluid form</h3>
+        <p>Input fields stretching to 1400px on wide screens. User can't track what they're typing — the eye can't follow a single line that long.</p>
+        <div class="anti-viz">
+          <div style="position:absolute;top:14px;left:12px;font-size:9px;color:var(--text-3)">Item name</div>
+          <div style="position:absolute;top:26px;left:12px;right:12px;height:18px;border:1px solid var(--border-strong);border-radius:3px;background:var(--surface);padding:4px 8px;font-size:9px;color:var(--text-3)">Eg : Software development consultancy services for fiscal year 2025 quarter four...</div>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:var(--error);font-family:var(--mono)">120ch · unreadable</div>
+        </div>
+        <div class="anti-fix"><b>Fix —</b> input max-width 480px. Two-column form layout. Field labels above, helper text below.</div>
+      </article>
+
+      <article class="anti-card">
+        <span class="anti-tag">✕ Anti-pattern 03</span>
+        <h3>The tiny island</h3>
+        <p>Capping content at 600px on a 2560px screen. Now whitespace dominates and the work feels like a 90s web page.</p>
+        <div class="anti-viz">
+          <div style="position:absolute;top:14px;left:42%;right:42%;height:90px;background:var(--surface);border:1px solid var(--border);border-radius:6px"></div>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:var(--error);font-family:var(--mono)">800px of empty per side</div>
+        </div>
+        <div class="anti-fix"><b>Fix —</b> 1280–1440px cap respects the work without abandoning the screen. Whitespace frames; doesn't drown.</div>
+      </article>
+
+      <article class="anti-card">
+        <span class="anti-tag">✕ Anti-pattern 04</span>
+        <h3>The edge-pinned CTA</h3>
+        <p>Primary action floating at viewport edge on 4K. Cursor sits center-screen. Every click is a measurable Fitts penalty.</p>
+        <div class="anti-viz">
+          <div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:var(--text-1);border-radius:50%;transform:translate(-50%,-50%)" title="cursor"></div>
+          <div style="position:absolute;top:46%;right:8px;width:50px;height:18px;background:var(--orange);border-radius:3px"></div>
+          <svg style="position:absolute;top:50%;left:50%;width:42%;height:2px;transform:translateY(-50%)"><line x1="0" y1="1" x2="100%" y2="1" stroke="#C0392B" stroke-width="1" stroke-dasharray="3 3"/></svg>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:var(--error);font-family:var(--mono)">~1100px cursor travel · +280ms/click</div>
+        </div>
+        <div class="anti-fix"><b>Fix —</b> primary CTA anchors to content container's right edge, not viewport edge. Lives at predictable distance from cursor.</div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 1 — THESIS
+     ============================================================ -->
+<section id="thesis" class="section-tight">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>The thesis</span>
+      <h2>White space is a feature, not a bug.</h2>
+      <p class="lead">
+        On a 2560px monitor, our content sits in a 1440px lane. Half the screen is "empty."
+        That emptiness is doing real work — protecting reading distance, reducing eye travel,
+        keeping CTAs within thumb-reach of the cursor.
+      </p>
+    </div>
+
+    <div class="thesis">
+      <article class="thesis-card bad">
+        <span class="thesis-tag bad">✕ Naive approach</span>
+        <h3>Fluid stretch to 100%</h3>
+        <p>Table columns explode to 200ch. Forms become unscannable. Primary CTA drifts to the edge — Fitts's law penalty kicks in. Eye saccades blow past comfortable reading width.</p>
+        <div class="thesis-viz bad">
+          <div class="row"></div><div class="row"></div><div class="row"></div><div class="row"></div>
+          <div class="thesis-viz-label">2560px viewport · 2560px content</div>
+        </div>
+      </article>
+      <article class="thesis-card good">
+        <span class="thesis-tag good">✓ BillDesk DLS</span>
+        <h3>Capped at 1440px, centered</h3>
+        <p>Content lane stays constant past 1440. Tables, cards, forms — all sized for sustained scanning. The "empty" margins frame the work, signal premium, match the peer set.</p>
+        <div class="thesis-viz good">
+          <div class="row"></div><div class="row"></div><div class="row"></div><div class="row"></div>
+          <div class="thesis-viz-label">2560px viewport · 1440px content</div>
+        </div>
+      </article>
+    </div>
+
+    <h4 style="margin-top:48px;margin-bottom:12px">We're in good company</h4>
+    <p style="font-size:14px;max-width:60ch">
+      Every major productivity surface used by professionals does the same thing. Users arrive at a BillDesk product with this expectation pre-installed — Jakob's Law gives us this for free.
+    </p>
+    <div class="peer-set">
+      <span class="peer-chip"><span class="pdot" style="background:#1DB954"></span>Spotify</span>
+      <span class="peer-chip"><span class="pdot" style="background:#6264A7"></span>MS Teams</span>
+      <span class="peer-chip"><span class="pdot" style="background:#5E6AD2"></span>Linear</span>
+      <span class="peer-chip"><span class="pdot" style="background:#000"></span>Notion</span>
+      <span class="peer-chip"><span class="pdot" style="background:#F24E1E"></span>Figma</span>
+      <span class="peer-chip"><span class="pdot" style="background:#635BFF"></span>Stripe</span>
+      <span class="peer-chip"><span class="pdot" style="background:#4A154B"></span>Slack</span>
+      <span class="peer-chip"><span class="pdot" style="background:#000"></span>Vercel</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION 2 — 9 UX LAWS
+     ============================================================ -->
+<section id="laws">
+  <div class="shell">
+    <div class="section-head">
+      <span class="eyebrow"><span class="dot"></span>The rationale</span>
+      <h2>Nine UX laws behind the choice.</h2>
+      <p class="lead">Tap any card to read the full justification. Every law is independently sufficient. Stacked, they make the centered-and-capped approach non-negotiable.</p>
+    </div>
+
+    <div class="laws-grid" id="lawsGrid">
+
+      <!-- 1 — Fitts's Law -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">1</div>
+          <div>
+            <h3 class="law-name">Fitts's Law</h3>
+            <div class="law-origin">Paul Fitts · 1954</div>
+          </div>
+        </div>
+        <p class="law-def">Time to acquire a target is proportional to distance, inversely proportional to size. T = a + b·log₂(D/W + 1)</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <circle cx="20" cy="30" r="6" fill="#0D1526"/>
+            <line x1="26" y1="30" x2="150" y2="30" stroke="#F26522" stroke-width="2" stroke-dasharray="4 4"/>
+            <rect x="150" y="20" width="20" height="20" rx="3" fill="#F26522"/>
+            <text x="80" y="22" font-family="JetBrains Mono" font-size="10" fill="#8A97AC">D = distance</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          On a 4K screen, a primary CTA pinned to the right edge sits ~1400px from a cursor at center. That's a measurable ~200–400ms penalty per click <b>per user, per task</b>. By capping content at 1440, the worst-case cursor travel is bounded — a primary action on a 2560px screen behaves identically to one on a 1440px screen.
+        </div>
+      </article>
+
+      <!-- 2 — Hick's Law -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">2</div>
+          <div>
+            <h3 class="law-name">Hick's Law</h3>
+            <div class="law-origin">Hick & Hyman · 1952</div>
+          </div>
+        </div>
+        <p class="law-def">Decision time grows logarithmically with the number of choices visible. T = b·log₂(n + 1)</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <rect x="10" y="20" width="20" height="20" rx="2" fill="#F26522" opacity=".4"/>
+            <rect x="40" y="20" width="20" height="20" rx="2" fill="#F26522" opacity=".4"/>
+            <rect x="70" y="20" width="20" height="20" rx="2" fill="#F26522" opacity=".4"/>
+            <rect x="100" y="20" width="20" height="20" rx="2" fill="#F26522" opacity=".4"/>
+            <rect x="130" y="20" width="20" height="20" rx="2" fill="#F26522" opacity=".4"/>
+            <rect x="160" y="20" width="20" height="20" rx="2" fill="#F26522" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          A fluid table on 4K shows 12+ rows fully on screen at once. Each row is an implicit choice. Capping at 1440 keeps comfortable viewport density (~6–8 actionable rows) — ops users act faster on a focused list than on a wall of data.
+        </div>
+      </article>
+
+      <!-- 3 — Law of Proximity -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">3</div>
+          <div>
+            <h3 class="law-name">Law of Proximity</h3>
+            <div class="law-origin">Gestalt · Wertheimer 1923</div>
+          </div>
+        </div>
+        <p class="law-def">Objects placed close together are perceived as related. Distance breaks the perceptual group.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <circle cx="30" cy="30" r="5" fill="#F26522"/>
+            <circle cx="45" cy="30" r="5" fill="#F26522"/>
+            <circle cx="60" cy="30" r="5" fill="#F26522"/>
+            <circle cx="120" cy="30" r="5" fill="#F26522"/>
+            <circle cx="135" cy="30" r="5" fill="#F26522"/>
+            <circle cx="150" cy="30" r="5" fill="#F26522"/>
+            <text x="35" y="50" font-family="JetBrains Mono" font-size="9" fill="#8A97AC">group A</text>
+            <text x="125" y="50" font-family="JetBrains Mono" font-size="9" fill="#8A97AC">group B</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          A summary card and its sub-metrics belong together. When fluid, they drift apart on wide screens and stop reading as a group. Capping the container preserves the spatial relationship — designers control proximity, the viewport doesn't.
+        </div>
+      </article>
+
+      <!-- 4 — Reading research -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">4</div>
+          <div>
+            <h3 class="law-name">Optimal Line Length</h3>
+            <div class="law-origin">Bringhurst · Tinker</div>
+          </div>
+        </div>
+        <p class="law-def">Comfortable reading: 45–75 characters per line. Beyond ~90ch, the eye loses the next line on return.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <rect x="10" y="20" width="160" height="3" rx="1" fill="#E2E8F0"/>
+            <rect x="10" y="20" width="100" height="3" rx="1" fill="#F26522"/>
+            <text x="10" y="40" font-family="JetBrains Mono" font-size="9" fill="#8A97AC">45ch</text>
+            <text x="100" y="40" font-family="JetBrains Mono" font-size="9" fill="#F26522">75ch</text>
+            <text x="155" y="40" font-family="JetBrains Mono" font-size="9" fill="#C0392B">90ch+</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          Invoice descriptions, customer notes, error messages — any body text wider than ~75ch (≈680px at 14px Inter) becomes painful. A 2400px-wide table cell with full description text is functionally unreadable. The cap protects every text-bearing surface.
+        </div>
+      </article>
+
+      <!-- 5 — Foveal Vision -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">5</div>
+          <div>
+            <h3 class="law-name">Foveal Vision</h3>
+            <div class="law-origin">Human visual system</div>
+          </div>
+        </div>
+        <p class="law-def">Only ~5° of the visual field is in sharp focus (~3cm wide at typical viewing distance). Everything else requires a saccade.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <circle cx="90" cy="30" r="25" fill="none" stroke="#E2E8F0" stroke-width="1"/>
+            <circle cx="90" cy="30" r="8" fill="#F26522" opacity=".3"/>
+            <circle cx="90" cy="30" r="3" fill="#F26522"/>
+            <text x="100" y="22" font-family="JetBrains Mono" font-size="9" fill="#8A97AC">~5° fovea</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          At a typical 60cm viewing distance, the eye's focal "spotlight" is roughly 5cm wide on screen. Information spread across a 70cm wide 4K monitor forces constant head-and-eye repositioning. Cap = fewer saccades = lower visual fatigue across a 6-hour finance ops shift.
+        </div>
+      </article>
+
+      <!-- 6 — Miller's Law -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">6</div>
+          <div>
+            <h3 class="law-name">Miller's Law</h3>
+            <div class="law-origin">George Miller · 1956</div>
+          </div>
+        </div>
+        <p class="law-def">Working memory holds ~7±2 chunks. Beyond that, retention collapses without chunking strategies.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <g fill="#F26522" opacity=".5">
+              <rect x="20" y="22" width="14" height="14" rx="2"/>
+              <rect x="40" y="22" width="14" height="14" rx="2"/>
+              <rect x="60" y="22" width="14" height="14" rx="2"/>
+              <rect x="86" y="22" width="14" height="14" rx="2"/>
+              <rect x="106" y="22" width="14" height="14" rx="2"/>
+              <rect x="126" y="22" width="14" height="14" rx="2"/>
+              <rect x="146" y="22" width="14" height="14" rx="2"/>
+            </g>
+            <text x="55" y="50" font-family="JetBrains Mono" font-size="9" fill="#8A97AC">7 chunks max</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          A 4K dashboard could show 12 KPI cards in one row. A user reviewing collection performance can't hold that in working memory — they'll scan past or compare incorrectly. Three to five cards per row, capped width, is a designed constraint that respects the cognitive ceiling.
+        </div>
+      </article>
+
+      <!-- 7 — Jakob's Law -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">7</div>
+          <div>
+            <h3 class="law-name">Jakob's Law</h3>
+            <div class="law-origin">Jakob Nielsen · 2000</div>
+          </div>
+        </div>
+        <p class="law-def">Users spend most of their time on other sites and expect yours to work the same way.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <rect x="10" y="14" width="40" height="32" rx="3" fill="#E2E8F0"/>
+            <rect x="56" y="14" width="40" height="32" rx="3" fill="#E2E8F0"/>
+            <rect x="102" y="14" width="40" height="32" rx="3" fill="#F26522" opacity=".4"/>
+            <rect x="148" y="14" width="22" height="32" rx="3" fill="#E2E8F0"/>
+            <text x="106" y="58" font-family="JetBrains Mono" font-size="8" fill="#F26522">us</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          Our users live in Tally, Zoho, Razorpay dashboard, GSP portals, Excel, Gmail. <b>Every one</b> of those caps content. If a DLS-based product stretched, users would feel the design is "off" without being able to name why. Conforming to the prevailing pattern is the lowest-cost route to perceived quality.
+        </div>
+      </article>
+
+      <!-- 8 — Tesler's Law -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">8</div>
+          <div>
+            <h3 class="law-name">Tesler's Law</h3>
+            <div class="law-origin">Larry Tesler · ~1980</div>
+          </div>
+        </div>
+        <p class="law-def">Conservation of complexity: every system has irreducible complexity. Someone must absorb it — the system or the user.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <rect x="10" y="20" width="70" height="20" rx="3" fill="#F26522" opacity=".3"/>
+            <rect x="100" y="20" width="70" height="20" rx="3" fill="#0D1526" opacity=".15"/>
+            <text x="30" y="33" font-family="Inter" font-size="9" fill="#0D1526">User</text>
+            <text x="120" y="33" font-family="Inter" font-size="9" fill="#0D1526">System</text>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          Fluid layouts push complexity onto users — "where did the button go?", "why is the table wider here?". A capped layout absorbs that complexity in the design system: predictable lanes, repeatable patterns. The user never thinks about layout. They think about getting paid.
+        </div>
+      </article>
+
+      <!-- 9 — Aesthetic-Usability -->
+      <article class="law-card" data-law>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div class="law-num">9</div>
+          <div>
+            <h3 class="law-name">Aesthetic-Usability Effect</h3>
+            <div class="law-origin">Kurosu & Kashimura · 1995</div>
+          </div>
+        </div>
+        <p class="law-def">Users perceive aesthetically pleasing interfaces as more usable, more trustworthy, and forgive minor friction more easily.</p>
+        <div class="law-svg">
+          <svg width="180" height="60" viewBox="0 0 180 60">
+            <rect x="20" y="14" width="140" height="32" rx="6" fill="#FFFCFA" stroke="#F26522" stroke-width="1"/>
+            <rect x="40" y="22" width="60" height="4" rx="2" fill="#0D1526" opacity=".7"/>
+            <rect x="40" y="30" width="40" height="3" rx="1" fill="#8A97AC"/>
+            <rect x="120" y="22" width="24" height="12" rx="3" fill="#F26522"/>
+          </svg>
+        </div>
+        <div class="law-meta"><span class="muted">How it applies</span><button class="law-toggle">Read <span class="chev">▾</span></button></div>
+        <div class="law-apply">
+          Generous, controlled white space reads as premium. For a fintech product handling crores of receivables, perceived quality directly drives trust — and trust drives the willingness to enter API keys, GST numbers, and bank credentials. The "empty" 4K margins are doing trust-building work.
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+</main>
+
+<footer>
+  <div class="shell foot-inner">
+    <div><b>BillDesk DLS — Responsive Breakpoint Playbook</b> · v1</div>
+    <div>Maintained by Design · Last updated June 2026</div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   LAW CARDS — expand/collapse
+   ============================================================ */
+document.querySelectorAll('[data-law]').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('open');
+  });
+});
+
+/* ============================================================
+   PLAYGROUND
+   ============================================================ */
+const stage = document.getElementById('stage');
+const frame = document.getElementById('frame');
+const handle = document.getElementById('handle');
+const handleVal = document.getElementById('handleVal');
+const tierBtns = document.querySelectorAll('.tier-btn');
+const modeBtns = document.querySelectorAll('.mode-btn');
+const layoutBtns = document.querySelectorAll('.layout-btn');
+
+const r = {
+  vp:    document.getElementById('r-vp'),
+  content:document.getElementById('r-content'),
+  margin:document.getElementById('r-margin'),
+  ws:    document.getElementById('r-ws'),
+  scale: document.getElementById('r-scale'),
+};
+
+let currentWidth = 1440;
+let currentHeight = null;          // null = default frame height
+let activeTier = '1440';
+let isCompact = false;
+let currentMode = 'capped';
+let currentLayout = 'top';         // 'top' or 'side'
+const CAP = 1280;
+const MIN = 720;
+const MAX = 3840;
+const FRAME_DEFAULT_H = 712;
+
+function render(){
+  // compute scale so frame fits the stage on BOTH axes
+  const stageInnerW = stage.clientWidth - 48;
+  const stageInnerH = stage.clientHeight - 80; // leave room for handle
+  const frameH = currentHeight || FRAME_DEFAULT_H;
+  const scaleW = stageInnerW / currentWidth;
+  const scaleH = stageInnerH / frameH;
+  const scale = Math.min(1, scaleW, scaleH);
+
+  // capped or fluid content lane?
+  let contentWidth;
+  if (currentMode === 'capped'){
+    contentWidth = Math.min(currentWidth, CAP);
+  } else {
+    contentWidth = currentWidth - 56;
+  }
+
+  const sideMargin = Math.round((currentWidth - contentWidth) / 2);
+  const wsRatio = Math.round(((currentWidth - contentWidth) / currentWidth) * 100);
+
+  // frame dimensions
+  frame.style.width = currentWidth + 'px';
+  frame.style.height = frameH + 'px';
+  frame.style.transform = `translateX(-50%) scale(${scale.toFixed(3)})`;
+
+  // layout visibility — show only the active mock
+  // Optimizations (compact / medium) only apply in capped mode.
+  // In fluid mode, components stay at full 1440 size to demonstrate the naive failure.
+  const inCapped = currentMode === 'capped';
+  const isMedium = !isCompact && currentWidth <= 1280;
+  stage.querySelectorAll('[data-layout]').forEach(el => {
+    const active = el.dataset.layout === currentLayout;
+    el.style.display = active ? '' : 'none';
+    el.classList.toggle('is-compact', active && isCompact && inCapped);
+    el.classList.toggle('is-medium', active && isMedium && inCapped);
+  });
+
+  // mode classes
+  if (currentMode === 'capped'){
+    stage.classList.add('mode-capped');
+    stage.classList.remove('mode-fluid');
+  } else {
+    stage.classList.add('mode-fluid');
+    stage.classList.remove('mode-capped');
+  }
+
+  // readouts
+  r.vp.textContent = currentWidth + 'px';
+  r.content.textContent = contentWidth + 'px' + (isCompact ? ' · compact' : '');
+  r.margin.textContent = sideMargin + 'px each';
+  r.ws.textContent = wsRatio + '%';
+  r.scale.textContent = '×' + scale.toFixed(2);
+  handleVal.textContent = currentWidth + 'px';
+
+  r.content.classList.toggle('ok', currentMode === 'capped');
+  r.content.classList.toggle('warn', (currentMode === 'fluid' && currentWidth > 1600) || isCompact);
+
+  // active tier button
+  tierBtns.forEach(b => {
+    b.classList.toggle('active', b.dataset.tier === activeTier);
+  });
+}
+
+tierBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeTier = btn.dataset.tier;
+    if (activeTier === '720'){
+      currentWidth = 720;
+      currentHeight = null;
+      isCompact = true;
+    } else {
+      currentWidth = parseInt(activeTier, 10);
+      currentHeight = null;
+      isCompact = false;
+    }
+    render();
+  });
+});
+
+modeBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    modeBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMode = btn.dataset.mode;
+    render();
+  });
+});
+
+layoutBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    layoutBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLayout = btn.dataset.layout;
+    render();
+  });
+});
+
+/* drag handle */
+let dragging = false;
+let startX = 0;
+let startWidth = 0;
+
+function onDown(e){
+  dragging = true;
+  startX = e.clientX || (e.touches && e.touches[0].clientX);
+  startWidth = currentWidth;
+  document.body.style.userSelect = 'none';
+}
+function onMove(e){
+  if (!dragging) return;
+  const x = e.clientX || (e.touches && e.touches[0].clientX);
+  const delta = (x - startX) * 4;  // 4× sensitivity since the frame is scaled down
+  let next = Math.round((startWidth + delta) / 16) * 16; // snap to 16
+  next = Math.max(MIN, Math.min(MAX, next));
+  currentWidth = next;
+  // Drag exits compact mode — it's a freeform width explore
+  if (isCompact){ isCompact = false; currentHeight = null; activeTier = ''; }
+  render();
+}
+function onUp(){
+  dragging = false;
+  document.body.style.userSelect = '';
+}
+
+handle.addEventListener('mousedown', onDown);
+window.addEventListener('mousemove', onMove);
+window.addEventListener('mouseup', onUp);
+handle.addEventListener('touchstart', onDown, {passive:true});
+window.addEventListener('touchmove', onMove, {passive:true});
+window.addEventListener('touchend', onUp);
+
+window.addEventListener('resize', render);
+render();
+
+/* ============================================================
+   FAB — hide while scrolling, reappear when stopped
+   ============================================================ */
+const fabMenu  = document.getElementById('menuBtn');
+const navModal = document.getElementById('navModal');
+let scrollTimer = null;
+
+window.addEventListener('scroll', () => {
+  if(window.innerWidth > 900) return;
+  if(navModal.classList.contains('visible')) return;
+  fabMenu.classList.add('fab-hidden');
+  clearTimeout(scrollTimer);
+  scrollTimer = setTimeout(() => {
+    fabMenu.classList.remove('fab-hidden');
+  }, 800);
+}, {passive: true});
+
+/* ============================================================
+   HAMBURGER MENU — mobile-safe
+   ============================================================ */
+const menuBtn     = fabMenu; /* already declared above */
+const navBackdrop = document.getElementById('navBackdrop');
+const navClose    = document.getElementById('navModalClose');
+
+function openNav(){
+  navBackdrop.classList.add('visible');
+  navModal.classList.add('visible');
+  menuBtn.classList.add('open');
+  menuBtn.setAttribute('aria-expanded','true');
+}
+function closeNav(){
+  navBackdrop.classList.remove('visible');
+  navModal.classList.remove('visible');
+  menuBtn.classList.remove('open');
+  menuBtn.setAttribute('aria-expanded','false');
+}
+function toggleNav(e){
+  e.preventDefault();
+  e.stopPropagation();
+  navModal.classList.contains('visible') ? closeNav() : openNav();
+}
+
+// Both click and touchend to ensure mobile + desktop both work
+menuBtn.addEventListener('click', toggleNav);
+menuBtn.addEventListener('touchend', toggleNav, {passive:false});
+
+navClose.addEventListener('click', closeNav);
+navClose.addEventListener('touchend', function(e){ e.preventDefault(); closeNav(); }, {passive:false});
+
+navBackdrop.addEventListener('click', closeNav);
+navBackdrop.addEventListener('touchend', function(e){ e.preventDefault(); closeNav(); }, {passive:false});
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeNav(); });
+
+/* ============================================================
+   NAV LINKS — close modal + smooth scroll (click & touch)
+   ============================================================ */
+document.querySelectorAll('.toc a, .nav-link').forEach(a => {
+  function handleNavLink(e){
+    e.preventDefault();
+    e.stopPropagation();
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    closeNav();
+    if(target){
+      // Small rAF delay lets visibility transition clear before scroll
+      requestAnimationFrame(() => {
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    }
+  }
+  a.addEventListener('click', handleNavLink);
+  a.addEventListener('touchend', handleNavLink, {passive:false});
+});
+</script>
+</body>
+</html>

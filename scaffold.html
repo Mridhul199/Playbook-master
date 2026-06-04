@@ -1,0 +1,473 @@
+<!doctype html>
+<!--
+  ===========================================================================
+  PLAYBOOK MASTER · canonical scaffold
+  ===========================================================================
+  This file is the visual skin that EVERY playbook produced by playbook-master
+  must inherit. It contains:
+    – BillDesk DLS tokens (color, type, spacing, radii, shadows)
+    – Sticky chrome header with the BillDesk wordmark
+    – Hero shell (eyebrow + h1 + lead + meta strip)
+    – Section base styles
+    – ALL reusable section recipes (findings grid, failure→fix, playground,
+      manual checklist, code-finding cards, anti-pattern cards, step-down
+      table, step-ladder, rationale callout, thesis comparison)
+    – Cream-gradient footer (foot-grid + foot-meta)
+    – Smooth-scroll TOC + tab-switching + speak() Web Speech API JS
+
+  Workflow: COPY this file to the target path, then fill content in:
+    1. <title> in <head>
+    2. .brand-sub text
+    3. TOC links
+    4. Hero (eyebrow text, h1, lead, hero-meta items)
+    5. Sections per blueprint
+    6. Footer (foot-grid columns, foot-meta)
+
+  DO NOT redesign chrome, footer, or section base styles. The drift this
+  scaffold prevents is the whole reason it exists.
+  ===========================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{TITLE}} · BillDesk DLS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =========================== TOKENS — BillDesk DLS =========================== */
+:root{
+  --orange:#F26522; --orange-hover:#D9541A; --orange-tint:#FEF0E8; --orange-tint-2:#FFF7F1;
+  --text-1:#0D1526; --text-2:#4A5568; --text-3:#8A97AC;
+  --canvas:#F7F8FA; --surface:#FFFFFF; --surface-2:#FAFBFC;
+  --border:#E2E8F0; --border-strong:#CBD5E0;
+  --success:#0A8F5C; --warning:#D97706; --error:#C0392B;
+  --success-tint:#E6F4EE; --warning-tint:#FEF3E2; --error-tint:#FBE9E7;
+  --f:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-s:4px; --r-m:6px; --r-l:8px; --r-xl:12px; --r-2xl:16px; --r-pill:999px;
+  --sh-1:0 1px 2px rgba(13,21,38,.04), 0 0 0 1px rgba(13,21,38,.04);
+  --sh-2:0 4px 12px rgba(13,21,38,.06), 0 0 0 1px rgba(13,21,38,.05);
+  --sh-3:0 12px 32px rgba(13,21,38,.08), 0 0 0 1px rgba(13,21,38,.06);
+  --container:1280px; --gutter:32px;
+}
+
+/* =========================== RESET =========================== */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--f);font-size:16px;line-height:1.55;color:var(--text-1);background:var(--canvas);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-feature-settings:'cv11','ss01','ss03'}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+a{color:var(--orange);text-decoration:none}
+a:hover{color:var(--orange-hover)}
+img,svg{display:block;max-width:100%}
+hr{border:none;border-top:1px solid var(--border);margin:0}
+code,pre,.mono{font-family:var(--mono)}
+
+/* =========================== LAYOUT =========================== */
+.shell{max-width:var(--container);margin:0 auto;padding:0 var(--gutter)}
+.chrome{background:linear-gradient(180deg,#FFFCFA 0%,#FFFFFF 100%);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(12px)}
+.chrome-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand-sub{color:var(--text-3);font-weight:400;font-size:13px;border-left:1px solid var(--border);padding-left:12px;margin-left:4px}
+/* Floating left side-nav (scroll-spy) */
+.side-nav{
+  position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:40;
+  display:flex;flex-direction:column;gap:4px;padding:12px 8px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);box-shadow:var(--sh-2);
+  max-width:200px;
+}
+.side-nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;font-size:12px;font-weight:500;
+  color:var(--text-3);border-radius:var(--r-m);
+  transition:background 150ms ease-out,color 150ms ease-out;
+  white-space:nowrap;letter-spacing:.01em;
+}
+.side-nav a::before{
+  content:"";flex-shrink:0;width:6px;height:6px;border-radius:50%;
+  background:var(--border-strong);
+  transition:background 150ms ease-out,box-shadow 150ms ease-out,width 150ms ease-out,height 150ms ease-out;
+}
+.side-nav a:hover{background:var(--orange-tint-2);color:var(--text-2)}
+.side-nav a.is-active{background:var(--orange-tint);color:var(--orange)}
+.side-nav a.is-active::before{
+  background:var(--orange);width:8px;height:8px;
+  box-shadow:0 0 0 3px rgba(242,101,34,.18);
+}
+
+.bg-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-deco::before,.bg-deco::after{content:"";position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(242,101,34,.05),transparent 60%);filter:blur(40px)}
+.bg-deco::before{width:600px;height:600px;top:-200px;left:-200px}
+.bg-deco::after{width:800px;height:800px;bottom:-300px;right:-300px;background:radial-gradient(circle at 70% 70%,rgba(242,101,34,.04),transparent 60%)}
+
+main{position:relative;z-index:1}
+
+/* =========================== TYPOGRAPHY =========================== */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);padding:6px 10px;background:var(--orange-tint);border-radius:var(--r-pill)}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+h1,h2,h3,h4,h5{margin:0;letter-spacing:-.02em;font-weight:600;color:var(--text-1)}
+h1{font-size:56px;line-height:1.05;letter-spacing:-.03em}
+h2{font-size:36px;line-height:1.15;letter-spacing:-.025em}
+h3{font-size:22px;line-height:1.3}
+h4{font-size:17px;line-height:1.35}
+h5{font-size:14px;line-height:1.4}
+.lead{font-size:18px;line-height:1.55;color:var(--text-2);max-width:65ch}
+p{margin:0;color:var(--text-2)}
+.muted{color:var(--text-3)}
+.kbd{font-family:var(--mono);font-size:12px;padding:2px 6px;border-radius:var(--r-s);background:var(--surface);border:1px solid var(--border);box-shadow:0 1px 0 var(--border);color:var(--text-2)}
+
+/* =========================== SECTION BASE =========================== */
+section{padding:96px 0;position:relative}
+section.tight{padding:64px 0}
+.section-head{margin-bottom:48px;max-width:760px}
+.section-head h2{margin-top:12px}
+.section-head .lead{margin-top:16px}
+
+/* =========================== HERO =========================== */
+.hero{padding:88px 0 64px}
+.hero h1{max-width:18ch;margin-top:18px}
+.hero .lead{margin-top:24px;font-size:20px;max-width:60ch}
+.hero-meta{margin-top:40px;display:flex;gap:32px;flex-wrap:wrap;padding-top:32px;border-top:1px solid var(--border)}
+.hero-meta dt{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+.hero-meta dd{margin:0;font-size:14px;color:var(--text-1);font-weight:500}
+
+/* =========================== THESIS (good vs bad side-by-side) =========================== */
+.thesis{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+.thesis-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);padding:24px;overflow:hidden}
+.thesis-card.bad{border-color:#F4C4BE;background:linear-gradient(180deg,#FFF8F7 0%,#FFFFFF 100%)}
+.thesis-card.good{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.thesis-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);margin-bottom:14px}
+.thesis-tag.bad{background:var(--error-tint);color:var(--error)}
+.thesis-tag.good{background:var(--success-tint);color:var(--success)}
+.thesis h3{font-size:18px;margin-bottom:6px}
+.thesis p{font-size:14px;line-height:1.55}
+
+/* =========================== CODE BLOCK (dark, syntax-tinted) =========================== */
+pre.code{margin-top:18px;background:#0D1526;color:#CBD5E0;padding:16px;border-radius:var(--r-l);font-size:12px;line-height:1.6;overflow:auto;border:1px solid #1A2238}
+pre .kw{color:#FFA76B}
+pre .val{color:#7CD9B6}
+pre .com{color:#5A6478;font-style:italic}
+pre .err{color:#FF8B8B;background:rgba(192,57,43,.15);padding:0 2px;border-radius:2px}
+pre .ok{color:#7CD9B6;background:rgba(10,143,92,.15);padding:0 2px;border-radius:2px}
+pre .prop{color:#8FB8FF}
+
+/* =========================== STATUS BADGES =========================== */
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.status::before{content:"";width:6px;height:6px;border-radius:50%}
+.status.fail{background:var(--error-tint);color:var(--error)}
+.status.fail::before{background:var(--error)}
+.status.partial{background:var(--warning-tint);color:var(--warning)}
+.status.partial::before{background:var(--warning)}
+.status.pass{background:var(--success-tint);color:var(--success)}
+.status.pass::before{background:var(--success)}
+
+/* =========================== RULE CARDS (3-grid intro) =========================== */
+.step-intro{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+.step-rule{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px}
+.step-rule .ico{width:40px;height:40px;border-radius:10px;background:var(--orange-tint);color:var(--orange);display:grid;place-items:center;margin-bottom:16px}
+.step-rule h3{font-size:16px;margin-bottom:8px}
+.step-rule p{font-size:13px;line-height:1.55;color:var(--text-2);margin:0}
+.step-rule.a11y{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.step-rule.a11y .ico{background:var(--success-tint);color:var(--success)}
+
+/* =========================== RATIONALE CALLOUT (orange-tinted) =========================== */
+.step-callout{background:linear-gradient(180deg,var(--orange-tint-2) 0%,var(--surface) 60%);border:1px solid var(--orange-tint);border-radius:var(--r-xl);padding:24px;margin-top:24px;display:grid;grid-template-columns:40px 1fr;gap:16px;align-items:start}
+.step-callout-ico{width:40px;height:40px;border-radius:10px;background:var(--orange-tint);color:var(--orange);display:grid;place-items:center;flex-shrink:0}
+.step-callout h4{font-size:15px;margin:0 0 8px;color:var(--text-1)}
+.step-callout p{font-size:13px;line-height:1.6;color:var(--text-2);margin:0 0 10px}
+.step-callout p:last-child{margin-bottom:0}
+
+/* =========================== REFERENCE TABLE =========================== */
+.step-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden}
+.step-table-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;padding:14px 24px;border-bottom:1px solid var(--border);font-size:13px;align-items:center;font-variant-numeric:tabular-nums}
+.step-table-row:last-child{border-bottom:none}
+.step-table-row.head{background:var(--surface-2);font-size:10px;color:var(--text-3);font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:12px 24px}
+.step-table-row.head span{display:flex;flex-direction:column;gap:2px}
+.step-table-row.head span small{font-size:10px;color:var(--text-3);text-transform:none;letter-spacing:0;font-weight:400}
+.step-table-row .label{font-weight:500;color:var(--text-1)}
+.step-table-row .base{color:var(--orange);font-weight:500}
+.step-table-row .floor{color:var(--success);font-size:12px;font-weight:500}
+.step-table-row .tbd{color:var(--text-3);font-style:italic;font-size:12px}
+
+/* =========================== VISUAL LADDER (3-tile) =========================== */
+.step-ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+.step-tier{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:32px 24px 24px;display:flex;flex-direction:column;align-items:center}
+.step-tier.is-base{border-color:var(--orange);background:linear-gradient(180deg,var(--orange-tint-2) 0%,var(--surface) 60%)}
+.step-tier-meta{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:24px}
+.step-tier-tier{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.step-tier.is-base .step-tier-tier{color:var(--orange)}
+.step-tier-vw{font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--text-1);font-variant-numeric:tabular-nums}
+.step-tier-range{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+
+/* =========================== AUDIT HERO SUMMARY (gauge + stat list) =========================== */
+/* REQUIRED for Accessibility blueprint. Sits directly below .hero-meta in the hero. */
+.hero-summary{margin-top:48px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;display:grid;grid-template-columns:1.1fr 1fr;box-shadow:var(--sh-2)}
+.gauge-card{padding:24px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center}
+.gauge-card-title{align-self:flex-start;font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:4px}
+.gauge-card-sub{align-self:flex-start;font-size:11px;color:var(--text-3);margin-bottom:8px}
+.gauge-svg{width:100%;max-width:260px;height:auto;margin:0 auto}
+.gauge-legend{display:flex;gap:40px;justify-content:center;margin-top:16px;padding:16px 0;border-top:1px solid var(--border);align-self:stretch}
+.gauge-legend > div{font-size:10px;color:var(--text-3);text-align:center;font-variant-numeric:tabular-nums;line-height:1.5;flex:0 0 auto;min-width:48px}
+.gauge-legend b{display:block;font-size:18px;font-weight:600;margin-bottom:4px;letter-spacing:-.02em}
+.gauge-trend{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid var(--border);align-self:stretch;font-size:13px;color:var(--error);cursor:pointer;font-weight:500}
+.gauge-trend .arrow{color:var(--text-3);font-size:16px}
+.stat-list{display:flex;flex-direction:column}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;gap:16px}
+.stat-row+.stat-row{border-top:1px solid var(--border)}
+.stat-info h5{font-size:11px;font-weight:500;color:var(--text-3);margin:0;letter-spacing:.06em;text-transform:uppercase}
+.stat-big{font-size:28px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--text-1);margin-top:4px;line-height:1}
+.stat-sub{font-size:12px;color:var(--text-3);margin-top:6px;display:flex;align-items:center;gap:6px;line-height:1.4}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex-shrink:0}
+.stat-row.crit .stat-big{color:var(--error)}
+.stat-row.warn .stat-big{color:var(--warning)}
+.stat-row.pass .stat-big{color:var(--success)}
+
+/* =========================== AUDIT FINDINGS GRID =========================== */
+.findings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.finding{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px;display:flex;flex-direction:column;gap:12px;position:relative}
+.finding-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.finding-num{width:32px;height:32px;border-radius:var(--r-l);background:var(--canvas);color:var(--text-2);display:grid;place-items:center;font-weight:600;font-size:13px;font-family:var(--mono)}
+.finding h3{font-size:16px}
+.finding-wcag{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+.finding-desc{font-size:13px;line-height:1.55;color:var(--text-2);margin:0}
+.finding-issues{margin-top:8px;padding-top:12px;border-top:1px solid var(--border);font-size:12px;color:var(--text-2);line-height:1.6}
+.finding-issues b{color:var(--text-1);font-weight:500}
+.finding-issues ul{margin:6px 0 0;padding-left:18px}
+.finding-issues li{margin-bottom:4px}
+
+/* =========================== PLAYGROUND QUICK-GUIDE STRIP =========================== */
+.pg-guide{background:var(--orange-tint-2);border:1px solid var(--orange-tint);border-radius:var(--r-xl);padding:16px 24px;margin-bottom:24px;display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.pg-guide-row{display:flex;gap:12px;align-items:flex-start}
+.pg-guide-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:600;font-family:var(--mono)}
+.pg-guide-info b{display:block;font-size:13px;color:var(--text-1);margin-bottom:4px}
+.pg-guide-info span{font-size:12px;color:var(--text-2);line-height:1.5}
+.pg-guide-info code{font-family:var(--mono);font-size:11px;padding:1px 6px;background:var(--surface);border-radius:4px;border:1px solid var(--border)}
+
+/* =========================== PLAYGROUND TABS =========================== */
+.playground{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden}
+.playground-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface-2);padding:6px;gap:2px;overflow-x:auto}
+.pg-tab{padding:10px 16px;font-size:13px;font-weight:500;color:var(--text-2);border-radius:var(--r-l);cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.pg-tab:hover{color:var(--text-1)}
+.pg-tab.active{background:var(--surface);color:var(--text-1);box-shadow:var(--sh-1)}
+.pg-panel{padding:32px;display:none}
+.pg-panel.active{display:block}
+.pg-panel h3{font-size:18px;margin-bottom:8px}
+.pg-panel p.lead{font-size:14px;margin-bottom:24px;max-width:60ch}
+
+/* =========================== FAILURE → FIX CARDS =========================== */
+.ff{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.ff-side{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px;display:flex;flex-direction:column;gap:16px}
+.ff-side.bad{border-color:#F4C4BE;background:linear-gradient(180deg,#FFF8F7 0%,#FFFFFF 100%)}
+.ff-side.good{border-color:#BFE5D5;background:linear-gradient(180deg,#F4FBF7 0%,#FFFFFF 100%)}
+.ff-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--r-pill);font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;width:fit-content}
+.ff-tag.bad{background:var(--error-tint);color:var(--error)}
+.ff-tag.good{background:var(--success-tint);color:var(--success)}
+.ff-render{padding:16px;background:var(--canvas);border-radius:var(--r-l);border:1px dashed var(--border);min-height:80px;display:flex;align-items:center;justify-content:center}
+.ff-readout{background:#0D1526;border-radius:var(--r-l);padding:12px 16px;color:#CBD5E0;font-size:13px;line-height:1.5}
+.ff-readout b{color:#FFA76B;font-weight:500;display:block;margin-bottom:4px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.ff-readout .quote{color:#7CD9B6;font-family:var(--mono);font-size:12px}
+.ff-readout .bad-quote{color:#FF8B8B;font-family:var(--mono);font-size:12px}
+.ff-btn{padding:8px 16px;font-size:13px;font-weight:500;background:var(--orange);color:#fff;border-radius:var(--r-l);cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px;width:fit-content}
+.ff-btn:hover{background:var(--orange-hover)}
+
+/* =========================== MANUAL VERIFICATION RESULTS =========================== */
+/* Manual checks are performed IN CHAT, not as forms in the HTML.
+   This section renders the verified outcomes only. */
+.manual-results{display:flex;flex-direction:column;gap:12px}
+.manual-result{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:20px 24px;border-left-width:4px}
+.manual-result.pass{border-left-color:var(--success)}
+.manual-result.fail{border-left-color:var(--error)}
+.manual-result.partial{border-left-color:var(--warning)}
+.manual-result header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:8px}
+.manual-result h3{font-size:15px;margin:0}
+.manual-meta{font-size:11px;color:var(--text-3);font-family:var(--mono);display:block;margin-top:4px}
+.manual-notes{font-size:13px;color:var(--text-2);line-height:1.5;margin:0}
+.manual-notes:empty{display:none}
+
+/* =========================== CODE-FINDING CARDS =========================== */
+.code-finding{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:16px}
+.code-finding-head{padding:20px 24px;display:flex;gap:16px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.code-finding-head h3{font-size:15px}
+.code-finding-head .meta{font-size:12px;color:var(--text-3);font-family:var(--mono);margin-top:6px}
+.code-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.code-body h5{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px}
+.code-body pre.code{margin:0}
+.code-foot{padding:16px 24px;background:var(--surface-2);font-size:12px;color:var(--text-2);border-top:1px solid var(--border);line-height:1.55}
+.code-foot b{color:var(--text-1);font-weight:500}
+
+/* =========================== ANTI-PATTERN CARDS =========================== */
+.anti-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.anti-card{background:var(--surface);border:1px solid #F4C4BE;border-radius:var(--r-xl);padding:22px;position:relative;overflow:hidden}
+.anti-card::before{content:"";position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle at top right,rgba(192,57,43,.08),transparent 70%)}
+.anti-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);background:var(--error-tint);color:var(--error);margin-bottom:12px}
+.anti-card h3{font-size:16px;margin-bottom:6px}
+.anti-card p{font-size:13px;line-height:1.55;color:var(--text-2);margin-bottom:14px}
+.anti-fix{margin-top:14px;padding:12px 14px;background:var(--success-tint);border-radius:var(--r-m);border-left:3px solid var(--success);font-size:12px;color:var(--text-2);line-height:1.55}
+.anti-fix b{color:var(--success);font-weight:600}
+
+/* =========================== FOOTER =========================== */
+footer{border-top:1px solid var(--border);padding:48px 0;margin-top:48px;background:linear-gradient(180deg,transparent 0%,#FFFCFA 100%)}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;font-size:13px}
+.foot-grid h4{font-size:13px;margin-bottom:12px}
+.foot-grid ul{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--text-2)}
+.foot-grid li{font-size:12px}
+.foot-meta{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.foot-meta b{color:var(--text-2)}
+
+/* =========================== RESPONSIVE (the playbook eats its own dogfood) =========================== */
+@media (max-width:980px){
+  h1{font-size:38px}
+  h2{font-size:28px}
+  .step-intro,.findings-grid,.step-ladder{grid-template-columns:1fr}
+  .thesis,.ff,.anti-grid{grid-template-columns:1fr}
+  .code-body{grid-template-columns:1fr}
+  .pg-guide{grid-template-columns:1fr}
+  .hero-summary{grid-template-columns:1fr}
+  .gauge-card{border-right:none;border-bottom:1px solid var(--border)}
+  .side-nav{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-deco" aria-hidden="true"></div>
+
+<!-- =========================== CHROME HEADER =========================== -->
+<header class="chrome">
+  <div class="shell chrome-inner">
+    <div class="brand">
+      <svg width="98" height="24" viewBox="0 0 205 50" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BillDesk">
+        <path d="M58.5859 11.8038H72.1057C73.5478 11.7728 74.9851 11.9815 76.3599 12.4213C77.4686 12.783 78.4758 13.4056 79.2982 14.2375C79.8291 14.7705 80.2516 15.4029 80.542 16.0991C80.8577 16.8702 81.0111 17.6988 80.9926 18.5327V18.6054C81.0528 19.9485 80.6482 21.2709 79.848 22.3467C79.0649 23.3033 78.0583 24.049 76.9187 24.5171C78.3686 24.9531 79.6881 25.7458 80.7583 26.8236C81.7562 27.9819 82.2642 29.4879 82.1734 31.019V31.0917C82.2162 32.1397 81.9988 33.1819 81.5408 34.1238C81.0828 35.0657 80.3987 35.8775 79.5505 36.4857C77.802 37.7752 75.3504 38.42 72.1778 38.42H58.5859V11.8038ZM70.303 22.4194C71.1977 22.4792 72.091 22.2841 72.8808 21.8564C73.1734 21.6727 73.4115 21.413 73.5701 21.1046C73.7287 20.7962 73.8019 20.4505 73.7821 20.1037V20.0311C73.7974 19.7018 73.7294 19.374 73.5843 19.0785C73.4392 18.7831 73.222 18.5296 72.9529 18.342C72.2016 17.8974 71.3346 17.6917 70.4653 17.7518H65.6973V22.4194H70.303ZM71.3576 32.4901C72.2684 32.5475 73.1755 32.3293 73.9624 31.8635C74.2561 31.6656 74.4936 31.394 74.6516 31.0756C74.8096 30.7572 74.8827 30.4028 74.8637 30.0474V29.9656C74.8693 29.6211 74.7899 29.2806 74.6326 28.9747C74.4753 28.6688 74.245 28.4071 73.9624 28.213C73.1467 27.7271 72.2038 27.5023 71.2584 27.5683H65.6973V32.472L71.3576 32.4901Z" fill="#3B475B"/>
+        <path d="M101.895 10.6875H94.6934V38.4206H101.895V10.6875Z" fill="#3B475B"/>
+        <path d="M112.26 10.6875H105.059V38.4206H112.26V10.6875Z" fill="#3B475B"/>
+        <path d="M115.684 11.8106H125.868C128.01 11.7796 130.143 12.1079 132.178 12.7823C133.902 13.3602 135.491 14.2873 136.846 15.5065C138.108 16.6591 139.099 18.0797 139.749 19.6656C140.43 21.3484 140.77 23.1516 140.749 24.9689V25.0415C140.759 26.8768 140.403 28.6955 139.704 30.3902C139.042 31.9998 138.039 33.4441 136.765 34.6219C135.39 35.8645 133.781 36.8157 132.033 37.4188C129.987 38.1145 127.838 38.4524 125.679 38.4177H115.684V11.8106ZM125.995 31.8704C127.913 31.965 129.797 31.3406 131.285 30.1177C131.969 29.495 132.505 28.725 132.853 27.8651C133.201 27.0052 133.352 26.0774 133.295 25.1505V25.0688C133.349 24.1449 133.196 23.2208 132.848 22.3644C132.5 21.5079 131.966 20.7409 131.285 20.1196C129.81 18.8669 127.922 18.2187 125.995 18.3035H123.002V31.8885L125.995 31.8704Z" fill="#3B475B"/>
+        <path d="M153.278 38.9105C151.773 38.9277 150.279 38.6629 148.87 38.1295C147.589 37.6459 146.416 36.9113 145.418 35.9682C144.434 35.0206 143.663 33.8719 143.156 32.5992C142.601 31.2148 142.326 29.7331 142.345 28.2404V28.1496C142.336 26.7167 142.59 25.2944 143.093 23.9542C143.576 22.6835 144.302 21.5204 145.229 20.5307C146.151 19.5505 147.261 18.7689 148.492 18.2332C149.801 17.6669 151.213 17.3823 152.638 17.3977C154.212 17.3591 155.775 17.6691 157.216 18.3058C158.454 18.8678 159.548 19.7063 160.416 20.7577C161.278 21.8073 161.922 23.021 162.309 24.3265C162.73 25.7246 162.94 27.1788 162.931 28.6399V29.3573C162.929 29.6092 162.914 29.8608 162.886 30.111H149.24C149.433 31.1344 149.991 32.0515 150.808 32.69C151.645 33.2677 152.643 33.5605 153.656 33.5255C154.467 33.5347 155.27 33.3642 156.009 33.026C156.822 32.6329 157.558 32.0945 158.181 31.4369L162.138 34.7332C161.167 35.9965 159.937 37.0341 158.532 37.7753C156.907 38.5768 155.113 38.9694 153.305 38.9195L153.278 38.9105ZM156.243 26.4605C156.176 25.4502 155.777 24.4914 155.107 23.7362C154.799 23.395 154.421 23.1256 154 22.9468C153.578 22.768 153.122 22.6841 152.665 22.701C152.228 22.687 151.793 22.77 151.391 22.9442C150.989 23.1184 150.63 23.3795 150.339 23.709C149.686 24.4816 149.267 25.4273 149.132 26.4333L156.243 26.4605Z" fill="#3B475B"/>
+        <path d="M173.144 38.8629C171.435 38.8663 169.735 38.6185 168.097 38.1274C166.447 37.6273 164.893 36.8506 163.5 35.8299L166.204 31.462C167.319 32.2141 168.533 32.8069 169.809 33.2237C170.907 33.6 172.057 33.7993 173.216 33.8139C174.433 33.8139 175.019 33.4507 175.019 32.7151V32.6334C175.019 32.2339 174.739 31.916 174.19 31.7253C173.387 31.4166 172.568 31.1499 171.738 30.9262C170.776 30.6863 169.831 30.3829 168.908 30.0181C168.089 29.7108 167.316 29.2923 166.61 28.774C165.922 28.2707 165.369 27.6031 165.001 26.8311C164.633 26.0592 164.461 25.2071 164.5 24.3516V24.2426C164.483 23.2387 164.695 22.2441 165.122 21.3368C165.525 20.5039 166.115 19.7765 166.844 19.2118C167.615 18.6181 168.489 18.1746 169.422 17.9042C170.481 17.589 171.58 17.436 172.684 17.4501C174.187 17.4462 175.683 17.6541 177.128 18.0676C178.529 18.4707 179.863 19.0828 181.085 19.8838L178.642 24.4243C177.621 23.8609 176.55 23.3957 175.442 23.0349C174.526 22.7269 173.569 22.5556 172.603 22.5264C172.17 22.496 171.738 22.5939 171.359 22.8079C171.237 22.8812 171.134 22.9846 171.062 23.1084C170.989 23.2322 170.949 23.3725 170.945 23.5162V23.607C170.945 24.0065 171.233 24.3335 171.846 24.5786C172.459 24.8238 173.225 25.0963 174.316 25.4322C175.406 25.7682 176.263 26.0225 177.146 26.3403C177.935 26.6488 178.681 27.061 179.363 27.5663C180.001 28.0503 180.524 28.6705 180.895 29.3825C181.3 30.1666 181.498 31.0419 181.472 31.9251V31.9978C181.494 33.0265 181.287 34.047 180.868 34.9854C180.471 35.8215 179.888 36.5547 179.165 37.1285C178.383 37.7394 177.489 38.1871 176.533 38.4452C175.424 38.7379 174.281 38.8815 173.135 38.872" fill="#3B475B"/>
+        <path d="M183.473 10.6875H190.674V24.7357L196.217 17.8614H204.32L197.227 26.1069L204.509 38.4116H196.632L192.522 31.4283L190.674 33.5896V38.4116H183.473V10.6875Z" fill="#3B475B"/>
+        <path d="M91.5206 14.0656V10.6875H84.3281V17.9432L91.5206 14.0656Z" fill="#F15701"/>
+        <path d="M84.3281 22.1368V38.4098H91.5206V15.4805L84.3281 22.1368Z" fill="#3B475B"/>
+        <path d="M21.9651 8.63596L16.1516 12.0231V18.3889L21.9651 15.0108L30.3743 19.9054V29.6855L21.9651 34.5802L13.5558 29.6855V10.5339L20.6672 6.37481V0L0 12.0231V37.5769L20.6672 49.6V43.2161L5.48 34.3895V15.2105L8.07579 13.7031V32.8729L21.9651 40.9459L35.8543 32.8729V16.718L21.9651 8.63596Z" fill="#F15701"/>
+        <path d="M23.2637 0V6.37481L38.4508 15.2015V34.3804L23.2637 43.2161V49.6L43.9398 37.5678V12.0141L23.2637 0Z" fill="#3B475B"/>
+      </svg>
+      <span class="brand-sub">{{BRAND_SUB}}</span>
+    </div>
+  </div>
+</header>
+
+<!-- =========================== FLOATING LEFT NAV (scroll-spy) =========================== -->
+<nav class="side-nav" aria-label="Sections">
+  <!-- {{NAV_LINKS}} — fill one per section:
+       <a href="#sec-id">Label</a>
+       Active state is added by JS as user scrolls. -->
+</nav>
+
+<main>
+
+  <!-- =========================== HERO =========================== -->
+  <section class="hero">
+    <div class="shell">
+      <span class="eyebrow"><span class="dot"></span>{{EYEBROW}}</span>
+      <h1>{{H1}}</h1>
+      <p class="lead">{{LEAD}}</p>
+      <dl class="hero-meta">
+        <!-- {{META_ITEMS}} — fill 4–6 of:
+             <div><dt>Label</dt><dd>Value</dd></div> -->
+      </dl>
+    </div>
+  </section>
+
+  <!-- =========================== SECTIONS GO HERE =========================== -->
+  <!-- Follow the chosen blueprint (Breakpoints / Accessibility / Specs).
+       Each section wraps content in <div class="shell">.
+       Use section.tight for shorter sections. -->
+
+</main>
+
+<!-- =========================== FOOTER =========================== -->
+<footer>
+  <div class="shell">
+    <div class="foot-grid">
+      <div>
+        <h4>{{FOOT_COL1_H}}</h4>
+        <p style="font-size:13px;line-height:1.6">{{FOOT_COL1_BODY}}</p>
+      </div>
+      <div>
+        <h4>{{FOOT_COL2_H}}</h4>
+        <ul>
+          <!-- {{FOOT_COL2_LIST}} — <li><a href="...">Label</a></li> -->
+        </ul>
+      </div>
+      <div>
+        <h4>{{FOOT_COL3_H}}</h4>
+        <ul>
+          <!-- {{FOOT_COL3_LIST}} -->
+        </ul>
+      </div>
+    </div>
+    <div class="foot-meta">
+      <div><b>{{FOOT_META_TITLE}}</b> · v1 · {{DATE}}</div>
+      <div>{{FOOT_META_AUDIENCE}}</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Smooth-scroll for floating side-nav */
+document.querySelectorAll('.side-nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  });
+});
+
+/* Scroll-spy — highlight current section in the side-nav */
+(function initScrollSpy(){
+  const navLinks = document.querySelectorAll('.side-nav a[href^="#"]');
+  if (!navLinks.length || !('IntersectionObserver' in window)) return;
+  const targets = [];
+  navLinks.forEach(a => {
+    const el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) targets.push(el);
+  });
+  if (!targets.length) return;
+  const setActive = (id) => {
+    navLinks.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + id));
+  };
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
+    if (visible.length) setActive(visible[0].target.id);
+  }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+  targets.forEach(t => observer.observe(t));
+  /* Set initial active = first section in view on load */
+  setActive(targets[0].id);
+})();
+
+/* Playground tab switching */
+document.querySelectorAll('.pg-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    document.querySelectorAll('.pg-tab').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.pg-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === target));
+  });
+});
+
+/* Screen-reader simulator (Web Speech API) */
+function speak(btn, text){
+  if (!('speechSynthesis' in window)) { alert('Web Speech API not supported. Text: ' + text); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 1.0;
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(x => x.lang.startsWith('en') && /Samantha|Microsoft|Google US|Daniel/.test(x.name));
+  if (v) u.voice = v;
+  speechSynthesis.speak(u);
+  const original = btn.textContent;
+  btn.textContent = '◼ Playing…';
+  u.onend = () => { btn.textContent = original; };
+}
+</script>
+</body>
+</html>
