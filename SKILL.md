@@ -93,77 +93,82 @@ When invoked, before asking for the folder or anything else, ask:
 
 Lock in the choice before Step 1. All subsequent steps (folder structure, scope questions, proposed sections) are tailored to the chosen type.
 
-### Step 1 — Project folder (after type is chosen)
+### Step 1 — Component + source resolution (after type is chosen)
 
-The user is likely a **designer** (not a dev) auditing a component. They need a clean structure to drop files into. Don't ask them to organize anything themselves.
+The user is a **designer** working against the DLS source tree. They already have the `src/` folder cloned somewhere on disk. Don't ask them to create folders or copy files — read straight from their source.
 
 Send this prompt:
 
-> Before we start — let's set up a project folder so I can read everything in one place.
+> Which DLS component? And paste the absolute path to your `src/` folder.
 >
-> 1. **Create one empty folder** anywhere (e.g., `~/Documents/Project/[component]-audit/`).
-> 2. **Send me the folder path.**
+> Example: `Component: Pagination` · `Source: ~/Downloads/src 2/`
 >
-> I'll create the substructure inside it (subfolders for screenshots, dev files, references, and the output HTML).
+> If your story files live somewhere non-standard, paste that path too. Otherwise I'll look at `<src>/../stories/`.
 
-Once they share the path, **YOU create the substructure**:
+#### Auto-resolve
 
-```bash
-mkdir -p [path]/screenshots
-mkdir -p [path]/dev
-mkdir -p [path]/references
-touch [path]/[topic]-playbook.html   # output, populated later
-```
+Given `Component` (e.g., `Pagination`) and `sourceRoot` (e.g., `~/Downloads/src 2/`):
 
-Then send the type-appropriate "drop your inputs" prompt:
+1. **Verify source exists** — check `<sourceRoot>/<Component>/`
+   - If missing → fuzzy-match against `<sourceRoot>/*` folder names and suggest 3 nearest:
+     > Couldn't find `Pgination` in your src. Did you mean: **Pagination**, **PageHeader**, **PriceSlider**?
+   - Ask user to confirm or repaste the correct name.
+2. **List source files** — every `.tsx`, `.ts`, `.css` under `<sourceRoot>/<Component>/` (and `__tests__/`).
+3. **Resolve story file** — try in order:
+   - `<sourceRoot>/../stories/<Component>.stories.tsx`
+   - `<sourceRoot>/../stories/<Component>/<Component>.stories.tsx`
+   - `<sourceRoot>/<Component>/<Component>.stories.tsx`
+   - If none → ask user.
+4. **Extract variants from the story** — parse `export const X = ...` declarations (excluding `default`). Present the list:
+   > Found 5 variants in `Button.stories.tsx`: Primary, Secondary, Tertiary, Destructive, Text.
+   > Audit all, or pick a subset?
+5. **Create output folder**:
+   ```bash
+   mkdir -p ~/Documents/playbooks/<Component>-playbook
+   cp ~/.claude/skills/playbook-master/scaffold.html ~/Documents/playbooks/<Component>-playbook/<component-name>-playbook.html
+   ```
+   If the user has a different preferred location, ask once and use it.
 
-**If Breakpoints:**
-> Folder ready. Drop into the matching subfolder:
-> - **`screenshots/`** — Same component at multiple viewports (720 / 1024 / 1280 / 1440 / 1920 / 2560). Name files like `dashboard-1440.png`.
-> - **`dev/`** — Tailwind config, design-token files, the component code.
-> - **`references/`** — Existing breakpoint specs, related playbooks.
->
-> Reply "ready" when done.
+#### Optional extra inputs
 
-**If Accessibility:**
-> Folder ready. Drop into the matching subfolder:
-> - **`screenshots/`** — Current rendered states (default, focus, hover, error, empty, loading). Optionally Figma exports.
-> - **`dev/`** — Component code (TSX/JSX/HTML/CSS), tests if any.
-> - **`references/`** — WCAG criteria notes, existing audit reports, design specs.
->
-> Reply "ready" when done. Live URL or staging link also useful — paste inline.
+The designer can paste inline at any point:
+- Live URL / Storybook URL
+- Figma frame links
+- Existing playbooks for style match
+- Screenshots (drag into chat)
 
-**If Specs:**
-> Folder ready. Drop into the matching subfolder:
-> - **`screenshots/`** — Figma exports of every variant + state. One PNG per variant.
-> - **`dev/`** — Component code, TypeScript type definitions, design tokens used.
-> - **`references/`** — Existing spec docs, API docs, related component playbooks.
->
-> Reply "ready" when done.
+No required `screenshots/`, `dev/`, `references/` folders — those are gone. Read what the user gives you. Note what's missing but proceed unless the gap is structural.
 
-When the user says ready:
-1. List the contents of each subfolder
-2. Read every file (text + images)
-3. Note what's present and what's missing
-4. Catalog screenshots if there are multiple variants
+#### Visual clone (Breakpoints + Specs blueprints)
 
-### Step 2 — Scope (one round, exactly 3 questions)
+When the playbook needs to show the component visually (mock dashboard at multiple viewports, variant grid, anatomy diagram):
 
-Ask ONLY these three:
+- **Read the TSX source** and identify the visual structure (JSX tree + className strings).
+- **Recreate it inline** in plain HTML/CSS using the same DLS tokens and Tailwind classes.
+- **DO NOT** ship a React runtime, Babel CDN, or any bundler output inside the playbook. The output is a single self-contained HTML file.
+- **DO NOT** screenshot the component — recreate it. The clone is editable, scalable, accessible to inspection.
 
-1. **Topic** — What is this playbook documenting? (one sentence)
-2. **Scope** — One component / one rule / full system? Anything explicitly OUT of scope (e.g., "no step-down — that's the breakpoint playbook")?
-3. **Interactive elements** — Propose 2–3 based on topic, ask which to keep.
+The clone is a **snapshot** of the source at the moment the playbook was generated. Note this in the footer:
+> Audited against `<Component>` @ commit `<short-sha>` on `<YYYY-MM-DD>`.
+
+If no Git available, just use the date.
+
+### Step 2 — Scope (one round, exactly 2 questions)
+
+The component is known from Step 1, so "Topic" is implicit. Ask only:
+
+1. **Exclusions** — Anything explicitly OUT of scope? (e.g., "no step-down behavior — that's the breakpoint playbook", "skip the Destructive variant — not in production yet")
+2. **Interactive elements** — Propose 2–3 based on the blueprint, ask which to keep.
 
 DO NOT ask about:
-- **Audience** — always **Dev + stakeholders**. Write for both: balance code snippets with visual explanations. No jargon without context.
-- **WCAG level** — default **AA**, mention AAA where relevant as upgrade path.
-- **Mobile** — default **no** (desktop-first, 720+ range) unless explicitly mentioned.
+- **Component name** — already from Step 1
+- **Audience** — always **Dev + stakeholders**. Write for both.
+- **WCAG level** — default **AA**, mention AAA as upgrade path.
+- **Mobile** — default **no** (desktop-first, 720+ range) unless explicit.
 - Section count (propose it)
-- Color palette (always DLS — see tokens below)
+- Color palette (always DLS)
 - Font (always Inter)
 - File format (always single self-contained HTML)
-- Hosting (assume GitHub Pages-ready)
 
 ### Step 3 — Propose structure
 
@@ -850,6 +855,10 @@ the user's style:
 - ❌ Decorative SVGs without `aria-hidden="true"`.
 - ❌ Using icon fonts. Always inline SVG.
 - ❌ External CSS/JS files. Always single HTML.
+- ❌ React runtime / Babel CDN inside the playbook. Visual clones are hand-coded HTML/CSS using DLS tokens — never live React.
+- ❌ Screenshots of components as the primary visual. Always recreate from source as inline HTML.
+- ❌ Auditing components in bulk. One component per playbook run.
+- ❌ Asking user to create folders + drop files. Read straight from their DLS `src/` path.
 - ❌ Placeholder Lorem text in final output.
 - ❌ Side-nav widths other than 56 (icon-only), 200 (medium), 240/264 (full open).
 - ❌ "TBD" sections in delivered output (unless explicitly approved as placeholder).
@@ -889,13 +898,16 @@ the user's style:
 
 ## Output
 
-Save to the current working directory (or ask the user for a path if ambiguous):
-`./[descriptive-name]-playbook.html`
+Default location: `~/Documents/playbooks/<Component>-playbook/<component-name>-playbook.html`
+
+The skill creates this folder during Step 1. If the user has a different preferred location, ask once and use it.
 
 After writing, tell user:
 1. The file path
 2. Section count / what's inside
-3. Anything that needs vetting (mismatches, placeholders, assumptions)
+3. Variants audited (if accessibility/specs blueprint)
+4. Commit SHA + date noted in footer (snapshot reference)
+5. Anything that needs vetting (mismatches, assumptions, missing inputs)
 
 Don't oversell. Don't add emojis. Don't add "Hope this helps!"
 

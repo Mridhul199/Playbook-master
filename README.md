@@ -71,11 +71,13 @@ In Claude Code, say any of:
 
 Claude will:
 1. Ask **which blueprint** — Breakpoints, Accessibility, or Specs
-2. Ask for a **project folder** and set up `screenshots/` · `dev/` · `references/` subfolders for you
-3. Ask **3 scope questions** (topic, scope/exclusions, interactive elements)
+2. Ask **which component + path to your DLS `src/` folder** — skill auto-resolves source, story, tests, and variants
+3. Ask **2 scope questions** (exclusions, interactive elements)
 4. Propose a **section structure** for approval
-5. Build the playbook as a single HTML file in your project folder
+5. Build the playbook as a single HTML file at `~/Documents/playbooks/<Component>-playbook/`
 6. (Accessibility) Ask if you want to run manual checks inline in chat — your answers render into the published HTML
+
+The skill recreates components visually from your source code as inline HTML/CSS (using real DLS tokens). No screenshots needed for handoff.
 
 ---
 

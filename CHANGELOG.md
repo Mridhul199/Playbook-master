@@ -2,6 +2,44 @@
 
 All notable changes to playbook-master.
 
+## [1.1.0] — 2026-06-05
+
+Source-aware workflow. Designers point at their DLS `src/` folder; the skill auto-resolves source, story, tests, and variants. No more manual folder creation or file copying.
+
+### Added
+- **Component resolution from source tree** — Step 1 now asks `"Which component? + path to src/"`. Skill walks `<src>/<Component>/`, finds the matching story file, parses variants from `export const X = ...` declarations.
+- **Fuzzy match fallback** — if the component name doesn't exist as a subfolder, skill suggests 3 nearest matches.
+- **Output folder convention** — skill creates `~/Documents/playbooks/<Component>-playbook/` and copies `scaffold.html` into it as the working file. User can override the location.
+- **Visual clone guidance** — explicit rule that visuals are hand-coded HTML/CSS using DLS tokens, read from TSX source. No React runtime, no Babel CDN, no screenshots-as-primary-visual.
+- **Snapshot reference** — footer notes "Audited against `<Component>` @ commit `<sha>` on `<date>`" so reviewers know which source version the playbook reflects.
+
+### Changed
+- **Step 1** rewritten — replaced "create folder + drop files into screenshots/dev/references" with the source-aware flow.
+- **Step 2** trimmed from 3 questions to 2 — component name is implicit from Step 1, so "Topic" is dropped.
+
+### Removed
+- Manual folder creation prompt
+- `screenshots/`, `dev/`, `references/` subfolder requirement
+- Type-specific "drop your inputs" prompts (no longer needed)
+
+### Anti-patterns added
+- Don't ship a React runtime / Babel CDN inside the playbook
+- Don't use screenshots as primary visuals — recreate from source
+- Don't audit components in bulk — one per run
+- Don't ask the user to create folders — read from their DLS `src/`
+
+### Unchanged
+- HTML output structure (same scaffold, same blueprints, same recipes)
+- DLS tokens, type scale, 8px grid
+- Scroll-spy side-nav
+- Audit summary card (gauge + stat list)
+- Manual checks chat workflow
+- All section recipes
+
+Existing playbooks (table, pagination, button, selection-control, breakpoint) remain visually compatible with v1.1.0 output.
+
+---
+
 ## [1.0.0] — 2026-06-04
 
 Initial release. Refined over ~50 iterations on three production playbooks (Smart Collect breakpoint, Table accessibility audit, Pagination accessibility audit, Selection-control accessibility audit, Button accessibility audit).
