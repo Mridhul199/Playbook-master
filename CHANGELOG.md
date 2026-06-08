@@ -2,6 +2,45 @@
 
 All notable changes to playbook-master.
 
+## [1.2.0] — 2026-06-05
+
+Token-budget refactor. New sessions starting a playbook were burning ~50% of context on skill load alone. Split SKILL.md by blueprint so only the relevant one loads per run.
+
+### Added
+- **`blueprints/breakpoints.md`** — Breakpoints-specific instructions + screen-mock CSS recipes (`.mock-*` classes for whole-screen Breakpoints) + the canonical step-down table (Base/Medium/Compact values for every token).
+- **`blueprints/accessibility.md`** — Accessibility-specific instructions, gauge math, code-finding card, manual-check chat workflow.
+- **`blueprints/specs.md`** — Specs-specific instructions, variant grid, props table, tokens-used table.
+- **Token-discipline rules in SKILL.md** — "don't re-read after Edit", "use `limit`/`offset` on TSX", "don't load examples unless asked", "read scaffold.html once per session", "load ONE blueprint, not three".
+- **Screen-level Breakpoints** — Step 1 now accepts a screen name (e.g., `Orders screen`) as the "component" target.
+- **Canonical step-down table** — single source of truth for every token's Base/Medium/Compact value. Reuse verbatim instead of re-deriving from prose.
+
+### Changed
+- **SKILL.md trimmed from 934 → ~250 lines.** Contains only the router (workflow, tokens, universal recipes, voice, anti-patterns). Blueprint-specific content moved out.
+- **Step 0** — locks blueprint choice and tells Claude to read ONLY the matching `blueprints/*.md` file.
+
+### Removed (from SKILL.md, moved to blueprint files)
+- Audit summary card recipe + arc math → `blueprints/accessibility.md`
+- Playground quick-guide + failure→fix → `blueprints/accessibility.md`
+- Code-finding card → `blueprints/accessibility.md`
+- Manual verification render → `blueprints/accessibility.md`
+- Tier reference table + visual ladder → `blueprints/breakpoints.md`
+- Variant grid + props table → `blueprints/specs.md`
+
+### Token impact
+On a fresh playbook session: ~50% reduction on initial skill load. Single-blueprint sessions read ~600 lines of skill content vs. ~1,400 before.
+
+### Unchanged
+- HTML output structure (same scaffold, same section recipes)
+- DLS tokens, type scale, 8px grid
+- Scroll-spy side-nav
+- Audit summary card requirement
+- Manual checks chat workflow
+- All section recipes (just relocated by blueprint)
+
+Existing playbooks (table, pagination, button, selection-control, breakpoint, orders-screen) remain visually compatible.
+
+---
+
 ## [1.1.0] — 2026-06-05
 
 Source-aware workflow. Designers point at their DLS `src/` folder; the skill auto-resolves source, story, tests, and variants. No more manual folder creation or file copying.
