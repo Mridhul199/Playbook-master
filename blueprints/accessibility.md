@@ -6,6 +6,54 @@ For WCAG 2.1 AA audits with code-level findings + manual checks.
 
 ---
 
+## Design change required tag — MANDATORY rule
+
+Playbooks are read by both developers and designers. For any finding whose fix requires **design-team action** (token update, spec change, visual pattern mandate) rather than a code change, you must add a `[Design change required]` tag.
+
+**When to apply:**
+- Color/contrast failures tied to a design token value (e.g. placeholder color, disabled text token)
+- Non-color error cue missing — the decision to mandate an icon/pattern belongs to design
+- Touch target size specified as too small in the design spec
+- Focus ring visual style (color, width) not matching the design system spec
+- Any finding where the developer cannot fix the issue without a new design deliverable
+
+**When NOT to apply:**
+- Missing ARIA attributes (`aria-invalid`, `aria-describedby`, etc.) — pure code fix
+- Missing `id` or `role` corrections — pure code fix
+- Live region additions — pure code fix
+
+**HTML recipe — finding card:**
+```html
+<article class="finding design-flagged">
+  <div class="finding-head">
+    <div class="finding-num">05</div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+      <span class="status partial">Partial</span>
+      <span class="design-tag">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 9.5l5-7.5 5 7.5H2z"/><path d="M6 5.5v2M6 8.5v.5"/></svg>
+        Design change required
+      </span>
+    </div>
+  </div>
+  ...
+</article>
+```
+
+**HTML recipe — inline (callouts, playground sections):**
+```html
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+  <h4 style="margin:0">[Finding title]</h4>
+  <span class="design-tag">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 9.5l5-7.5 5 7.5H2z"/><path d="M6 5.5v2M6 8.5v.5"/></svg>
+    Design change required
+  </span>
+</div>
+```
+
+CSS is in `scaffold.html` under `DESIGN-REQUIRED TAG`. Do not redefine it inline.
+
+---
+
 ## Section structure
 
 ```
@@ -26,6 +74,36 @@ For WCAG 2.1 AA audits with code-level findings + manual checks.
 ```
 
 **Common drift:** rendering only `.hero-meta` and skipping `.hero-summary` (gauge). The card is NOT optional — every audit playbook must include it.
+
+---
+
+## Design-required tag
+
+Some WCAG findings require design intervention — a token change, a component spec update, or a new visual pattern — rather than a code fix. Tag these explicitly so developers don't attempt to fix them in code.
+
+**When to apply:**
+- A color or contrast issue traces to a design token (e.g. `placeholder-text-light` is too light)
+- The fix requires adding a new visual element (e.g. an error icon to avoid color-only signaling)
+- The component spec must mandate a prop or pattern that is currently optional (e.g. `errorHelperText` must become required)
+
+**How to apply:**
+
+1. Add `class="design-flagged"` to the parent `.finding` card — turns the card indigo-tinted.
+2. Insert the tag element after the `<span class="finding-wcag">` line:
+
+```html
+<span class="design-tag">
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 9.5l5-7.5 5 7.5H2z"/><path d="M6 5.5v2M6 8.5v.5"/></svg>
+  Design change required
+</span>
+```
+
+3. In the finding-issues list, add a **Design fix:** bullet describing what the design team must change.
+4. In any related callout (e.g. contrast checker), add the tag inline next to the `<h4>` and update the copy to say "this is a token-level change, not a code fix."
+
+**Do NOT apply** to findings that are purely code changes (missing `aria-invalid`, wrong `role`, missing `id`, etc.) — those stay untagged.
+
+**Typical design-required axes:** Color & non-color cues (1.4.1), Contrast tokens (1.4.3), Target size spec (2.5.5 when the design itself is undersized).
 
 ---
 
