@@ -10,9 +10,25 @@ description: |
   - "Same format as the breakpoint playbook"
 ---
 
-# Playbook Master · v1.2.0
+# Playbook Master · v1.3.0
 
 Router file. Loads on every invocation. Blueprint-specific instructions live in `blueprints/`. Read **only** the blueprint matching the user's Step 0 choice — do not pre-load all three.
+
+---
+
+## GLOBAL RULE — Design change required tag (ALL playbook types)
+
+For every finding, check, or rule card you write: if the fix requires design-team action — a token change, a spec update, a new visual pattern, a mandatory prop, or any deliverable the developer cannot produce alone — you MUST apply the design-flagged treatment.
+
+**Checklist — run on every finding before writing it:**
+1. Can a developer fix this with code alone? → no tag needed.
+2. Does the fix require a design token update, DLS spec change, new icon/pattern, or prop mandate? → add `class="design-flagged"` to the `<article>` AND insert the `<span class="design-tag">` element.
+
+**This applies to ALL three blueprint types** (Accessibility, Specs, Breakpoints). It is not limited to accessibility audits.
+
+**After writing all findings, do a mandatory scan:** find every card that has a "Design fix:" or "Design action:" bullet — each one MUST carry the design-flagged class. Missing tags are a defect, not a style choice.
+
+The CSS for `.design-tag` and `.finding.design-flagged` is already in `scaffold.html` under `DESIGN-REQUIRED TAG`. Do not redefine it inline.
 
 ---
 

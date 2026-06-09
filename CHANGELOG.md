@@ -2,6 +2,30 @@
 
 All notable changes to playbook-master.
 
+## [1.3.0] — 2026-06-09
+
+Design-tag enforcement upgrade. The `[Design change required]` tag was already in the blueprint but applied inconsistently — only to obvious color/contrast findings. This release makes it a hard checklist step that fires on every finding across all three blueprint types.
+
+### Changed
+- **SKILL.md** — Added `GLOBAL RULE — Design change required tag` section at the top of the router (above workflow steps). Applies to ALL blueprint types, not just accessibility. Includes a mandatory post-write scan: after all findings are written, rescan for any "Design fix:" bullet missing its tag.
+- **blueprints/accessibility.md** — `Design change required tag` section rewritten as a hard checklist with a YES/NO decision gate per finding. Added "Enforcement" paragraph mandating a post-write scan. Expanded the "when to apply" list to include: component prop mandated as required, any new visual pattern not yet in the DLS.
+- **Version bump** SKILL.md `v1.2.0` → `v1.3.0`.
+
+### Scope
+Findings that now reliably receive the tag (previously missed):
+- Focus ring spec undefined in DLS → design must define color/width/offset
+- Touch target size in design spec below 44px minimum
+- `alt` prop not enforced as required in component API → design spec must mandate it
+- Any finding whose "Design fix:" bullet would otherwise silently go to a developer who cannot action it
+
+### Unchanged
+- HTML output structure, scaffold, all section recipes
+- DLS tokens, type scale, 8px grid
+- Audit summary gauge, playground demos, code-finding cards
+- Manual checks chat workflow
+
+---
+
 ## [1.2.0] — 2026-06-05
 
 Token-budget refactor. New sessions starting a playbook were burning ~50% of context on skill load alone. Split SKILL.md by blueprint so only the relevant one loads per run.

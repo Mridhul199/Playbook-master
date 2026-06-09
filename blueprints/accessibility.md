@@ -6,21 +6,31 @@ For WCAG 2.1 AA audits with code-level findings + manual checks.
 
 ---
 
-## Design change required tag — MANDATORY rule
+## Design change required tag — HARD RULE, NO EXCEPTIONS
 
-Playbooks are read by both developers and designers. For any finding whose fix requires **design-team action** (token update, spec change, visual pattern mandate) rather than a code change, you must add a `[Design change required]` tag.
+Playbooks are read by both developers and designers. For any finding whose fix requires **design-team action** (token update, spec change, visual pattern mandate) rather than a code change, you MUST add a `[Design change required]` tag.
 
-**When to apply:**
-- Color/contrast failures tied to a design token value (e.g. placeholder color, disabled text token)
-- Non-color error cue missing — the decision to mandate an icon/pattern belongs to design
-- Touch target size specified as too small in the design spec
-- Focus ring visual style (color, width) not matching the design system spec
-- Any finding where the developer cannot fix the issue without a new design deliverable
+**This is not optional.** Before writing each finding card, run this checklist:
+
+> ☐ Can a developer fix this with a code change alone?
+> → YES: no tag needed.
+> → NO: add `class="design-flagged"` to the `<article>` AND the `<span class="design-tag">` element.
+
+**Apply the tag whenever the fix requires ANY of the following from the design team:**
+- A color/contrast token update (e.g. placeholder color, disabled text, border token too light)
+- A new or updated DLS spec mandating a non-color cue (error icon, pattern, label badge)
+- A touch target size change in the component spec (design spec must increase the minimum)
+- A focus ring spec: color, width, offset — if not defined in the DLS spec, design must define it first
+- A component prop mandated as required (e.g. `alt` must be required, not optional)
+- Any new visual pattern, state indicator, or icon that does not yet exist in the design system
 
 **When NOT to apply:**
 - Missing ARIA attributes (`aria-invalid`, `aria-describedby`, etc.) — pure code fix
 - Missing `id` or `role` corrections — pure code fix
 - Live region additions — pure code fix
+- Incorrect element type (`<p>` → `<h3>`) — pure code fix
+
+**Enforcement:** After writing all 9 finding cards, scan back through each one. Any finding with a "Design fix:" bullet in its issues list MUST have the design-flagged class and design-tag element. Missing tags are a defect in the playbook.
 
 **HTML recipe — finding card:**
 ```html
