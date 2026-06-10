@@ -140,19 +140,25 @@ See `blueprints/accessibility.md`.
 
 ```css
 :root {
-  --orange: #F26522; --orange-hover: #D9541A;
-  --orange-tint: #FEF0E8; --orange-tint-2: #FFF7F1;
-  --text-1: #0D1526; --text-2: #4A5568; --text-3: #8A97AC;
-  --canvas: #F7F8FA; --surface: #FFFFFF; --surface-2: #FAFBFC;
-  --border: #E2E8F0; --border-strong: #CBD5E0;
-  --success: #0A8F5C; --warning: #D97706; --error: #C0392B;
-  --success-tint: #E6F4EE; --warning-tint: #FEF3E2; --error-tint: #FBE9E7;
+  /* Orange — var(--orange-10), --orange-11, --orange-4, --orange-2 */
+  --orange: #f15701; --orange-hover: #db4f01;
+  --orange-tint: #fef4ee; --orange-tint-2: #fffaf7;
+  /* Text — var(--gray-Blue-12), --gray-Blue-8, --gray-Blue-6 */
+  --text-1: #1b2029; --text-2: #3b475b; --text-3: #848b98;
+  /* Surface — var(--gray-Blue-1), --white */
+  --canvas: #fafbfb; --surface: #ffffff; --surface-2: #fafbfb;
+  /* Border — var(--gray-Blue-4), --gray-Blue-5 */
+  --border: #d0d3d8; --border-strong: #abb0b8;
+  /* Semantic — var(--green-9), --yellow-10, --red-11 */
+  --success: #17b26a; --warning: #d9a72b; --error: #d7074c;
+  /* Semantic tints — var(--green-2), --yellow-3, --red-4 */
+  --success-tint: #f2fbf6; --warning-tint: #fffcf6; --error-tint: #fde7ef;
   --f: 'Inter', -apple-system, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
   --r-s: 4px; --r-m: 6px; --r-l: 8px; --r-xl: 12px; --r-2xl: 16px; --r-pill: 999px;
-  --sh-1: 0 1px 2px rgba(13,21,38,.04), 0 0 0 1px rgba(13,21,38,.04);
-  --sh-2: 0 4px 12px rgba(13,21,38,.06), 0 0 0 1px rgba(13,21,38,.05);
-  --sh-3: 0 12px 32px rgba(13,21,38,.08), 0 0 0 1px rgba(13,21,38,.06);
+  --sh-1: 0 1px 2px rgba(27,32,41,.04), 0 0 0 1px rgba(27,32,41,.04);
+  --sh-2: 0 4px 12px rgba(27,32,41,.06), 0 0 0 1px rgba(27,32,41,.05);
+  --sh-3: 0 12px 32px rgba(27,32,41,.08), 0 0 0 1px rgba(27,32,41,.06);
   --container: 1280px; --gutter: 32px;
 }
 ```
